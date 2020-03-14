@@ -43,6 +43,11 @@ const FLOAT amb_temp = 80.0;
 
 int num_omp_threads;
 
+/* variables to identify critical sections */
+
+float total_time_ifs =0;
+float total_time_loop=0;
+
 /* Single iteration of the transient solver in the grid model.
  * advances the solution of the discretized difference equations 
  * by one time step
@@ -57,7 +62,8 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
-
+  
+    
     for ( chunk = 0; chunk < num_chunk; ++chunk )
     {
         int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
@@ -67,6 +73,7 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
        
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
         {
+            long long start_time_ifs = get_time();
             for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
                 for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                     /* Corner 1 */
@@ -121,9 +128,12 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
                     result[r*col+c] =temp[r*col+c]+ delta;
                 }
             }
+            long long end_time_ifs = get_time();
+            total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
             continue;
         }
-
+        
+        long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
             /* Update Temperatures */
@@ -133,7 +143,14 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
                     (amb_temp - temp[r*col+c]) * Rz_1));
             }
         }
+        long long end_time_loop = get_time();
+        
+        total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
     }
+    
+    
+    
+    
 }
 
 /* Transient solver driver routine: simply converts the heat 
@@ -291,7 +308,11 @@ int main(int argc, char **argv)
 
     printf("Ending simulation\n");
     printf("Total time: %.3f seconds\n", ((float) (end_time - start_time)) / (1000*1000));
-
+    
+    printf("Total time in ifs loop: %.3f seconds\n", total_time_ifs);
+    printf("Total time in loop: %.3f seconds\n", total_time_loop);
+    
+    
     writeoutput((1&sim_time) ? result : temp, grid_rows, grid_cols, ofile);
 
 	/* output results	*/
