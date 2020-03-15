@@ -43,10 +43,17 @@ const FLOAT amb_temp = 80.0;
 
 int num_omp_threads;
 
+
+/********************************** NEW ************************************/
 /* variables to identify critical sections */
 
 float total_time_ifs =0;
 float total_time_loop=0;
+
+/*check if correct*/
+FLOAT *result1;
+
+/***************************************************************************/
 
 /* Single iteration of the transient solver in the grid model.
  * advances the solution of the discretized difference equations 
@@ -125,6 +132,7 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
                             (amb_temp - temp[r*col]) * Rz_1);
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
+                    result1[r*col+c] =temp[r*col+c]+ delta;
                 }
             }
             long long end_time_ifs = get_time();
@@ -135,18 +143,33 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, c_start, BLOCK_SIZE_C, col, r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-            /*
+            
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-                result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+                result1[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
                     (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                     (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                     (amb_temp - temp[r*col+c]) * Rz_1));
             }
-            */
+            
         }
         long long end_time_loop = get_time();
         
         total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
+        
+        /* CHECK IF EQUAL */
+        for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
+        {            
+            for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
+            {
+                if (result1[r*col+c] != result[r*col+c])
+                {
+                    printf("ERROR\n");
+                }
+                
+            }
+            
+        }
+          
     }
     
     
@@ -288,6 +311,7 @@ int main(int argc, char **argv)
 	temp = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
 	power = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
 	result = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
+  result1 = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
 	if(!temp || !power)
 		fatal("unable to allocate memory");
 
