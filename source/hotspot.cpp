@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <omp.h>
 #include <sys/time.h>
+#include "kernel.h"
 
 // Returns the current system time in microseconds 
 long long get_time()
@@ -31,7 +32,6 @@ using namespace std;
 #define OPEN
 //#define NUM_THREAD 4
 
-typedef float FLOAT;
 
 /* chip parameters	*/
 const FLOAT t_chip = 0.0005;
@@ -53,8 +53,7 @@ float total_time_loop=0;
  * by one time step
  */
 void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col,
-					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, 
-					  FLOAT step)
+					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT step)
 {
     FLOAT delta;
     int r, c;
@@ -135,13 +134,15 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
         
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
+            kernel(result, temp, power, c_start, BLOCK_SIZE_C, col, r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+            /*
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-            /* Update Temperatures */
                 result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
                     (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                     (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                     (amb_temp - temp[r*col+c]) * Rz_1));
             }
+            */
         }
         long long end_time_loop = get_time();
         

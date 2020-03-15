@@ -1,18 +1,33 @@
-# C compiler
 HOST_CC = g++
 HOST_CC_FLAGS = -g -O2
 
 GEM5_CC = aarch64-linux-g++
-GEM5_CC_FLAGS = -g -O2 -static 
+GEM5_CC_FLAGS = -g -O2 -static
 
 DATA_DIR = $(HOME)/apps/hotspot/data
 GEM5_DIR = $(HOME)/gem5
 
-compile_all: hotspot_gem5 hotspot_host
+RM=rm -f
+
+KERNEL = kernel
+
+OBJDIR = build
+SOBJ_host = hotspot_host.o
+SOBJ_gem5 = hotspot_gem5.o
+
+OBJ_host := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_host))
+OBJ_gem5 := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_gem5))
+
+
+compile_all: hotspot_host hotspot_gem5
 
 compile_host: hotspot_host
 
 compile_gem5: hotspot_gem5
+
+
+link_objs_host = $(HOST_CC) $(HOST_CC_FLAGS) -o $@ $(OBJ_host) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
+link_objs_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
 
 run_host: hotspot_host
 	@echo "======================================================================"
@@ -20,7 +35,7 @@ run_host: hotspot_host
 	@echo "you may change the number of iterations and the problem size"
 	@echo "======================================================================"
 	./hotspot_host 1024 1024 1000 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
-
+	
 run_gem5: hotspot_gem5
 	@echo "======================================================================"
 	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
@@ -29,11 +44,26 @@ run_gem5: hotspot_gem5
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '64 64 2 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
-hotspot_host: hotspot.cpp Makefile 
-	$(HOST_CC) $(HOST_CC_FLAGS) hotspot.cpp -o hotspot_host
 
-hotspot_gem5: hotspot.cpp Makefile 
-	$(GEM5_CC) $(GEM5_CC_FLAGS) hotspot.cpp -o hotspot_gem5 
+hotspot_host: $(OBJ_host) $(KERNEL).c
+	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(link_objs_host)
 
-clean:
-	rm -f hotspot_host hotspot_gem5 output_*.out
+hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(link_objs_gem5)
+
+
+$(OBJDIR)/$(SOBJ_host) : hotspot.cpp
+	$(HOST_CC) $(HOST_CC_FLAGS) -c $< -o $@
+	
+$(OBJDIR)/$(SOBJ_gem5) : hotspot.cpp
+	$(GEM5_CC) $(HOST_CC_gem5) -c $< -o $@
+
+clean :
+
+	$(RM) hotspot_host
+	$(RM) hotspot_gem5
+	$(RM) -r build/
+
+$(shell mkdir -p $(OBJDIR))

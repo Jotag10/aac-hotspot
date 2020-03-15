@@ -126,10 +126,12 @@
 #else
 */
 
-void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int col, int r,
-					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1)
+void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int size, int col, int r,
+					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT amb_temp)
 {
-    for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
+    int c;
+    
+    for ( c = c_start; c < c_start + size; ++c ) 
     {
         /* Update Temperatures */
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -137,5 +139,4 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
-//#endif
 }
