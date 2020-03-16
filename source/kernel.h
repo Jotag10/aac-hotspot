@@ -1,5 +1,5 @@
-//#ifndef KERNEL_AAC_HEADER__
-//#define KERNEL_AAC_HEADER__
+#ifndef KERNEL_AAC_HEADER__
+#define KERNEL_AAC_HEADER__
 
 #include <stddef.h>
 
@@ -9,4 +9,4 @@ void volatile kernel(float *result, FLOAT *temp, FLOAT *power, int c_start, int 
 					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT amb_temp);
 
 
-//#endif //KERNEL_AAC_HEADER__
+#endif //KERNEL_AAC_HEADER__
