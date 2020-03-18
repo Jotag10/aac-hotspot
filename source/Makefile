@@ -59,12 +59,11 @@ hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON
-	$(link_objs)
-
+	$(link_objs_gem5)
 
 hotspot_sve: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+sve -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DSVE
-	$(link_objs)
+	$(link_objs_gem5)
 
 $(OBJDIR)/$(SOBJ_host) : hotspot.cpp
 	$(HOST_CC) $(HOST_CC_FLAGS) -c $< -o $@
