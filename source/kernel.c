@@ -25,7 +25,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     }
 
     iter = (c_start+size) / NEON_STRIDE * NEON_STRIDE;
-	r_col = r*col;
+	int r_col = r*col;
      asm volatile (
          
          "ldr x1, [%[c_s]]\n\t"
