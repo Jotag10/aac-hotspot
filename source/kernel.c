@@ -15,7 +15,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
         {
             /* Update Temperatures */
             result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-                (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                 (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                 (amb_temp - temp[r*col+c]) * Rz_1));
         }
@@ -25,18 +25,22 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     }
 
     iter = (c_start+size) / NEON_STRIDE * NEON_STRIDE;
-	int coco = 2;
-    int *teste;
+
      asm volatile (
          
          "ldr x1, [%[c_s]]\n\t"
-		 "str x1, [%[r]]\n\t"
+		 "ld1r { v0.4s } , [%[Rx]]\n\t"
+		 "ld1r { v1.4s } , [%[Ry]]\n\t"
+		 "ld1r { v2.4s } , [%[Rz]]\n\t"
+		 "ld1r { v3.4s } , [%[t]]\n\t"
+		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 
-		 : [r] "=r" (teste)
-		 : [c_s] "r" (&coco)						
+		 
+		 : [r] "=r" (result)
+		 : [c_s] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" Ry_1, [Rz] "r" Rz_1, [t] "r" (&amb_temp), [ca] "r" (&Cap_1)
 		 : "x1"
     );
-	printf("%d", teste[0]);
+
 	/*
     //exemplo
 		 "mov x1, #0 \n\t"
