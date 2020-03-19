@@ -28,29 +28,40 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 	int r_col = r*col;
      asm volatile (
          
-         "ldr x1, [%[c_s]]\n\t"
+         "ldr x1, [%[c]]\n\t"				//iterador c
 		 "ld1r { v0.4s } , [%[Rx]]\n\t"
 		 "ld1r { v1.4s } , [%[Ry]]\n\t"
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "ldr x2, [%[rc]]\n\t"
+		 
+		 //fazer br se c>= c_start+size
+		 
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"				//r*col+c
-		 "ldr q5, [%[temp], x2, #1]\n\t"		//temp[r*col+c]
-		 "fsub v6.4s, v3.4s, v5.4s\n\t"
-		 "fmla v7.4s, v6.4s, v2.4s\n\t"
-		 
-		 
+		 "ldr q5, [%[temp], x2]\n\t"		//temp[r*col+c]
+		 "fsub v6.4s, v3.4s, v5.4s\n\t"		//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v2.4s\n\t"		//v7 acumulador
+		 "sub x2, x2, #1 \n\t"				//r*col+c-1
+		 "ldr q8, [%[temp], x2]\n\t"		//v8 auxiliar, temp[r*col+c-1]
+		 "add x2, x2, #2 \n\t"				//r*col+c+1
+		 "ldr q6, [%[temp], x2]\n\t"		//v6 auxiliar, temp[r*col+c+1]
+		 "fadd v6.4s, v6.4s, v8.4s \n\t"	//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 
 		
 		
 		 : [r] "=r" (result)
-		 : [c_s] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+		 : [c] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [rc] "r" (r_col), [col] "r" (col)
-		 : "x1"
+		 : "x1", "x2", "v1", "v2", "v3", "v4", "v5", "v6", "v7" , "v8"
     );
-
+	
+	//DUVIDAS
+	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
+	// %[]
+	// ifs, como resolver loads nao paralelos
+	
 	/*
 	
     //exemplo
