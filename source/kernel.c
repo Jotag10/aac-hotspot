@@ -25,17 +25,18 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     }
 
     iter = (c_start+size) / NEON_STRIDE * NEON_STRIDE;
-    FLOAT *teste;
+	int coco = 2;
+    int *teste;
      asm volatile (
          
          "ldr x1, [%[c_s]]\n\t"
 		 "str x1, [%[r]]\n\t"
 		 
 		 : [r] "=r" (teste)
-		 : [c_s] "r" (&c_start)						
+		 : [c_s] "r" (&coco)						
 		 : "x1"
     );
-	printf("%f", teste[0]);
+	printf("%d", teste[0]);
 	/*
     //exemplo
 		 "mov x1, #0 \n\t"
