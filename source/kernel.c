@@ -40,7 +40,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 
 		 
 		 : [r] "=r" (result)
-		 : [c_s] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" Ry_1, [Rz] "r" Rz_1, [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp), [rc] "r" (r_col)
+		 : [c_s] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp), [rc] "r" (r_col)
 		 : "x1"
     );
 
