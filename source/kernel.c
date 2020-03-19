@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include <cstdio>
 
 void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int size, int col, int r,
 					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT amb_temp)
