@@ -35,9 +35,10 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "ldr x2, [%[rc]]\n\t"
-		 "add x2, x1, x2\n\t"				//confirmar
+		 "add x2, x1, x2\n\t"			//confirmar porque operando 2 = destino 
 		 "ldr q5, [%[temp], x2]\n\t"
-		 
+		 "fsub q6, q3, q5\n\t"
+		 "fmla q6, q6, q2\n\t"			//confirmar porque operando 1 = destino 
 		 
 		 : [r] "=r" (result)
 		 : [c_s] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp), [rc] "r" (r_col)
@@ -45,7 +46,14 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     );
 
 	/*
+	
     //exemplo
+	void SAXPY(float * x, float * y, float A, size_t size)
+	{
+		for(size_t i = 0; i < size; i++){
+			y[i] = A*x[i] + y[i];
+		}
+	}
 		 "mov x1, #0 \n\t"
          "ld1r { v0.4s } , [%[a]]\n\t"
          ".loop_neon:\n\t"
