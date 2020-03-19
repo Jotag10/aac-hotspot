@@ -28,10 +28,10 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     FLOAT *teste;
      asm volatile (
          
-         "ldr x1, %[c_s]\n\t"
-		 "str x1, %[r]\n\t"
+         "ldr x1, [%[c_s]]\n\t"
+		 "str x1, [%[r]]\n\t"
 		 
-		 : [r] "+r" (teste)
+		 : [r] "=r" (teste)
 		 : [c_s] "r" (&c_start)						
 		 : "x1"
     );
