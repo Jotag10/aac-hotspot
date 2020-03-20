@@ -54,7 +54,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
 		 "add x3, x2, [%[col]] \n\t"			//(r+1)*col+c
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, %[col]\n\t"		//(r-1)*col+c
+		 "sub x3, x2, %[col], SLS #1\n\t"		//(r-1)*col+c
 		
 		
 		 : [r] "=r" (result)
@@ -67,6 +67,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
 	// ifs, como resolver loads nao paralelos
+	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
 	
 	/*
 	
