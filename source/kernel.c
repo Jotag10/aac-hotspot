@@ -35,7 +35,8 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
-		 "ld1r { v9.4s } , #2\n\t"
+		 "mov x2, #2\n\t"
+		 "ld1r { v9.4s } , x2\n\t"		//ALTERAR
 		 "ldr x2, [%[rc]]\n\t"
 		 
 		 //fazer br se c>= c_start+size
@@ -54,7 +55,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
 		 "add x3, x2, [%[col]] \n\t"			//(r+1)*col+c
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, [%[col]] {LSL, #1}\n\t"	//ARRANJAR (r-1)*col+c
+		 "sub x3, x2, [%[col]], LSL #1\n\t"		//ARRANJAR (r-1)*col+c
 		
 		
 		 : [r] "=r" (result)
