@@ -35,7 +35,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
-		 "movi { v5.4s }, #2\n\t"
+		 "movi v9.4s , #2\n\t"
 		 "ldr x2, [%[rc]]\n\t"
 		 
 		 //fazer br se c>= c_start+size
