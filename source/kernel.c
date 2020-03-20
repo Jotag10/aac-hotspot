@@ -24,7 +24,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     
     }
 
-    iter = (c_start+size) / NEON_STRIDE * NEON_STRIDE;
+    iter = size / NEON_STRIDE * NEON_STRIDE;
 	int r_col = r*col;
      asm volatile (
          
@@ -106,7 +106,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
     // );
     
 
-    rem = (c_start+size) % NEON_STRIDE;
+    rem = size % NEON_STRIDE;
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
