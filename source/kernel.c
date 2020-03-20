@@ -23,6 +23,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
          return;
     
     }
+	
 
     iter = size / NEON_STRIDE * NEON_STRIDE;
 	int r_col = r*col;
@@ -34,21 +35,26 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
+		 "ld1r { v9.4s } , #2\n\t"
 		 "ldr x2, [%[rc]]\n\t"
 		 
 		 //fazer br se c>= c_start+size
 		 
 		 ".loop_neon:\n\t"
-		 "add x2, x1, x2\n\t"				//r*col+c
-		 "ldr q5, [%[temp], x2]\n\t"		//temp[r*col+c]
-		 "fsub v6.4s, v3.4s, v5.4s\n\t"		//v6 auxiliar, (amb_temp - temp[r*col+c])
-		 "fmla v7.4s, v6.4s, v2.4s\n\t"		//v7 acumulador
-		 "sub x2, x2, #1 \n\t"				//r*col+c-1
-		 "ldr q8, [%[temp], x2]\n\t"		//v8 auxiliar, temp[r*col+c-1]
-		 "add x2, x2, #2 \n\t"				//r*col+c+1
-		 "ldr q6, [%[temp], x2]\n\t"		//v6 auxiliar, temp[r*col+c+1]
-		 "fadd v6.4s, v6.4s, v8.4s \n\t"	//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
-		 
+		 "add x2, x1, x2\n\t"					//r*col+c
+		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
+		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
+		 "sub x3, x2, #1 \n\t"					//r*col+c-1
+		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
+		 "add x3, x3, #2 \n\t"					//r*col+c+1
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
+		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
+		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
+		 "add x3, x2, [%[col]] \n\t"			//(r+1)*col+c
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
+		 "sub x3, x2, [%[col]] {LSL, #1}\n\t"	//ARRANJAR (r-1)*col+c
 		
 		
 		 : [r] "=r" (result)
