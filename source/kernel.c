@@ -30,7 +30,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
      asm volatile (
          
          "ldr x1, [%[c]]\n\t"					//iterador c
-		 "ld1r { v0.4s } , [%[Rx]]\n\t"
+		 //"ld1r { v0.4s } , [%[Rx]]\n\t"
 		 //"ld1r { v1.4s } , [%[Ry]]\n\t"
 		 //"ld1r { v2.4s } , [%[Rz]]\n\t"
 		 //"ld1r { v3.4s } , [%[amb]]\n\t"
