@@ -31,12 +31,12 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
          
          "ldr x1, [%[c]]\n\t"					//iterador c
 		 "ld1r { v0.4s } , [%[Rx]]\n\t"
-		 "ld1r { v1.4s } , [%[Ry]]\n\t"
-		 "ld1r { v2.4s } , [%[Rz]]\n\t"
-		 "ld1r { v3.4s } , [%[amb]]\n\t"
-		 "ld1r { v4.4s } , [%[ca]]\n\t"
-		 "movi v9.4s , #2\n\t"
-		 "ldr x2, [%[rc]]\n\t"
+		 //"ld1r { v1.4s } , [%[Ry]]\n\t"
+		 //"ld1r { v2.4s } , [%[Rz]]\n\t"
+		 //"ld1r { v3.4s } , [%[amb]]\n\t"
+		 //"ld1r { v4.4s } , [%[ca]]\n\t"
+		 //"movi v9.4s , #2\n\t"
+		 //"ldr x2, [%[rc]]\n\t"
 		 
 		 
 		 //fazer br se c>= c_start+size
