@@ -29,7 +29,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 	int r_col = r*col;
      asm volatile (
          
-         "ldr x1, [%[c]]\n\t"					//iterador c
+         "ldr x1, [%[c]]\n\t"					//iterador c=c_start
 		 "ld1r { v0.4s } , [%[Rx]]\n\t"
 		 "ld1r { v1.4s } , [%[Ry]]\n\t"
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
