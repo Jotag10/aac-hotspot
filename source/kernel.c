@@ -43,8 +43,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
-		 "ld1 { v5.4s }, [x2], #16\n\t"
-		 //"ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
+		 "ldr q5, [%[t], x2]\n\t"			//temp[r*col+c]
 		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
@@ -72,7 +71,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 */
 		
 		 : [r] "=r" (result)
-		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [t] "r" (temp),
 		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "v1", "memory", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
