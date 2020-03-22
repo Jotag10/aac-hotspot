@@ -75,6 +75,8 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 : "x1", "x2", "x3", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
+	printf("OK\n");
+	
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
