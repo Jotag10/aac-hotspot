@@ -34,12 +34,12 @@ using namespace std;
 
 
 /* chip parameters	*/
-const FLOAT t_chip = 0.0005;
-const FLOAT chip_height = 0.016;
-const FLOAT chip_width = 0.016;
+const float t_chip = 0.0005;
+const float chip_height = 0.016;
+const float chip_width = 0.016;
 
 /* ambient temperature, assuming no package at all	*/
-const FLOAT amb_temp = 80.0;
+const float amb_temp = 80.0;
 
 int num_omp_threads;
 
@@ -51,7 +51,7 @@ float total_time_ifs =0;
 float total_time_loop=0;
 
 /*check if correct*/
-FLOAT *result1;
+float *result1;
 
 /***************************************************************************/
 
@@ -59,10 +59,10 @@ FLOAT *result1;
  * advances the solution of the discretized difference equations 
  * by one time step
  */
-void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col,
-					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT step)
+void single_iteration(float *result, float *temp, float *power, int row, int col,
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float step)
 {
-    FLOAT delta;
+    float delta;
     int r, c;
     int chunk;
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
@@ -183,27 +183,27 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
  * transfer differential equations to difference equations 
  * and solves the difference equations by iterating
  */
-void compute_tran_temp(FLOAT *result, int num_iterations, FLOAT *temp, FLOAT *power, int row, int col) 
+void compute_tran_temp(float *result, int num_iterations, float *temp, float *power, int row, int col) 
 {
 	#ifdef VERBOSE
 	int i = 0;
 	#endif
 
-	FLOAT grid_height = chip_height / row;
-	FLOAT grid_width = chip_width / col;
+	float grid_height = chip_height / row;
+	float grid_width = chip_width / col;
 
-	FLOAT Cap = FACTOR_CHIP * SPEC_HEAT_SI * t_chip * grid_width * grid_height;
-	FLOAT Rx = grid_width / (2.0 * K_SI * t_chip * grid_height);
-	FLOAT Ry = grid_height / (2.0 * K_SI * t_chip * grid_width);
-	FLOAT Rz = t_chip / (K_SI * grid_height * grid_width);
+	float Cap = FACTOR_CHIP * SPEC_HEAT_SI * t_chip * grid_width * grid_height;
+	float Rx = grid_width / (2.0 * K_SI * t_chip * grid_height);
+	float Ry = grid_height / (2.0 * K_SI * t_chip * grid_width);
+	float Rz = t_chip / (K_SI * grid_height * grid_width);
 
-	FLOAT max_slope = MAX_PD / (FACTOR_CHIP * t_chip * SPEC_HEAT_SI);
-    FLOAT step = PRECISION / max_slope / 1000.0;
+	float max_slope = MAX_PD / (FACTOR_CHIP * t_chip * SPEC_HEAT_SI);
+    float step = PRECISION / max_slope / 1000.0;
 
-    FLOAT Rx_1=1.f/Rx;
-    FLOAT Ry_1=1.f/Ry;
-    FLOAT Rz_1=1.f/Rz;
-    FLOAT Cap_1 = step/Cap;
+    float Rx_1=1.f/Rx;
+    float Ry_1=1.f/Ry;
+    float Rz_1=1.f/Rz;
+    float Cap_1 = step/Cap;
 	#ifdef VERBOSE
 	fprintf(stdout, "total iterations: %d s\tstep size: %g s\n", num_iterations, step);
 	fprintf(stdout, "Rx: %g\tRy: %g\tRz: %g\tCap: %g\n", Rx, Ry, Rz, Cap);
@@ -211,15 +211,15 @@ void compute_tran_temp(FLOAT *result, int num_iterations, FLOAT *temp, FLOAT *po
 
         int array_size = row*col;
         {
-            FLOAT* r = result;
-            FLOAT* t = temp;
+            float* r = result;
+            float* t = temp;
             for (int i = 0; i < num_iterations ; i++)
             {
                 #ifdef VERBOSE
                 fprintf(stdout, "iteration %d\n", i++);
                 #endif
                 single_iteration(r, t, power, row, col, Cap_1, Rx_1, Ry_1, Rz_1, step);
-                FLOAT* tmp = t;
+                float* tmp = t;
                 t = r;
                 r = tmp;
             }	
@@ -235,7 +235,7 @@ void fatal(const char *s)
 	exit(1);
 }
 
-void writeoutput(FLOAT *vect, int grid_rows, int grid_cols, char *file) {
+void writeoutput(float *vect, int grid_rows, int grid_cols, char *file) {
 
     int i,j, index=0;
     FILE *fp;
@@ -257,12 +257,12 @@ void writeoutput(FLOAT *vect, int grid_rows, int grid_cols, char *file) {
     fclose(fp);	
 }
 
-void read_input(FLOAT *vect, int grid_rows, int grid_cols, char *file)
+void read_input(float *vect, int grid_rows, int grid_cols, char *file)
 {
   	int i, index;
 	FILE *fp;
 	char str[STR_SIZE];
-	FLOAT val;
+	float val;
 
 	fp = fopen (file, "r");
 	if (!fp)
@@ -296,7 +296,7 @@ void usage(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	int grid_rows, grid_cols, sim_time, i;
-	FLOAT *temp, *power, *result;
+	float *temp, *power, *result;
 	char *tfile, *pfile, *ofile;
 	
 	/* check validity of inputs	*/
@@ -310,10 +310,10 @@ int main(int argc, char **argv)
 		usage(argc, argv);
 
 	/* allocate memory for the temperature and power arrays	*/
-	temp = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
-	power = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
-	result = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
-  result1 = (FLOAT *) calloc (grid_rows * grid_cols, sizeof(FLOAT));
+	temp = (float *) calloc (grid_rows * grid_cols, sizeof(float));
+	power = (float *) calloc (grid_rows * grid_cols, sizeof(float));
+	result = (float *) calloc (grid_rows * grid_cols, sizeof(float));
+  result1 = (float *) calloc (grid_rows * grid_cols, sizeof(float));
 	if(!temp || !power)
 		fatal("unable to allocate memory");
 
