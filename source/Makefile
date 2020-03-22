@@ -2,7 +2,7 @@ HOST_CC = g++
 HOST_CC_FLAGS = -g -O2
 
 GEM5_CC = aarch64-linux-g++
-GEM5_CC_FLAGS = -g -O3 -static -Wall
+GEM5_CC_FLAGS = -g -O3 -static
 
 DATA_DIR = $(HOME)/apps/hotspot/data
 GEM5_DIR = $(HOME)/gem5
