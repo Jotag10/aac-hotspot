@@ -30,13 +30,13 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
      asm volatile (
          
          "ldr x1, [%[c]]\n\t"					//iterador c
-		 //"ld1r { v0.4s } , [%[Rx]]\n\t"
-		 //"ld1r { v1.4s } , [%[Ry]]\n\t"
-		 //"ld1r { v2.4s } , [%[Rz]]\n\t"
-		 //"ld1r { v3.4s } , [%[amb]]\n\t"
-		 //"ld1r { v4.4s } , [%[ca]]\n\t"
-		 //"movi v9.4s , #2\n\t"
-		 //"ldr x2, [%[rc]]\n\t"
+		 "ld1r { v0.4s } , [%[Rx]]\n\t"
+		 "ld1r { v1.4s } , [%[Ry]]\n\t"
+		 "ld1r { v2.4s } , [%[Rz]]\n\t"
+		 "ld1r { v3.4s } , [%[amb]]\n\t"
+		 "ld1r { v4.4s } , [%[ca]]\n\t"
+		 "movi v9.4s , #2\n\t"
+		 "ldr x2, [%[rc]]\n\t"
 		 
 		 
 		 //fazer br se c>= c_start+size
@@ -73,7 +73,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		
 		
 		 : [r] "=r" (result)
-		 : [c] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "v1", "memory", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
