@@ -157,7 +157,7 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
         total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
         
         /* CHECK IF EQUAL */
-		/*
+		
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
         {            
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
@@ -170,7 +170,7 @@ void single_iteration(FLOAT *result, FLOAT *temp, FLOAT *power, int row, int col
             }
             
         }
-		*/
+		
           
     }
     
