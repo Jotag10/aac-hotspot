@@ -1,8 +1,8 @@
 #include "kernel.h"
 #include <cstdio>
 
-void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int size, int col, int r,
-					  FLOAT Cap_1, FLOAT Rx_1, FLOAT Ry_1, FLOAT Rz_1, FLOAT amb_temp)
+void volatile kernel(float *result, float *temp, float *power, int c_start, int size, int col, int r,
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
 
 #if defined(NEON)
