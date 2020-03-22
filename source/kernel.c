@@ -53,9 +53,9 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
-		 "add x3, x2, [%[col]] \n\t"				//(r+1)*col+c
+		 "add x3, x2, %[col] \n\t"				//(r+1)*col+c
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, [%[col]], LSL #1\n\t"		//(r-1)*col+c
+		 "sub x3, x2, %[col], LSL #1\n\t"		//(r-1)*col+c
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
@@ -71,7 +71,7 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		
 		 : [r] "=r" (result)
 		 : [c] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
-		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (&col), [sz] "r" (iter*4)
+		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "v1", "memory", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
