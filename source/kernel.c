@@ -41,7 +41,19 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 
 		 //fazer br se c>= c_start+size
 		 
-		 ".loop_neon:\n\t"
+		 
+		
+		
+		 : [r] "=r" (result)
+		 : [c] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (col), [sz] "r" (iter*4)
+		 : "x1", "x2", "x3", "v1", "memory", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
+    );
+	
+	printf("OK\n");
+	
+	/*
+	".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
@@ -67,16 +79,8 @@ void volatile kernel(FLOAT *result, FLOAT *temp, FLOAT *power, int c_start, int 
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-		
-		
-		 : [r] "=r" (result)
-		 : [c] "r" (&c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
-		 [pow] "r" (power), [rc] "r" (&r_col), [col] "r" (col), [sz] "r" (iter*4)
-		 : "x1", "x2", "x3", "v1", "memory", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
-    );
-	
-	printf("OK\n");
-	
+		 
+		 */
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
