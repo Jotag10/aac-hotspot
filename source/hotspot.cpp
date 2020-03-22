@@ -141,8 +141,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         }
         
         long long start_time_loop = get_time();
-        //for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-		r=r_start;
+        for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, c_start, BLOCK_SIZE_C, col, r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
@@ -152,7 +151,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                     (amb_temp - temp[r*col+c]) * Rz_1));
             }
             
-        //}
+        }
         long long end_time_loop = get_time();
         
         total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
@@ -334,6 +333,7 @@ int main(int argc, char **argv)
     long long end_time = get_time();
 
     printf("Ending simulation\n");
+    printf("Total time: %.3f seconds\n", ((float) (end_time - start_time)) / (1000*1000));
     printf("Total time: %.3f seconds\n", ((float) (end_time - start_time)) / (1000*1000));
     
     printf("Total time in ifs loop: %.3f seconds\n", total_time_ifs);
