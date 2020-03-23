@@ -83,7 +83,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	for (int c=c_start; c <c_start+ 4; c++)
 	{
 		printf("%d, %f, %f\n",c-c_start,temp[r*col+c], teste[c-c_start]);
-		test[c-c_start]=0;
+		teste[c-c_start]=0;
 	}
 	printf("\n\n");
 	/*
