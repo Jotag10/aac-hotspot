@@ -46,8 +46,9 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 "add x2, x1, x2\n\t"					//r*col+c
 		 "sub x3, x2, #1 \n\t"					//teste
 		 "mov %[teste], x2\n\t"
+		 
+		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
 		 /*
-		 "ldr q5, [%[temp], x3]\n\t"			//temp[r*col+c]
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 		 "sub x3, x2, #1 \n\t"					//r*col+c-1
@@ -131,18 +132,17 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
     //     : "x1", "x2", "x3", "x4", "memory", "v0", "v1", "v2"
     // );
     
-
+	/*
     rem = (size+c_start) % NEON_STRIDE;
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
-        /* Update Temperatures */
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
-    
+    */
     
 #elif defined(SVE)
 /*
