@@ -77,7 +77,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	printf("teste:%d, r*col+c: %d\n", teste, r*col+c);
+	printf("teste:%d, r*col+c: %d\n", teste, r*col+c_start);
 	
 	
 	//DUVIDAS
