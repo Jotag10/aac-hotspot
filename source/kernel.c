@@ -39,9 +39,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "mov x5, #4\n\t"
 		 "mul x2, x2, x5\n\t"
 		 "mul x1, x1, x5\n\t"
-		 
-		 "add x1, x1, #16\n\t"
-	
+		 	
 		 ".loop_neon:\n\t"
 		 "add x2, x2, x1\n\t"					//(r*col+c)
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
@@ -53,10 +51,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
-		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
-		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c
+		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
+		 "madd x3, %[col], x5, x2\n\t"
+		 //"add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
+		 //"sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
+		 "msub x3, %[col], x5, x2\n\t"
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
@@ -67,7 +67,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "str q5, [%[res], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         //"b.lt .loop_neon\n\t"
+         "b.lt .loop_neon\n\t"
 		 "mov %[val], x2\n\t"
 		
 		 : [res] "+r" (result), [val] "+r" (val)
