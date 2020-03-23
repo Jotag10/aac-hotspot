@@ -48,7 +48,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		//BEM EXEPTO O LOAD QUE NAO É IGUAL
 		
-		 "sub x3, x2, #1\n\t"					//r*col+c-1
+		 "sub x3, x2, #4\n\t"					//r*col+c-1
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
 		 "mov %[teste2], x3\n\t"
 		 "str q8, [%[teste], x4]\n\t"
