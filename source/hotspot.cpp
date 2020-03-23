@@ -50,10 +50,6 @@ int num_omp_threads;
 float total_time_ifs =0;
 float total_time_loop=0;
 
-/*check if correct*/
-float *result1;
-int error=0;
-
 /***************************************************************************/
 
 /* Single iteration of the transient solver in the grid model.
@@ -133,7 +129,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                             (amb_temp - temp[r*col]) * Rz_1);
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
-                    result1[r*col+c] =temp[r*col+c]+ delta;
                 }
             }
             long long end_time_ifs = get_time();
@@ -145,41 +140,10 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             
-            for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-                result1[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-                    (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-                    (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-                    (amb_temp - temp[r*col+c]) * Rz_1));
-            }
-            
         }
         long long end_time_loop = get_time();
         
         total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
-        
-        /* CHECK IF EQUAL */
-		
-        for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
-        {            
-            for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
-            {
-                if (result1[r*col+c] != result[r*col+c])
-                {
-					//if (error==0)
-					{
-						printf("ERROR\n");
-						printf("index: %d\n", r*col+c);
-						printf("normal: %f, new: %f\n", result1[r*col+c], result[r*col+c]);
-						
-					}
-                    error=1;
-					
-					
-                }
-                
-            }
-            
-        }
         
     }
     
@@ -322,7 +286,7 @@ int main(int argc, char **argv)
 	temp = (float *) calloc (grid_rows * grid_cols, sizeof(float));
 	power = (float *) calloc (grid_rows * grid_cols, sizeof(float));
 	result = (float *) calloc (grid_rows * grid_cols, sizeof(float));
-  result1 = (float *) calloc (grid_rows * grid_cols, sizeof(float));
+
 	if(!temp || !power)
 		fatal("unable to allocate memory");
 
