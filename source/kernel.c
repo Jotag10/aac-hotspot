@@ -23,7 +23,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     
     }
-	
+	size_t teste2;
 	float * teste= (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
@@ -48,9 +48,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		//BEM EXEPTO O LOAD QUE NAO É IGUAL
 		
-		 "sub x3, x2, #1 \n\t"					//r*col+c-1
+		 "sub x3, x2, #1\n\t"					//r*col+c-1
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
+		 "mov %[teste2], x3\n\t"
 		 "str q8, [%[teste], x4]\n\t"
+		 
+		 /*
 		 "add x3, x3, #2 \n\t"					//r*col+c+1
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
@@ -76,7 +79,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          //"b.lt .loop_neon\n\t"
 		*/
 		 //: [res] "+r" (result)
-		 : [teste]  "+r" (teste)
+		 : [teste]  "+r" (teste), [teste2] "+r" (teste2)
 		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
@@ -88,7 +91,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 		(amb_temp - temp[r*col+c]) * Rz_1;
 		
-		printf("%f, %f\n",temp[r*col+c-1], teste[c-c_start]);
+		printf("%f, %f\n",teste2, teste[c-c_start]);
 		teste[c-c_start]=0;
 	}
 	printf("\n\n");
