@@ -291,9 +291,9 @@ int main(int argc, char **argv)
 		fatal("unable to allocate memory");
 
 	/* read initial temperatures and input power	*/
-	tfile = argv[5];
 	pfile = argv[6];
     ofile = argv[7];
+	tfile = argv[5];
 
 	read_input(temp, grid_rows, grid_cols, tfile);
 	read_input(power, grid_rows, grid_cols, pfile);
