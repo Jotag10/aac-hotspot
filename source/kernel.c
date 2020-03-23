@@ -65,10 +65,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
 		 //"str q5, [%[res], x2]\n\t"
 		 "str q5, [%[teste], x3]\n\t"
+		 /*
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-*/
+		*/
 		 //: [res] "+r" (result)
 		 : [teste]  "+r" (teste)
 		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
@@ -93,7 +94,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	/* CHECK IF EQUAL */
 		
     
-	for (size_t c = c_start; c < iter; ++c ) 
+	for (size_t c = c_start; c < c_start+4; ++c ) 
 	{
 		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
