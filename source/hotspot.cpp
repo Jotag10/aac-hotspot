@@ -142,7 +142,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-            kernel(result, temp, power, c_start, BLOCK_SIZE_C, col, r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+            kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             /*
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                 result1[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
