@@ -24,7 +24,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     
     }
 	
-
+	float teste[4];
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
@@ -36,9 +36,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
 		 "mul x2, %[r], %[col]\n\t"				//r*col
+		 "mov x3, #0\n\nt"
+		 "str q5, [%[teste], x3]\n\t"
 		 
 		 //fazer br se c>= c_start+size
-		 
+		 /*
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
@@ -65,12 +67,18 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-
-		 : [res] "+r" (result) 
+*/
+		 //: [res] "+r" (result)
+		 : [teste]  "+r" (teste)
 		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
+	for (int c=0; c < 4; c++)
+	{
+		printf("%f\n", teste[c]);
+	}
+	printf("\n\n");
 	/*
 	for (int c=c_start; c < c_start+4; c++)
 	{
@@ -78,11 +86,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		printf("temp: %f, temp_assembly: %f\n", temp[r*col+c], result[r*col+c]);
 	}
 	
-	printf("\n\n");
+	
 	*/
 	/* CHECK IF EQUAL */
 		
-    
+    /*
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -99,7 +107,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-    
+    */
 
 	
 	
