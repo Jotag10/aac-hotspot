@@ -78,7 +78,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	//printf ("c: %d, iter: %d\n",val, iter*4);
 	
-	for (size_t c = c_start; c < c_start; ++c ) 
+	for (size_t c = c_start; c < c_start+4; ++c ) 
 	{
 		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
