@@ -110,7 +110,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-    */
 
 	
 	
