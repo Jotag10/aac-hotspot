@@ -46,7 +46,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]7
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador, (amb_temp - temp[r*col+c]) * Rz_1
-		 "str q7, [%[teste], x3]\n\t"			
+		 "str q2, [%[teste], x3]\n\t"			
 		 /*
 		 "sub x3, x2, #1 \n\t"					//r*col+c-1
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
@@ -81,7 +81,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for (int c=c_start; c <c_start+ 4; c++)
 	{
-		printf("%f, %f\n",(amb_temp - temp[r*col+c]) * Rz_1, teste[c-c_start]);
+		printf("%f, %f\n",/*(amb_temp - temp[r*col+c]) */* Rz_1, teste[c-c_start]);
 	}
 	printf("\n\n");
 	/*
