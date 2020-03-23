@@ -65,8 +65,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "str q5, [%[res], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         //"b.lt .loop_neon\n\t"
-		 "mov %[val], x1\n\t"
+         "b.lt .loop_neon\n\t"
+		 "mov %[val], x2\n\t"
 		
 		 : [res] "+r" (result), [val] "+r" (val)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
@@ -74,7 +74,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3","x5", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	printf ("c: %d, iter: %d\n",val, iter*4);
+	//printf ("c: %d, iter: %d\n",val, iter*4);
 	/*
 	for (size_t c = c_start; c < c_start+4; ++c ) 
 	{
@@ -88,19 +88,18 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	printf ("\n\n");
 	*/
 	/* CHECK IF EQUAL */	
-	/*
+	
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                 (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                 (amb_temp - temp[r*col+c]) * Rz_1));
-		if (teste!= result[r*col+c])
-		{
-			printf("ERROR\n");
+		
+			//printf("ERROR\n");
 			printf("index: %d\n", r*col+c);
 			printf("normal: %f, new: %f\n", teste, result[r*col+c]);	
-		}
+		
 		
 	}
 	
