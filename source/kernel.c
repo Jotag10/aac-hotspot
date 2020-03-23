@@ -77,7 +77,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	printf("index: %d\n", r*col+c);
+	printf("index: %d\n", r*col+c_start);
 	printf("temp: %f, temp_assembly: %f\n", temp[r*col+c_start],testeval);
 	/* CHECK IF EQUAL */
 		
