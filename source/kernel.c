@@ -23,50 +23,35 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     
     }
-	size_t teste2;
-	float * teste= (float *) calloc (4, sizeof(float));
+	
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
-         "ldr x1, [%[c]]\n\t"					//iterador c=c_start
+		 "lsr x1, %[c], #2 \n\t"				//iterador c=c_start
+		 "lsr x2, %[r], #2 \n\t"
 		 "ld1r { v0.4s } , [%[Rx]]\n\t"
 		 "ld1r { v1.4s } , [%[Ry]]\n\t"
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
-		 "mul x2, %[r], %[col]\n\t"				//r*col
-		 "mov x4, #0\n\t"
-		 "mov x5, #4\n\t"
-		 
-		 
+		 "mul x2, x2, %[col]\n\t"				//r*col
+	
 		 ".loop_neon:\n\t"
-		 "add x2, x1, x2\n\t"					//r*col+c
-		 "mul x2, x2, x5\n\t"
+		 "add x2, x2, x1\n\t"					//(r*col+c)
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
-		 
-		 "str q5, [%[teste], x4]\n\t"
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
-		
-		//BEM EXEPTO O LOAD QUE NAO É IGUAL
-		
 		 "sub x3, x2, #4\n\t"					//r*col+c-1
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
-		
-		 
-		 "add x3, x3, #8 \n\t"					//r*col+c+1
+		 "add x3, x2, #4 \n\t"					//r*col+c+1
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
-		 
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador
-		 
-		 
-		 /*
-		 "add x3, x2, %[col] \n\t"				//(r+1)*col+c
+		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, %[col]\n\t"				//(r-1)*col+c
+		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
@@ -76,29 +61,16 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
 		 "str q5, [%[teste], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
-		 //"cmp x1, %[sz]\n\t"
-         //"b.lt .loop_neon\n\t"
-		*/
-		 //: [res] "+r" (result)
-		 : [teste]  "+r" (teste), [teste2] "+r" (teste2)
-		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+		 "cmp x1, %[sz]\n\t"
+         "b.lt .loop_neon\n\t"
+		
+		 : [res] "+r" (result)
+		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	for (int c=c_start; c <c_start+ 4; c++)
-	{	
-		/*
-		float teste1=(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-		(amb_temp - temp[r*col+c]) * Rz_1;
-		*/
-		//printf("%d, %d\n",teste2, r*col+c-1);
-		printf("%f, %f\n",temp[r*col+c], teste[c-c_start]);
-		teste[c-c_start]=0;
-	}
-	printf("\n\n");
-	free(teste);
+
 	/*
 	for (int c=c_start; c < c_start+4; c++)
 	{
