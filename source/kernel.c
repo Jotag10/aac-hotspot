@@ -42,10 +42,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
-		 "mov %[teste], x2\n\t"
-		 "mov x3, #1040\n\t"
+		 //"mov %[teste], x2\n\t"
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
-		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 		 "sub x3, x2, #1 \n\t"					//r*col+c-1
@@ -69,15 +67,15 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-		*/
-		 //: [r] "=r" (result), 
-		 : [teste] "+r" (teste)
+		
+		 : [r] "=r" (result), 
+		 //: [teste] "+r" (teste)
 		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	printf("teste:%d, r*col+c: %d\n", teste, r*col+c_start);
+	//printf("teste:%d, r*col+c: %d\n", teste, r*col+c_start);
 	
 	
 	//DUVIDAS
