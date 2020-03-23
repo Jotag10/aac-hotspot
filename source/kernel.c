@@ -77,7 +77,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	/* CHECK IF EQUAL */
 		
                 
-	for (int c = c_start; c < c_start + size; ++c ) 
+	for (int c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
