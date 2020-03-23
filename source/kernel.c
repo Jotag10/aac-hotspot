@@ -47,7 +47,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 "sub x3, x2, #1 \n\t"					//teste
 		 "mov %[teste], x2\n\t"
 		 
-		 //"ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
+		 "ldr q5, [%[temp], x1]\n\t"			//temp[r*col+c]
 		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
