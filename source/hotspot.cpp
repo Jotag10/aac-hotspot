@@ -169,7 +169,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 					{
 						printf("ERROR\n");
 						printf("index: %d\n", r*col+c);
-						printf("normal: %f, new: %d\n", result1[r*col+c], result[r*col+c]);
+						printf("normal: %f, new: %f\n", result1[r*col+c], result[r*col+c]);
 						
 					}
                     error=1;
