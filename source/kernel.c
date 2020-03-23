@@ -55,7 +55,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
-		 "str q7, [%[teste], x4]\n\t"
 		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
 		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
 		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
@@ -63,6 +62,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
+		 "str q7, [%[teste], x4]\n\t"
 		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r*col+c]
 		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
@@ -82,8 +82,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for (size_t c = c_start; c < c_start+4; ++c ) 
 	{
-		float teste1 =(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-		(amb_temp - temp[r*col+c]) * Rz_1;
+		float teste1 =(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+                (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+                (amb_temp - temp[r*col+c]) * Rz_1;
 		printf("normal: %f, new: %f\n", teste1, teste[c-c_start]); 
 		
 	}
