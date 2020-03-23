@@ -26,7 +26,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
-	size_t teste =0;
      asm volatile (
          
          "ldr x1, [%[c]]\n\t"					//iterador c=c_start
