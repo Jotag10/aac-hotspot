@@ -77,6 +77,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     );
 	for (int c=c_start; c < c_start+4; c++)
 	{
+		printf("index: %d\n", r*col+c);
 		printf("temp: %f, temp_assembly: %f\n", temp[r*col+c], result[r*col+c]);
 	}
 	
