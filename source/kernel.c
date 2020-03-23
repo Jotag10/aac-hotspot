@@ -36,7 +36,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
 		 "mul x2, %[r], %[col]\n\t"				//r*col
-		 "mov x3, #0\n\t"
+		 "mov x4, #0\n\t"
 		 
 		 
 		 //fazer br se c>= c_start+size
@@ -44,8 +44,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]7
-		 "str q5, [%[teste], x3]\n\t"
-		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 		 "sub x3, x2, #1 \n\t"					//r*col+c-1
@@ -65,7 +63,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r+*col+c]
 		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
-		 "str q5, [%[res], x2]\n\t"
+		 //"str q5, [%[res], x2]\n\t"
+		 "str q5, [%[teste], x3]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
@@ -76,6 +75,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
+	/*
 	for (int c=0; c < 4; c++)
 	{
 		printf("%f\n", teste[c]);
@@ -92,19 +92,19 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	*/
 	/* CHECK IF EQUAL */
 		
-    /*
+    
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
-		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
 		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 		(amb_temp - temp[r*col+c]) * Rz_1));
-		if (teste != result[r*col+c])
+		//if (teste != teste[r*col+c])
 		{
 
 			printf("ERROR\n");
 			printf("index: %d\n", r*col+c);
-			printf("normal: %f, new: %f\n", teste, result[r*col+c]);
+			printf("normal: %f, new: %f\n", teste1, teste[c-c_start]);
 			
 		}
 		
