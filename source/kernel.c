@@ -27,7 +27,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
 	int r_col = r*col;
-	int teste =0;
+	
      asm volatile (
          
          "ldr x1, [%[c]]\n\t"					//iterador c=c_start
@@ -69,7 +69,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
 		
-		 : [r] "=r" (result), 
+		 : [r] "=r" (result)
 		 //: [teste] "=r" (teste)
 		 : [c] "r" (&c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [rc] "r" (r_col), [col] "r" (col), [sz] "r" (iter*4)
