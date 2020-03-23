@@ -35,11 +35,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
 		 "mul x2, %[r], %[col]\n\t"				//r*col
-		 "mov x4, #0\n\t"
 		 "mov x5, #4\n\t"
 		 "mul x2, x2, x5\n\t"
 		 "mul x1, x1, x5\n\t"
-		 
 	
 		 ".loop_neon:\n\t"
 		 "add x2, x2, x1\n\t"					//(r*col+c)
@@ -66,7 +64,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "str q5, [%[res], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         //"b.lt .loop_neon\n\t"
+         "b.lt .loop_neon\n\t"
 		
 		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
