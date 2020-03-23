@@ -24,7 +24,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     
     }
 	
-	float teste[4];
+	float * teste= (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
