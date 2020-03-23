@@ -39,6 +39,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "mov x5, #4\n\t"
 		 "mul x2, x2, x5\n\t"
 		 "mul x1, x1, x5\n\t"
+		 
+		 "add x1, x1, #16\n\t"
 	
 		 ".loop_neon:\n\t"
 		 "add x2, x2, x1\n\t"					//(r*col+c)
@@ -65,7 +67,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "str q5, [%[res], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         "b.lt .loop_neon\n\t"
+         //"b.lt .loop_neon\n\t"
 		 "mov %[val], x2\n\t"
 		
 		 : [res] "+r" (result), [val] "+r" (val)
@@ -102,6 +104,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		
 	}
+	printf("\n\n");
 	
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
