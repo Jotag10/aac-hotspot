@@ -132,7 +132,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                             (amb_temp - temp[r*col]) * Rz_1);
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
-                    result1[r*col+c] =temp[r*col+c]+ delta;
+                    //result1[r*col+c] =temp[r*col+c]+ delta;
                 }
             }
             long long end_time_ifs = get_time();
@@ -143,13 +143,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, c_start, BLOCK_SIZE_C, col, r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-            
+            /*
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                 result1[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
                     (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                     (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                     (amb_temp - temp[r*col+c]) * Rz_1));
-            }
+            }*/
             
         }
         long long end_time_loop = get_time();
