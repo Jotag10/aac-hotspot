@@ -42,7 +42,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 
 		 ".loop_neon:\n\t"
 		 "add x2, x1, x2\n\t"					//r*col+c
-		 "mov x3, #1040"
+		 "mov x3, #1040\n\t"
 		 //"ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
 		 "ldr x5, [%[temp], x3]\n\t"
 		 "mov %[teste], x5"
