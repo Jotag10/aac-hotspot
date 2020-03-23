@@ -23,6 +23,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     
     }
+	int val=0;
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
@@ -65,12 +66,15 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
+		 "mov %[val], x1\n\t"
 		
-		 : [res] "+r" (result)
+		 : [res] "+r" (result), [val] "+r" (val)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3","x5", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
+	
+	printf ("c: %d, iter: %d\n",val, iter*4);
 	/*
 	for (size_t c = c_start; c < c_start+4; ++c ) 
 	{
@@ -84,7 +88,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	printf ("\n\n");
 	*/
 	/* CHECK IF EQUAL */	
-	
+	/*
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
