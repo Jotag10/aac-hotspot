@@ -65,7 +65,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "str q5, [%[res], x2]\n\t"
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         "b.lt .loop_neon\n\t"
+         //"b.lt .loop_neon\n\t"
 		 "mov %[val], x1\n\t"
 		
 		 : [res] "+r" (result), [val] "+r" (val)
