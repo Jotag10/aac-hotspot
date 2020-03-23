@@ -71,6 +71,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
+	/*
 	for (int c=c_start; c < c_start+4; c++)
 	{
 		printf("index: %d\n", r*col+c);
@@ -78,9 +79,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	}
 	
 	printf("\n\n");
+	*/
 	/* CHECK IF EQUAL */
 		
-    /*
+    
 	for (int c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -97,7 +99,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-    */
+    
 
 	
 	
