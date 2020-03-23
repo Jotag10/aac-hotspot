@@ -80,7 +80,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		printf("temp: %f, temp_assembly: %f\n", temp[r*col+c], result[r*col+c]);
 	}
 	
-	
+	printf("\n\n");
 	/* CHECK IF EQUAL */
 		
     /*
