@@ -84,7 +84,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	printf ("\n\n");
 	*/
 	/* CHECK IF EQUAL */	
-	/*
+	
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
 		float teste2 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -99,7 +99,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-	*/
+	
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
