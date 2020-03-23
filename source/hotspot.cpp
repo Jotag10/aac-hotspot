@@ -52,6 +52,7 @@ float total_time_loop=0;
 
 /*check if correct*/
 float *result1;
+int error=0;
 
 /***************************************************************************/
 
@@ -164,7 +165,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             {
                 if (result1[r*col+c] != result[r*col+c])
                 {
-                    printf("ERROR\n");
+					if (error==0)
+					{
+						printf("ERROR\n");
+					}
+                    error=1;
+					
+					
                 }
                 
             }
