@@ -74,6 +74,29 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
+	
+	/* CHECK IF EQUAL */
+		
+                
+	for (int c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
+	{
+		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+		(amb_temp - temp[r*col+c]) * Rz_1));
+		if (teste != result[r*col+c])
+		{
+
+			printf("ERROR\n");
+			printf("index: %d\n", r*col+c);
+			printf("normal: %f, new: %f\n", teste, result[r*col+c]);
+			
+		}
+		
+	}
+            
+        
+	
 	//printf("temp: %f, temp_assembly: %f\n", temp[r*col+c_start], result[r*col+c_start]);
 	
 	
