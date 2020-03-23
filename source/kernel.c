@@ -1,7 +1,7 @@
 #include "kernel.h"
 #include <cstdio>
 
-void volatile kernel(float *result, float *temp, float *power, int c_start, int size, int col, int r,
+void volatile kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
 
@@ -26,8 +26,7 @@ void volatile kernel(float *result, float *temp, float *power, int c_start, int 
 	
 
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
-	int r_col = r*col;
-	int teste =0;
+	size_t teste =0;
      asm volatile (
          
          "ldr x1, [%[c]]\n\t"					//iterador c=c_start
