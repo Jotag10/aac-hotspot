@@ -132,7 +132,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                             (amb_temp - temp[r*col]) * Rz_1);
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
-                    //result1[r*col+c] =temp[r*col+c]+ delta;
+                    result1[r*col+c] =temp[r*col+c]+ delta;
                 }
             }
             long long end_time_ifs = get_time();
@@ -143,13 +143,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-            /*
+            
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                 result1[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
                     (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
                     (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
                     (amb_temp - temp[r*col+c]) * Rz_1));
-            }*/
+            }
             
         }
         long long end_time_loop = get_time();
@@ -157,7 +157,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
         
         /* CHECK IF EQUAL */
-		/*
+		
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
         {            
             for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
@@ -170,7 +170,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             }
             
         }
-         */
+        
     }
     
     
