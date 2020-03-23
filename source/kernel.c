@@ -23,7 +23,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     
     }
-	
+	float *teste = (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
@@ -56,33 +56,34 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
-		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r+*col+c]
+		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r*col+c]
 		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
-		 "str q5, [%[res], x2]\n\t"
+		 "str q5, [%[teste], x2]\n\t"
+		 /*
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-		
-		 : [res] "+r" (result)
+		*/
+		 : [teste] "+r" (teste)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
-	
-
-	/*
-	for (int c=c_start; c < c_start+4; c++)
-	{
-		printf("index: %d\n", r*col+c);
-		printf("temp: %f, temp_assembly: %f\n", temp[r*col+c], result[r*col+c]);
-	}
-	
-	
-	*/
-	/* CHECK IF EQUAL */
-		
 	for (size_t c = c_start; c < c_start+4; ++c ) 
+	{
+		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+		(amb_temp - temp[r*col+c]) * Rz_1));
+		printf("normal: %f, new: %f\n",teste1, teste); 
+		
+	}
+	printf ("\n\n");
+	
+	/* CHECK IF EQUAL */	
+	/*
+	for (size_t c = c_start; c < iter; ++c ) 
 	{
 		float teste =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 		(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
@@ -90,18 +91,13 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		(amb_temp - temp[r*col+c]) * Rz_1));
 		if (teste!= result[r*col+c])
 		{
-
 			printf("ERROR\n");
 			printf("index: %d\n", r*col+c);
-			printf("normal: %f, new: %f\n", teste, result[r*col+c]);
-			
+			printf("normal: %f, new: %f\n", teste, result[r*col+c]);	
 		}
 		
 	}
-	
-	
-	
-	
+	*/
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
