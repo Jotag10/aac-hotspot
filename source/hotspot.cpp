@@ -165,7 +165,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             {
                 if (result1[r*col+c] != result[r*col+c])
                 {
-					if (error==0)
+					//if (error==0)
 					{
 						printf("ERROR\n");
 						printf("index: %d\n", r*col+c);
