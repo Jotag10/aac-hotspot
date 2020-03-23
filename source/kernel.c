@@ -90,8 +90,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		float teste1=(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
 		(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 		(amb_temp - temp[r*col+c]) * Rz_1;
-		
-		printf("%f, %f\n",teste2, teste[c-c_start]);
+		printf("%d, %d\n",teste2, r*col+c-1);
+		//printf("%f, %f\n",teste2, teste[c-c_start]);
 		teste[c-c_start]=0;
 	}
 	printf("\n\n");
