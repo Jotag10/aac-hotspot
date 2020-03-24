@@ -4,9 +4,30 @@
 void volatile kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
-
+/*CHECK VALUES */
+	/*
+	for ( int c = c_start; c < iter; ++c ) 
+	{
+		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+			(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+			(amb_temp - temp[r*col+c]) * Rz_1));
+		
+		printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
+	}
+	*/
+	//DUVIDAS
+	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
+	// %[]
+	// ifs, como resolver loads nao paralelos
+	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
+	
 #if defined(NEON)
 
+
+	#if defined (TESTE)
+		printf("DEU\n\n");
+	#endif
     #define NEON_STRIDE 4
     size_t iter = 0, rem = 0;
     if(size < NEON_STRIDE)
@@ -24,8 +45,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	//float *teste = (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
-	/*
-	
+
      asm volatile (
          
 		 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
@@ -70,8 +90,38 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
-	*/
-	//NEON V2
+	
+    rem = (size+c_start) % NEON_STRIDE;
+    
+    for ( int c = iter; c < rem + iter; ++c ) 
+    {
+        result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+            (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+            (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+            (amb_temp - temp[r*col+c]) * Rz_1));
+    }
+    
+
+#elif defined(NEON_UNRO1)
+
+	#define NEON_STRIDE 4
+    size_t iter = 0, rem = 0;
+    if(size < NEON_STRIDE)
+    {
+        for ( int c = c_start; c < c_start + size; ++c ) 
+        {
+            /* Update Temperatures */
+            result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+                (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+                (amb_temp - temp[r*col+c]) * Rz_1));
+        }
+        
+         return;
+    }
+	//float *teste = (float *) calloc (4, sizeof(float));
+    iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
+//NEON V2
 	asm volatile (
          
 		 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
@@ -122,78 +172,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
 	
-	
-	/*
-		"mov x1, #0 \n\t"
-         "ld1r { v0.4s } , [%[a]]\n\t"
-         ".loop_neon:\n\t"
-         "ldr q1, [%[x], x1]\n\t"
-         "ldr q2, [%[y], x1]\n\t"
-         "fmla v2.4s, v1.4s, v0.4s\n\t"
-         "str q2, [%[y], x1]\n\t"
-         "add x1, x1, #16\n\t"
-         "cmp x1, %[sz]\n\t"
-         "b.lt .loop_neon\n\t"
-         : [y] "+r" (y)
-         : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
-         : "x1", "x2", "x3", "memory", "v0", "v1", "v2"
-		*/
-    //NEON V2
-    // asm volatile (
-    //     // "ldr s0, [x0]\n\t"
-    //     "mov x1, #0\n\t"
-    //     "mov x2, %[x]\n\t"
-    //     "mov x3, %[y]\n\t"
-    //     "add x4, x2, %[sz]\n\t"
-    //     "ld1r { v0.4s } , [%[a]]\n\t"
-    //     ".loop_neon:\n\t"
-    //     "ld1 { v1.4s }, [x2], #16\n\t"
-    //     "ld1 { v2.4s }, [x3]\n\t"
-    //     "fmla v2.4s, v1.4s, v0.4s\n\t"
-    //     "st1 { v2.4s }, [x3], #16 \n\t"
-    //     "cmp x2, x4\n\t"
-    //     "b.lt .loop_neon\n\t"
-    //     : [y] "+r" (y)
-    //     : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
-    //     : "x1", "x2", "x3", "x4", "memory", "v0", "v1", "v2"
-    // );
-	
-	
-	/*CHECK VALUES */
-	for ( int c = c_start; c < iter; ++c ) 
-	{
-		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-			(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-			(amb_temp - temp[r*col+c]) * Rz_1));
-		
-		printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
-	}
-
-	//printf ("c: %d, iter: %d\n",val, iter*4);
-	/*
-	for (size_t c = c_start+4; c < c_start+8; ++c ) 
-	{
-		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-                (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-                (amb_temp - temp[r*col+c]) * Rz_1));
-		printf("normal: %f, new: %f\n", teste1, teste[c-c_start-4]); 
-		
-	}
-	printf ("\n\n");
-	
-	
-	
-	//DUVIDAS
-	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
-	// %[]
-	// ifs, como resolver loads nao paralelos
-	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
-	
-	
-	*/
-    rem = (size+c_start) % NEON_STRIDE;
+	rem = (size+c_start) % NEON_STRIDE;
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
@@ -202,9 +181,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
-    
-
-//#elif defined(NEON_UNRO1)
 
 #elif defined(SVE)
 /*
