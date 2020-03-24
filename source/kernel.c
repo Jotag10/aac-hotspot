@@ -92,11 +92,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_neon:\n\t"
 		 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
 		 "ld1 { v5.4s }, [x3]\n\t"				//temp[r*col+c]
+		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 		 "sub x6, x3, #4\n\t"					//*temp[r*col+c-1]
 		 "ld1 { v8.4s }, [x6]\n\t"				//v8 auxiliar, temp[r*col+c-1]
-		 "add x6, x3, #4 \n\t"				//*temp[r*col+c+1]
+		 "add x6, x3, #4 \n\t"					//*temp[r*col+c+1]
 		 "ld1 { v6.4s }, [x6]\n\t"				//v6 auxiliar, temp[r*col+c+1]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
@@ -104,7 +105,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
 		 "ld1 { v6.4s }, [x3]\n\t"				//v6 auxiliar, temp[(r+1)*col+c]
 		 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
-		 "add x3, x3, #16\n\t"					//r*col+c+4
+		 "add x3, x3, #16\n\t"					//*temp[r*col+c+4]
 		 "ld1 { v8.4s }, [x6]\n\t"				//v8 auxiliar, temp[(r-1)*col+c]
 		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
@@ -115,7 +116,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "st1 { v5.4s }, [x5], #16\n\t"
 		 "cmp x3, x6\n\t"
          "b.lt .loop_neon\n\t"
-		
+		 */
 		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
