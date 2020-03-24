@@ -60,15 +60,51 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
 		 "str q5, [%[res], x2]\n\t"
 		 "add x2, x2, #16\n\t"					//r*col+c+4
-		 "add x1, x1, #16\n\t"					//c+4
+		 //"add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
          "b.lt .loop_neon\n\t"
-		
+		 "add x1, x1, #16\n\t"					//c+4
+		 
 		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
-		 : "x1", "x2", "x3","x5", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
+		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
+	/*
+		"mov x1, #0 \n\t"
+         "ld1r { v0.4s } , [%[a]]\n\t"
+         ".loop_neon:\n\t"
+         "ldr q1, [%[x], x1]\n\t"
+         "ldr q2, [%[y], x1]\n\t"
+         "fmla v2.4s, v1.4s, v0.4s\n\t"
+         "str q2, [%[y], x1]\n\t"
+         "add x1, x1, #16\n\t"
+         "cmp x1, %[sz]\n\t"
+         "b.lt .loop_neon\n\t"
+         : [y] "+r" (y)
+         : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
+         : "x1", "x2", "x3", "memory", "v0", "v1", "v2"
+		*/
+    //NEON V2
+    // asm volatile (
+    //     // "ldr s0, [x0]\n\t"
+    //     "mov x1, #0\n\t"
+    //     "mov x2, %[x]\n\t"
+    //     "mov x3, %[y]\n\t"
+    //     "add x4, x2, %[sz]\n\t"
+    //     "ld1r { v0.4s } , [%[a]]\n\t"
+    //     ".loop_neon:\n\t"
+    //     "ld1 { v1.4s }, [x2], #16\n\t"
+    //     "ld1 { v2.4s }, [x3]\n\t"
+    //     "fmla v2.4s, v1.4s, v0.4s\n\t"
+    //     "st1 { v2.4s }, [x3], #16 \n\t"
+    //     "cmp x2, x4\n\t"
+    //     "b.lt .loop_neon\n\t"
+    //     : [y] "+r" (y)
+    //     : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
+    //     : "x1", "x2", "x3", "x4", "memory", "v0", "v1", "v2"
+    // );
+	
 	
 	/*CHECK VALUES */
 	for ( int c = c_start; c < iter; ++c ) 
@@ -115,39 +151,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 	}
 	
-		 "mov x1, #0 \n\t"
-         "ld1r { v0.4s } , [%[a]]\n\t"
-         ".loop_neon:\n\t"
-         "ldr q1, [%[x], x1]\n\t"
-         "ldr q2, [%[y], x1]\n\t"
-         "fmla v2.4s, v1.4s, v0.4s\n\t"
-         "str q2, [%[y], x1]\n\t"
-         "add x1, x1, #16\n\t"
-         "cmp x1, %[sz]\n\t"
-         "b.lt .loop_neon\n\t"
-         : [y] "+r" (y)
-         : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
-         : "x1", "x2", "x3", "memory", "v0", "v1", "v2"
-		*/
-    //NEON V2
-    // asm volatile (
-    //     // "ldr s0, [x0]\n\t"
-    //     "mov x1, #0\n\t"
-    //     "mov x2, %[x]\n\t"
-    //     "mov x3, %[y]\n\t"
-    //     "add x4, x2, %[sz]\n\t"
-    //     "ld1r { v0.4s } , [%[a]]\n\t"
-    //     ".loop_neon:\n\t"
-    //     "ld1 { v1.4s }, [x2], #16\n\t"
-    //     "ld1 { v2.4s }, [x3]\n\t"
-    //     "fmla v2.4s, v1.4s, v0.4s\n\t"
-    //     "st1 { v2.4s }, [x3], #16 \n\t"
-    //     "cmp x2, x4\n\t"
-    //     "b.lt .loop_neon\n\t"
-    //     : [y] "+r" (y)
-    //     : [sz] "r" (iter*4), [a] "r" (&A), [x] "r" (x)
-    //     : "x1", "x2", "x3", "x4", "memory", "v0", "v1", "v2"
-    // );
+		 
     
 	
     rem = (size+c_start) % NEON_STRIDE;
@@ -160,7 +164,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
     
-    
+ */   
 #elif defined(SVE)
 /*
     asm volatile (
