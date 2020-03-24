@@ -106,7 +106,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		
 	}
-	printf("\n\n");
 	
 	//DUVIDAS
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
