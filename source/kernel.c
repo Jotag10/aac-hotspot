@@ -42,10 +42,39 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "mul x1, x1, x5\n\t"					//c*4
 		 "add x2, x2, x1\n\t"					//(r*col+c)
 		 "mov x4, #0\n\t"
-		 "add x1, x1, #16\n\t"
-		 "add x2, x2, #16\n\t"					//r*col+c+4
-		 
+		 		 
 		 ".loop_neon:\n\t"
+		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
+		 
+		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
+		 
+		 "sub x3, x2, #4\n\t"					//r*col+c-1
+		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
+		 "add x3, x2, #4 \n\t"					//r*col+c+1
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
+		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
+		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
+		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
+		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
+		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
+		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
+		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
+		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r*col+c]
+		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
+		 
+		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
+
+		 "add x2, x2, #16\n\t"					//r*col+c+4
+		 "add x1, x1, #16\n\t"					//c+4
+		 "cmp x1, %[sz]\n\t"
+         //"b.lt .loop_neon\n\t"
+		 
+		 // HARD
+		 
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
 		 
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
@@ -73,7 +102,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "add x2, x2, #16\n\t"					//r*col+c+4
 		 "add x1, x1, #16\n\t"					//c+4
 		 "cmp x1, %[sz]\n\t"
-         //"b.lt .loop_neon\n\t"
 		
 		 : [teste] "+r" (teste)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
