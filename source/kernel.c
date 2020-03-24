@@ -27,20 +27,19 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
-		 "mov x1, %[c]\n\t"				//iterador c=c_start
-		 //"lsr x2, %[r], #2 \n\t"
+		 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
+		 "lsl x2, %[r], #2 \n\t"
 		 "ld1r { v0.4s } , [%[Rx]]\n\t"
 		 "ld1r { v1.4s } , [%[Ry]]\n\t"
 		 "ld1r { v2.4s } , [%[Rz]]\n\t"
 		 "ld1r { v3.4s } , [%[amb]]\n\t"
 		 "ld1r { v4.4s } , [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
-		 "mul x2, %[r], %[col]\n\t"				//r*col
-		 "mov x5, #4\n\t"
-		 "mul x2, x2, x5\n\t"					//r*col*4
-		 "mul x1, x1, x5\n\t"					//c*4
-		 "add x2, x2, x1\n\t"					//(r*col+c)
-		 "mov x4, #0\n\t"
+		 //"mul x2, x2, %[col]\n\t"				//r*col
+		 //"mov x5, #4\n\t"
+		 //"mul x2, x2, x5\n\t"					//r*col*4
+		 //"mul x1, x1, x5\n\t"					//c*4
+		 "madd x2, x2, %[col], x1\n\t"			//(r*col+c)
 		 		 
 		 ".loop_neon:\n\t"
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
