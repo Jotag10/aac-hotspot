@@ -132,7 +132,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
 			 "fmla v12.4s, v14.4s, v0.4s\n\t"		//v12 acumulador 
 			 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
-			 "ld1 { v6.4s, v14.s }, [x3]\n\t"		//v6, v14 auxiliar, temp[(r+1)*col+c]
+			 "ld1 { v6.4s, v14.4s }, [x3]\n\t"		//v6, v14 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
 			 "add x3, x3, #32\n\t"					//*temp[r*col+c+4]
 			 "ld1 { v8.4s, v13.4s }, [x6]\n\t"		//v8, v13 auxiliar, temp[(r-1)*col+c]
