@@ -23,8 +23,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     
     }
-	float *teste = (float *) calloc (4, sizeof(float));
-	int val=0;
+	//float *teste = (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
      asm volatile (
          
@@ -45,10 +44,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 		 
 		 ".loop_neon:\n\t"
 		 "ldr q5, [%[temp], x2]\n\t"			//temp[r*col+c]
-		 
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
-		 
 		 "sub x3, x2, #4\n\t"					//r*col+c-1
 		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
 		 "add x3, x2, #4 \n\t"					//r*col+c+1
@@ -80,12 +77,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < iter; ++c ) 
 	{
-		float cona =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
 			(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
 			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 			(amb_temp - temp[r*col+c]) * Rz_1));
 		
-		printf("normal: %f, new: %f\n", cona, result[r+col+c]);
+		printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
 	}
 
 	//printf ("c: %d, iter: %d\n",val, iter*4);
