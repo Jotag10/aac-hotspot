@@ -21,11 +21,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
         }
         
          return;
-    
     }
 	//float *teste = (float *) calloc (4, sizeof(float));
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
 	/*
+	
      asm volatile (
          
 		 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
@@ -92,7 +92,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_neon:\n\t"
 		 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
 		 "ld1 { v5.4s }, [x3]\n\t"				//temp[r*col+c]
-		 /*
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 		 "sub x6, x3, #4\n\t"					//*temp[r*col+c-1]
@@ -116,7 +115,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "st1 { v5.4s }, [x5], #16\n\t"
 		 "cmp x3, x2\n\t"
          "b.lt .loop_neon\n\t"
-		 */
+
 		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
@@ -193,21 +192,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
 	
 	
-	
-    //exemplo
-	void SAXPY(float * x, float * y, float A, size_t size)
-	{
-		for(size_t i = 0; i < size; i+4){
-			y[i] = A*x[i] + y[i];
-			y[i] = A*x[i+1] + y[i];
-			y[i] = A*x[i+2] + y[i];
-			y[i] = A*x[i+3] + y[i];
-		}
-	}
-	
-		 
-    
-	
+	*/
     rem = (size+c_start) % NEON_STRIDE;
     
     for ( int c = iter; c < rem + iter; ++c ) 
@@ -218,7 +203,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
     
- */   
+
+//#elif defined(NEON_UNRO1)
+
 #elif defined(SVE)
 /*
     asm volatile (
