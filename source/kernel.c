@@ -85,7 +85,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 			(amb_temp - temp[r*col+c]) * Rz_1));
 		
-		printf("normal: %f\n", cona);
+		printf("normal: %f, new: %f\n", cona, result[r+col+c]);
 	}
 
 	//printf ("c: %d, iter: %d\n",val, iter*4);
