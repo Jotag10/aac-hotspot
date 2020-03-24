@@ -74,7 +74,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 		 : "x1", "x2", "x3","x5", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
     );
-	
+	/*
 	for ( int c = c_start; c < iter; ++c ) 
 	{
 		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -106,15 +106,19 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	// ifs, como resolver loads nao paralelos
 	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
 	
-	/*
+	
 	
     //exemplo
 	void SAXPY(float * x, float * y, float A, size_t size)
 	{
-		for(size_t i = 0; i < size; i++){
+		for(size_t i = 0; i < size; i+4){
 			y[i] = A*x[i] + y[i];
+			y[i] = A*x[i+1] + y[i];
+			y[i] = A*x[i+2] + y[i];
+			y[i] = A*x[i+3] + y[i];
 		}
 	}
+	
 		 "mov x1, #0 \n\t"
          "ld1r { v0.4s } , [%[a]]\n\t"
          ".loop_neon:\n\t"
