@@ -81,13 +81,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	/* CHECK IF EQUAL */	
 	for (size_t c = c_start; c < iter; ++c ) 
 	{
-		float teste2 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-                (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-                (amb_temp - temp[r*col+c]) * Rz_1));
-		
 		printf("index: %d\n", r*col+c);
-		printf("normal: %f, new: %f\n", teste2, result[r*col+c]);			
+		printf("new: %f\n", result[r*col+c]);			
 		
 	}
 	printf("%d, %d\n", c_start, iter);
