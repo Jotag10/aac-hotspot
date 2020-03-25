@@ -130,7 +130,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
 					
-					printf("IFS: r*col+c: %d\n", r*col+c);
+					//printf("IFS: r*col+c: %d\n", r*col+c);
                 }
             }
             long long end_time_ifs = get_time();
