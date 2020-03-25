@@ -95,7 +95,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 
 			 "ld1 { v6.4s }, [x4], #16\n\t"			//v6 auxiliar, power[r*col+c]
 			 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
-			 //"st1 { v7.4s }, [x7], #16\n\t"			//TESTE
+			 "st1 { v8.4s }, [x7], #16\n\t"			//TESTE
 			 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
 			 "st1 { v5.4s }, [x5], #16\n\t"
 			 "cmp x3, x2\n\t"
@@ -331,12 +331,14 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		{
 			printf("ERROR\n", teste1);
 			printf("LOOP: r*col+c: %d\n", r*col+c);
-			//printf("%f, %f\n", teste2, teste[c-c_start]);
+			printf("%f, %f\n", teste2, teste[c-c_start]);
 			
 			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
 		}
 		
 	}
+	
+	free(teste);
 
 #elif defined(SVE)
 /*
