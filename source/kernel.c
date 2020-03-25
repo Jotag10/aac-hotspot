@@ -8,7 +8,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
 	// %[]
 	// ifs, como resolver loads nao paralelos
-	//"sub x3, x2, %[col]\n\t", nao reconhece o registo, diz que esta a usar como valor imediato
 	
 #if defined(NEON)
 
@@ -109,7 +108,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
     
     #elif defined (NEON_UNROl2)
-	printf("NEON_UNRO12\n\n");
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
@@ -173,7 +171,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 
 	#elif defined (NEON_UNROl3)
-		printf("NEON_UNRO13\n\n");
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"									//iterador c=c_start
@@ -257,7 +254,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
 
 	#else
-		printf("NEON\n\n");
 		 asm volatile (
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
 			 "lsl x2, %[r], #2 \n\t"
@@ -307,7 +303,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
-		printf("REM r*col+c: %d", r*col+c);
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
@@ -316,6 +311,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	
 	/*CHECK VALUES */
+	/*
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
 		
@@ -333,7 +329,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-	
+	*/
 	//free(teste);
 
 #elif defined(SVE)
