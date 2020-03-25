@@ -65,7 +65,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "ld1r { v4.4s } , [%[ca]]\n\t"
 			 "fmov v9.4s , #2\n\t"
 			 "madd x2, x2, %[col], x1\n\t"			//(r*col+c)
-			 "mov x7, x2 \n\t"
+			 "mov x7, #0 \n\t"
 
 			 "add x3, %[temp], x2\n\t"				//*temp[r*col+c]
 			 "add x4, %[pow], x2\n\t"				//*power[r*col+c]
