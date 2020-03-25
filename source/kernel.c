@@ -18,27 +18,23 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	#if defined (NEON_UNROl)
 	
 		unroll =1;
-		printf("DEFINE NEON_UNRO1\n\n");
-		
+
 	#elif defined (NEON_UNROl2)
 	
 		unroll =2;
-		printf("DEFINE NEON_UNRO12\n\n");
-		
+
 	#elif defined (NEON_UNROl3)
 	
 		unroll =4;
-		printf("DEFINE NEON_UNRO13\n\n");
 		
 	#else
 		
 		unroll =1;
-		printf("DEFINE NEON\n\n");
 		
 	#endif
     size_t iter = 0, rem = 0;
 	
-	printf("UNRO1: %d\n\n", unroll);
+
 	
     if(size < NEON_STRIDE*unroll)
     {
