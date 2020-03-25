@@ -53,7 +53,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     iter = (size+c_start) / (NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
 
 	#if defined (NEON_UNROl)
-	printf("NEON_UNRO1\n\n");
 	//NEON V2
 		asm volatile (
          
@@ -304,6 +303,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
+		printf("REM r*col+c: %d", r*col+c);
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
