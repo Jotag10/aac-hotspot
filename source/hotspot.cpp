@@ -147,9 +147,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         
     }
     
-    
-    
-    
 }
 
 /* Transient solver driver routine: simply converts the heat 
