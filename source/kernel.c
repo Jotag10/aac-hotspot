@@ -240,7 +240,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 : [res] "+r" (result)
 			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
-			 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6"," v7", "v8",
+			 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8",
 			 "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24"
 		);
 
