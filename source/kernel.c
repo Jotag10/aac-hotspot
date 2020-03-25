@@ -20,7 +20,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		unroll =1;
 		printf("DEFINE NEON_UNRO1\n\n");
 		
-	#elif defined (NEON_UNRO12)
+	#elif defined (NEON_UNROl2)
 	
 		unroll =2;
 		printf("DEFINE NEON_UNRO12\n\n");
