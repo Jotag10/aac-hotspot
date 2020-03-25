@@ -47,7 +47,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
 
 	#if defined (NEON_UNROl)
-	
+	printf("NEON_UNRO1\n\n");
 	//NEON V2
 		asm volatile (
          
@@ -100,7 +100,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
     
     #elif defined (NEON_UNROl2)
-	
+	printf("NEON_UNRO12\n\n");
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
@@ -164,7 +164,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 
 	#elif defined (NEON_UNROl3)
-		
+		printf("NEON_UNRO13\n\n");
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"									//iterador c=c_start
@@ -249,7 +249,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 	#else
 		 asm volatile (
-			 
+			 printf("NEON\n\n");
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
 			 "lsl x2, %[r], #2 \n\t"
 			 "ld1r { v0.4s } , [%[Rx]]\n\t"
