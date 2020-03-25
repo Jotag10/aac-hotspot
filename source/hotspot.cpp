@@ -129,6 +129,8 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                             (amb_temp - temp[r*col]) * Rz_1);
                     }
                     result[r*col+c] =temp[r*col+c]+ delta;
+					
+					printf("r*col+c: %d\n", r*col+c);
                 }
             }
             long long end_time_ifs = get_time();
