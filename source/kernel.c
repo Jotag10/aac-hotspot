@@ -160,7 +160,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 
 	#elif defined (NEON_UNROl3)
-	
+		
+		printf("Unroll factor: 4*4\n\n");
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
