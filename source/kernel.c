@@ -33,6 +33,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	#endif
     size_t iter = 0, rem = 0;
 	
+	printf("UNRO1: %d\n\n", unroll);
 	
     if(size < NEON_STRIDE*unroll)
     {
