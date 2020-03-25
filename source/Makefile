@@ -46,7 +46,7 @@ run_gem5: hotspot_gem5
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '64 64 2 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '1024 1024 1000 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_gem5.out'
 
 run_neon: hotspot_neon
 	@echo "======================================================================"
@@ -54,7 +54,7 @@ run_neon: hotspot_neon
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '1024 1024 1000 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_neon.out'
 
 hotspot_host: $(OBJ_host) $(KERNEL).c
 	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
@@ -65,7 +65,7 @@ hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 	$(link_objs_gem5)
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
-	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON -DNEON_UNROl3
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON
 	$(link_objs_gem5)
 
 hotspot_sve: $(OBJ_gem5) $(KERNEL).c
