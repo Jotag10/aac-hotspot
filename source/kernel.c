@@ -324,7 +324,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		if (teste1!=result[r*col+c])
 		{
-			printf("ERROR\n", teste1, );
+			printf("ERROR\n", teste1);
 			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
 		}
 		
