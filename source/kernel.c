@@ -1,6 +1,6 @@
 #include "kernel.h"
 #include <cstdio>
-#include <stdlib.h>
+//#include <stdlib.h>
 void volatile kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
@@ -49,7 +49,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
         
          return;
     }
-	float *teste = (float *) calloc (300, sizeof(float));
+	//float *teste = (float *) calloc (300, sizeof(float));
     iter = (size+c_start) / (NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
 
 	#if defined (NEON_UNROl)
@@ -65,7 +65,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "ld1r { v4.4s } , [%[ca]]\n\t"
 			 "fmov v9.4s , #2\n\t"
 			 "madd x2, x2, %[col], x1\n\t"			//(r*col+c)
-			 "mov x7, #0 \n\t"
 
 			 "add x3, %[temp], x2\n\t"				//*temp[r*col+c]
 			 "add x4, %[pow], x2\n\t"				//*power[r*col+c]
@@ -87,7 +86,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
 			 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
 			 "ld1 { v6.4s }, [x6]\n\t"				//v6 auxiliar, temp[(r+1)*col+c]
-			 "str q6, [%[teste], x7]\n\t"			//TESTE
 			 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
 			 "add x3, x3, #16\n\t"					//*temp[r*col+c+4]
 			 "ld1 { v8.4s }, [x6]\n\t"				//v8 auxiliar, temp[(r-1)*col+c]
@@ -104,10 +102,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "cmp x3, x2\n\t"
 			 "b.lt .loop_neon\n\t"
 
-			 : [res] "+r" (result), [teste] "+r" (teste)
+			 : [res] "+r" (result)
 			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
-			 : "x1", "x2", "x3", "x4", "x5", "x6", "x7", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
+			 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
 		);
     
     #elif defined (NEON_UNROl2)
@@ -147,7 +145,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v15.4s, v10.4s, v0.4s\n\t"		//v15 acumulador 
 			 "fmla v20.4s, v11.4s, v0.4s\n\t"		//v20 acumulador 
 			 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
-			 "ld1 { v10.4s, v11.4s }, [x3]\n\t"		//v10, v11 auxiliar, temp[(r+1)*col+c]
+			 "ld1 { v10.4s, v11.4s }, [x6]\n\t"		//v10, v11 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
 			 "add x3, x3, #32\n\t"					//*temp[r*col+c+8]
 			 "ld1 { v16.4s, v17.4s }, [x6]\n\t"		//v16, v17 auxiliar, temp[(r-1)*col+c]
@@ -221,7 +219,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v23.4s, v12.4s, v0.4s\n\t"		                	//v23 acumulador 
 			 "fmla v24.4s, v13.4s, v0.4s\n\t"		                	//v24 acumulador 
 			 "add x6, x3, %[col], LSL #2\n\t"		                	//*temp[(r+1)*col+c+1]
-			 "ld1 { v10.4s, v11.4s, v12.4s, v13.4s }, [x3]\n\t"			//v10, v11, v12, v13 auxiliar, temp[(r+1)*col+c]
+			 "ld1 { v10.4s, v11.4s, v12.4s, v13.4s }, [x6]\n\t"			//v10, v11, v12, v13 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		                	//*temp[(r-1)*col+c+1]
 			 "add x3, x3, #64\n\t"					                	//*temp[r*col+c+16]
 			 "ld1 { v16.4s, v17.4s, v18.4s, v19.4s }, [x6]\n\t"			//v16, v17 auxiliar, temp[(r-1)*col+c]
@@ -325,21 +323,18 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
 			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 			(amb_temp - temp[r*col+c]) * Rz_1));
-		float teste2 =(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-			(amb_temp - temp[r*col+c]) * Rz_1;
 		
 		if (teste1!=result[r*col+c])
 		{
 			printf("ERROR\n", teste1);
 			printf("LOOP: r*col+c: %d\n", r*col+c);
-			printf("%f, %f\n", temp[(r+1)*col+c], teste[c-c_start]);
-			
+			//printf("%f, %f\n", temp[(r+1)*col+c], teste[c-c_start]);
 			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
 		}
 		
 	}
 	
-	free(teste);
+	//free(teste);
 
 #elif defined(SVE)
 /*
