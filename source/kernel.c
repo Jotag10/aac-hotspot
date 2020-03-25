@@ -50,7 +50,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
          return;
     }
 	//float *teste = (float *) calloc (4, sizeof(float));
-    iter = (size+c_start) / NEON_STRIDE * NEON_STRIDE;
+    iter = (size+c_start) / (NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
 
 	#if defined (NEON_UNROl)
 	printf("NEON_UNRO1\n\n");
@@ -70,7 +70,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x3, %[temp], x2\n\t"				//*temp[r*col+c]
 			 "add x4, %[pow], x2\n\t"				//*power[r*col+c]
 			 "add x5, %[res], x2\n\t"				//*result[r*col+c]
-			 "add x2, %[sz], x3\n\t"				//* last temp[r*col+c]					
+			 "add x2, %[sz], x3\n\t"				//*last temp[r*col+c]					
 			 
 			 ".loop_neon:\n\t"
 			 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
