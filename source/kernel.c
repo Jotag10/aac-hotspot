@@ -13,7 +13,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 #if defined(NEON)
 
 	#define NEON_STRIDE 4
-	int unroll =1;
+	int volatile unroll =1;
 	
 	
 	#if defined (NEON_UNRO12)
