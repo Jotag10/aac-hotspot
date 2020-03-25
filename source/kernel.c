@@ -134,7 +134,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
 			 "ld1 { v10.4s, v11.4s }, [x3]\n\t"		//v10, v11 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
-			 "add x3, x3, #32\n\t"					//*temp[r*col+c+4]
+			 "add x3, x3, #32\n\t"					//*temp[r*col+c+8]
 			 "ld1 { v16.4s, v17.4s }, [x6]\n\t"		//v16, v17 auxiliar, temp[(r-1)*col+c]
 			 "fadd v10.4s, v10.4s, v16.4s\n\t"		//v10 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 			 "fadd v11.4s, v11.4s, v17.4s\n\t"		//v11 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
@@ -208,7 +208,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x6, x3, %[col], LSL #2\n\t"		                //*temp[(r+1)*col+c+1]
 			 "ld1 { v10.4s, v11.4s, v12.4s, v13.4s }, [x3]\n\t"		//v10, v11, v12, v13 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		                //*temp[(r-1)*col+c+1]
-			 "add x3, x3, #32\n\t"					                //*temp[r*col+c+4]
+			 "add x3, x3, #64\n\t"					                //*temp[r*col+c+16]
 			 "ld1 { v16.4s, v17.4s, v18.4s, v19.4s }, [x6]\n\t"		//v16, v17 auxiliar, temp[(r-1)*col+c]
 			 "fadd v10.4s, v10.4s, v16.4s\n\t"		                //v10 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 			 "fadd v11.4s, v11.4s, v17.4s\n\t"		                //v11 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
@@ -222,7 +222,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v20.4s, v11.4s, v1.4s\n\t"		                //v20 acumulador
 			 "fmla v23.4s, v12.4s, v1.4s\n\t"		                //v20 acumulador
 			 "fmla v24.4s, v13.4s, v1.4s\n\t"		                //v20 acumulador
-			 "ld1 { v10.4s, v11.4s, v12.4s, v13,4s }, [x4], #32\n\t"//v10, v11, v12, v13 auxiliar, power[r*col+c]
+			 "ld1 { v10.4s, v11.4s, v12.4s, v13,4s }, [x4], #64\n\t"//v10, v11, v12, v13 auxiliar, power[r*col+c]
 			 "fadd v16.4s, v10.4s, v15.4s\n\t"		                //v16 auxiliar, acumulador(v15)+power[r+*col+c]
 			 "fadd v17.4s, v11.4s, v20.4s\n\t"		                //v17 auxiliar, acumulador(v15)+power[r+*col+c]
 			 "fadd v18.4s, v12.4s, v23.4s\n\t"		                //v18 auxiliar, acumulador(v15)+power[r+*col+c]
@@ -239,7 +239,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 : [res] "+r" (result)
 			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
-			 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6"," v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24"
+			 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6"," v7", "v8",
+			 "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24"
 		);
 
 	#else
