@@ -322,7 +322,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 			(amb_temp - temp[r*col+c]) * Rz_1));
 		
-		printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
+		if (teste1!=result[r*col+c])
+		{
+			printf("ERROR\n", teste1, );
+			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
+		}
+		
 	}
 
 #elif defined(SVE)
