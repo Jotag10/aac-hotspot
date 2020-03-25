@@ -12,21 +12,20 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 #if defined(NEON)
 
+	#define NEON_STRIDE 4
+	int unroll =1;
+	
 	#if defined (NEON_UNRO12)
 	
-		#define NEON_STRIDE 8
+		unroll =2;
 		
 	#elif defined (NEON_UNRO13)
 	
-		#define NEON_STRIDE 16
-		
-	#else
-		
-		#define NEON_STRIDE 4
+		unroll =4;
 		
 	#endif
     size_t iter = 0, rem = 0;
-    if(size < NEON_STRIDE)
+    if(size < NEON_STRIDE*unroll)
     {
         for ( int c = c_start; c < c_start + size; ++c ) 
         {
@@ -161,7 +160,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 	#elif defined (NEON_UNROl3)
 		
-		printf("Unroll factor: 4*4, %d\n\n",NEON_STRIDE);
+		printf("Unroll factor: 4*4, %d\n\n",NEON_STRIDE*unroll);
 		asm volatile (
          
 			 "lsl x1, %[c], #2 \n\t"									//iterador c=c_start
@@ -303,7 +302,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
 	}
 	
-    rem = (size+c_start) % NEON_STRIDE;
+    rem = (size+c_start) % (NEON_STRIDE*unroll);
     
     for ( int c = iter; c < rem + iter; ++c ) 
     {
