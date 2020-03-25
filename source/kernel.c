@@ -258,8 +258,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
 
 	#else
+		printf("NEON\n\n");
 		 asm volatile (
-			 printf("NEON\n\n");
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
 			 "lsl x2, %[r], #2 \n\t"
 			 "ld1r { v0.4s } , [%[Rx]]\n\t"
