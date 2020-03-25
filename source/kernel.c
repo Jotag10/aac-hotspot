@@ -15,8 +15,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	#define NEON_STRIDE 4
 	int volatile unroll =1;
 	
+	#if defined (NEON_UNROl)
 	
-	#if defined (NEON_UNRO12)
+		unroll =1;
+		printf("DEFINE NEON_UNRO1\n\n");
+		
+	#elif defined (NEON_UNRO12)
 	
 		unroll =2;
 		printf("DEFINE NEON_UNRO12\n\n");
