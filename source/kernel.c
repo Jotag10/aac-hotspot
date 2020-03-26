@@ -348,11 +348,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
-		 "ld1rsw {z0.s}, p0/z, %[Rx]\n\t"						// COMFIRMAR SE SÂO SIGNED
-		 "ld1rsw {z1.s}, p0/z, %[Ry]\n\t"
-		 "ld1rsw {z2.s}, p0/z, %[Rz]\n\t"
-		 "ld1rsw {z3.s}, p0/z, %[amb]\n\t"
-		 "ld1rsw {z4.s}, p0/z, %[ca]\n\t"
+		 "ld1rsh {z0.s}, p0/z, %[Rx]\n\t"						// COMFIRMAR SE SÂO SIGNED
+		 "ld1rsh {z1.s}, p0/z, %[Ry]\n\t"
+		 "ld1rsh {z2.s}, p0/z, %[Rz]\n\t"
+		 "ld1rsh {z3.s}, p0/z, %[amb]\n\t"
+		 "ld1rsh {z4.s}, p0/z, %[ca]\n\t"
 		 "fmov v9.4s , #2\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 
