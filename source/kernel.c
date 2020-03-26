@@ -360,9 +360,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_sve:\n\t"
 
 		 
-		 "ld1sw { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
-		 "mov z6.4s, p0, z3.4s\n\t"							//auxiliar z6
-		 "fsub z3.4s, p0/m, z3.4s, z5.4s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 "ld1sh { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
+		 "mov z6.s, p0, z3.4s\n\t"							//auxiliar z6
+		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
 	/*	 					
 		 "fsub v6.4s, v3.4s, v5.4s\n\t"						//v6 auxiliar, (amb_temp - temp[r*col+c])
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"						//v7 acumulador
