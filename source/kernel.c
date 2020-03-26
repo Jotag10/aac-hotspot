@@ -344,7 +344,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	//free(teste);
 
 #elif defined(SVE)
-
+/*
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -415,7 +415,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
         : [sz] "r" (size-1), [a] "m" (A), [x] "r" (x)
         : "x4", "x5", "x6", "memory", "p0", "z0", "z1", "z2"
     );
-
+*/
 #else
 
     for ( int c = c_start; c < c_start + size; ++c ) 
