@@ -72,6 +72,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 			 
 			 
 			 ".loop_neon:\n\t"
+			 "prfm PLDL1STRM, [x3, #16]\n\t"
+			 "prfm PLDL1STRM, [x4, #16]\n\t"
+			 "prfm PSTL1STRM, [x5, #16]\n\t"
+			 
 			 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
 			 "ld1 { v5.4s }, [x3]\n\t"				//temp[r*col+c]
 			 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
@@ -119,13 +123,17 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "ld1r { v4.4s } , [%[ca]]\n\t"
 			 "fmov v9.4s , #2\n\t"
 			 "madd x2, x2, %[col], x1\n\t"			//(r*col+c)
-
+				
 			 "add x3, %[temp], x2\n\t"				//*temp[r*col+c]
 			 "add x4, %[pow], x2\n\t"				//*power[r*col+c]
 			 "add x5, %[res], x2\n\t"				//*result[r*col+c]
 			 "add x2, %[sz], x3\n\t"				//* last temp[r*col+c]					
-			 
+	
 			 ".loop_neon:\n\t"
+			 "prfm PLDL1STRM, [x3, #32]\n\t"
+			 "prfm PLDL1STRM, [x4, #32]\n\t"
+			 "prfm PSTL1STRM, [x5, #32]\n\t"
+			 
 			 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
 			 "ld1 { v5.4s, v6.4s }, [x3]\n\t"		//v5 e v6 temp[r*col+c]
 			 "fsub v10.4s, v3.4s, v5.4s\n\t"		//v10 auxiliar, (amb_temp - temp[r*col+c])
@@ -189,6 +197,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x2, %[sz], x3\n\t"									//* last temp[r*col+c]					
 			 
 			 ".loop_neon:\n\t"
+			 "prfm PLDL1STRM, [x3, #64]\n\t"
+			 "prfm PLDL1STRM, [x4, #64]\n\t"
+			 "prfm PSTL1STRM, [x5, #64]\n\t"
 			 "mov x6, x3\n\t"						                	//cópia de *temp[r*col+c]
 			 "ld1 { v5.4s, v6.4s , v7.4s , v8.4s}, [x3]\n\t"			//v5 ,v6 ,v7 e v8 temp[r*col+c]
 			 "fsub v10.4s, v3.4s, v5.4s\n\t"		                	//v10 auxiliar, (amb_temp - temp[r*col+c])
@@ -333,7 +344,61 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	//free(teste);
 
 #elif defined(SVE)
-/*
+
+	asm volatile (
+		 "mov x1, %[c] \n\t"								//iterador c=c_start
+		 "whilelt p0.s, x1, %[sz]\n\t"
+		 "ld1rsw z0.s, p0/z, %[RX]\n\t"						// COMFIRMAR SE SÂO SIGNED
+		 "ld1rsw z1.s, p0/z, %[Ry]\n\t"
+		 "ld1rsw z2.s, p0/z, %[Rz]\n\t"
+		 "ld1rsw z3.s, p0/z, %[amb]\n\t"
+		 "ld1rsw z4.s, p0/z, %[ca]\n\t"
+		 "fmov v9.4s , #2\n\t"
+		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
+		 
+				 
+		 ".loop_sve:\n\t"
+
+		 
+		 "ld1sw z5.s, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
+		 "mov z6.4s, p0, z3.4s\n\t"							//auxiliar z6
+		 "fsub vz3.4s, p0/m, z3.4s, z5.4s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 					
+		 "fsub v6.4s, v3.4s, v5.4s\n\t"						//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 "fmul v7.4s, v6.4s, v2.4s\n\t"						//v7 acumulador
+		 
+		 "sub x3, x2, #1\n\t"								//r*col+c-1
+		 
+		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
+		 "add x3, x2, #4 \n\t"					//r*col+c+1
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
+		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
+		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
+		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
+		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
+		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
+		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
+		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
+		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
+		 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
+		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r*col+c]
+		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
+		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
+		 "str q5, [%[res], x2]\n\t"
+		 "add x2, x2, #16\n\t"					//r*col+c+4
+		 "add x1, x1, #16\n\t"					//c+4
+		 "cmp x1, %[sz]\n\t"
+		 "b.first .loop_sve\n\t"
+		
+		 : [res] "+r" (result)
+		 : [c] "r" (c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (amb_temp), [ca] "r" (Cap_1), [temp] "r" (temp),
+		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
+		 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
+	);	
+
+
+
     asm volatile (
         "mov x4, #0\n\t"
         "whilelt p0.s, x4, %[sz]\n\t"
@@ -350,7 +415,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
         : [sz] "r" (size-1), [a] "m" (A), [x] "r" (x)
         : "x4", "x5", "x6", "memory", "p0", "z0", "z1", "z2"
     );
-*/
+
 #else
 
     for ( int c = c_start; c < c_start + size; ++c ) 
