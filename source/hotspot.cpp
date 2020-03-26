@@ -5,7 +5,7 @@
 #include "time.h"
 #include "kernel.h"
 
-// Returns the current system time in microseconds 
+// Returns the current system time 
 double get_time(){
     return ((double)clock())*10000000/CLOCKS_PER_SEC;
 }
