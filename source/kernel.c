@@ -393,12 +393,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		*/
 		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "r" (Rx_1), [Ry] "r" (Ry_1), [Rz] "r" (Rz_1), [amb] "r" (amb_temp), [ca] "r" (Cap_1), [temp] "r" (temp),
-		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
+		 [pow] "r" (power), [r] "r" (r), [col] "r" (col)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6"
 	);	
 
 
-
+/*
     asm volatile (
         "mov x4, #0\n\t"
         "whilelt p0.s, x4, %[sz]\n\t"
