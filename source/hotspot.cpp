@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <omp.h>
 #include <sys/time.h>
+#include "time.h"
 #include "kernel.h"
 
 // Returns the current system time in microseconds 
