@@ -5,12 +5,8 @@
 #include "kernel.h"
 
 // Returns the current system time in microseconds 
-long long get_time()
-{
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000000) + tv.tv_usec;
-
+double get_time(){
+    return ((double)clock())/CLOCKS_PER_SEC;
 }
 
 using namespace std;
@@ -47,8 +43,8 @@ int num_omp_threads;
 /********************************** NEW ************************************/
 /* variables to identify critical sections */
 
-float total_time_ifs =0;
-float total_time_loop=0;
+double total_time_ifs =0;
+double total_time_loop=0;
 
 /***************************************************************************/
 
@@ -299,18 +295,18 @@ int main(int argc, char **argv)
 
 	printf("Start computing the transient temperature\n");
 	
-    long long start_time = get_time();
+    double start_time = get_time();
 
     compute_tran_temp(result,sim_time, temp, power, grid_rows, grid_cols);
 
-    long long end_time = get_time();
+    double end_time = get_time();
 
     printf("Ending simulation\n");
-    printf("Total time: %.3f seconds\n", ((float) (end_time - start_time)) / (1000*1000));
-    printf("Total time: %.3f seconds\n", ((float) (end_time - start_time)) / (1000*1000));
+    printf("Total time: %lf seconds\n", ((float) (end_time - start_time)) / (1000*1000));
+    printf("Total time: %lf seconds\n", ((float) (end_time - start_time)) / (1000*1000));
     
-    printf("Total time in ifs loop: %.3f seconds\n", total_time_ifs);
-    printf("Total time in loop: %.3f seconds\n", total_time_loop);
+    printf("Total time in ifs loop: %lf seconds\n", total_time_ifs);
+    printf("Total time in loop: %lf seconds\n", total_time_loop);
     
     
     writeoutput((1&sim_time) ? result : temp, grid_rows, grid_cols, ofile);
