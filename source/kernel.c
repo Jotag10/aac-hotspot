@@ -371,10 +371,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 
 		 "mov z6.d, p0/m, z3.d\n\t"							//auxiliar z6
 		 "fsub z3.d, p0/m, z3.d, z5.d\n\t"					//(amb_temp - temp[r*col+c])
-		 "mov z3.d, p0/m, z6.d\n\t"							//auxiliar z6
-		 "fmul z6.d, p0/m, z6.d, z5.d\n\t"					//z7 acumulador
+		 "fmul z3.d, p0/m, z3.d, z0.d\n\t"					//acumulador
+		 "st1sw z3.d, p0, [%[teste], x4, lsl #2]\n\t"
 		 
-		 "st1w z6.d, p0, [%[teste], x4, lsl #2]\n\t"
 	/*	 					
 		 
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"						//v7 acumulador
