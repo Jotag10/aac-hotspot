@@ -12,7 +12,7 @@ double get_time(){
 
 using namespace std;
 
-#define BLOCK_SIZE 16
+#define BLOCK_SIZE 256
 #define BLOCK_SIZE_C BLOCK_SIZE
 #define BLOCK_SIZE_R BLOCK_SIZE
 
