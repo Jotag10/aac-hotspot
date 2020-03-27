@@ -352,7 +352,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
-		 "whilelt p0.s, x1, %[sz]\n\t"
+		 "whilelt p0.d, x1, %[sz]\n\t"
 		 "ld1rsw {z0.d}, p0/z, %[Rx]\n\t"
 		 "ld1rsw {z1.d}, p0/z, %[Ry]\n\t"
 		 "ld1rsw {z2.d}, p0/z, %[Rz]\n\t"
