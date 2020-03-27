@@ -356,7 +356,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1rsw {z0.d}, p0/z, %[Rx]\n\t"
 		 "ld1rsw {z1.d}, p0/z, %[Ry]\n\t"
 		 "ld1rsw {z2.d}, p0/z, %[Rz]\n\t"
-		 "ld1rsw {z3.d}, p0/z, %[amb]\n\t"
+		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rsw {z4.d}, p0/z, %[ca]\n\t"
 		 
 		 //"fmov v9.4s , #2\n\t"
