@@ -370,9 +370,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		 
 		 "mov z6.d, p0/m, z3.d\n\t"							//auxiliar z6
-		 "st1w z6.d, p0, [%[teste], x4, lsl #2]\n\t"
-		 "fsub z6.d, p0/m, z6.d, z5.d\n\t"					//(amb_temp - temp[r*col+c])
 		 
+		 "fsub z6.d, p0/m, z6.d, z5.d\n\t"					//(amb_temp - temp[r*col+c])
+		 "st1w z6.d, p0, [%[teste], x4, lsl #2]\n\t"
 		 "fmul z6.d, p0/m, z6.d, z0.d\n\t"					//acumulador
 		 
 		 
@@ -410,7 +410,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6"
 	);	
 	
-	for ( int c = c_start; c < size+c_start; ++c ) 
+	for ( int c = c_start; c < 4+c_start; ++c ) 
 	{
 		printf("CRALHS normal: %f, new: %f\n", amb_temp, teste[c-c_start]);
 	}
