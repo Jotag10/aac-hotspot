@@ -353,11 +353,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
-		 "ld1rw {z0.d}, p0/z, %[Rx]\n\t"
-		 "ld1rw {z1.s}, p0/z, %[Ry]\n\t"
-		 "ld1rw {z2.s}, p0/z, %[Rz]\n\t"
-		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
-		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
+		 "ld1rsw {z0.d}, p0/z, %[Rx]\n\t"
+		 "ld1rsw {z1.d}, p0/z, %[Ry]\n\t"
+		 "ld1rsw {z2.d}, p0/z, %[Rz]\n\t"
+		 "ld1rsw {z3.d}, p0/z, %[amb]\n\t"
+		 "ld1rsw {z4.d}, p0/z, %[ca]\n\t"
 		 
 		 //"fmov v9.4s , #2\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
@@ -366,12 +366,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_sve:\n\t"
 
 		 
-		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
+		 "ld1sw { z5.d }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
 		
 		 
-		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
-		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"					//(amb_temp - temp[r*col+c])
-		 "mov z3.s, p0/m, z6.s\n\t"							//auxiliar z6
+		 "mov z6.d, p0/m, z3.d\n\t"							//auxiliar z6
+		 "fsub z3.d, p0/m, z3.d, z5.d\n\t"					//(amb_temp - temp[r*col+c])
+		 "mov z3.d, p0/m, z6.d\n\t"							//auxiliar z6
 		 "fmul z6.d, p0/m, z6.d, z5.d\n\t"					//z7 acumulador
 		 
 		 "st1w z6.d, p0, [%[teste], x4, lsl #2]\n\t"
