@@ -406,7 +406,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
-		printf("normal: %f,new: %f\n", Rx_1, teste[c-c_start]);
+		printf("CRALHS normal: %f, new: %f\n", Rx_1, teste[c-c_start]);
 	}
 	printf("IMPRIME\n\n");
 		
