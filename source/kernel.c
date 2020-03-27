@@ -408,6 +408,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	{
 		printf("normal: %f,new: %f\n", Rx_1, teste[c-c_start]);
 	}
+	printf("IMPRIME\n\n");
 		
 	free(teste);
 
