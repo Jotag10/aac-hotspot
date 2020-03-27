@@ -12,7 +12,7 @@ double get_time(){
 
 using namespace std;
 
-#define BLOCK_SIZE 256
+#define BLOCK_SIZE 16
 #define BLOCK_SIZE_C BLOCK_SIZE
 #define BLOCK_SIZE_R BLOCK_SIZE
 
@@ -137,7 +137,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-            kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+            kernel(result, temp, power, (size_t)c_start, (size_t)256, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             
         }
         long long end_time_loop = get_time();
