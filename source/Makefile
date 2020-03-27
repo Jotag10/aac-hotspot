@@ -55,6 +55,30 @@ run_neon: hotspot_neon
 	@echo "for the final results"
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon.out'
+	
+run_neon_u1: hotspot_neon
+	@echo "======================================================================"
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
+	@echo "you should change the number of iterations and the problem size"
+	@echo "for the final results"
+	@echo "======================================================================"
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u1 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u1.out'
+
+run_neon_u2: hotspot_neon
+	@echo "======================================================================"
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
+	@echo "you should change the number of iterations and the problem size"
+	@echo "for the final results"
+	@echo "======================================================================"
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u2 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u2.out'
+
+run_neon_u3: hotspot_neon
+	@echo "======================================================================"
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
+	@echo "you should change the number of iterations and the problem size"
+	@echo "for the final results"
+	@echo "======================================================================"
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u3 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u3.out'
 
 hotspot_host: $(OBJ_host) $(KERNEL).c
 	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
@@ -67,7 +91,19 @@ hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON
 	$(link_objs_gem5)
+	
+hotspot_neon_u1: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON -DNEON_UNROl
+	$(link_objs_gem5)
+	
+hotspot_neon_u2: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON -DNEON_UNRO2
+	$(link_objs_gem5)
 
+hotspot_neon_u3: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON -DNEON_UNRO3
+	$(link_objs_gem5)
+	
 hotspot_sve: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+sve -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DSVE
 	$(link_objs_gem5)
