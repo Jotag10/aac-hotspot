@@ -4,6 +4,10 @@ HOST_CC_FLAGS = -g -O2
 GEM5_CC = aarch64-linux-g++
 GEM5_CC_FLAGS = -g -O3 -static
 
+GEM5_CC_FLAGS_0 = -g -O -static
+GEM5_CC_FLAGS_1 = -g -O1 -static
+GEM5_CC_FLAGS_2 = -g -O2 -static
+
 DATA_DIR = $(HOME)/apps/hotspot/data
 GEM5_DIR = $(HOME)/gem5
 
@@ -87,6 +91,12 @@ hotspot_host: $(OBJ_host) $(KERNEL).c
 hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
 	$(link_objs_gem5)
+
+hotspot_gem5_0: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS_0) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(link_objs_gem5)
+	
+
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON
