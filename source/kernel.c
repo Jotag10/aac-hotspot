@@ -347,7 +347,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	//free(teste);
 
 #elif defined(SVE)
-
+	
+	float *teste = (float *) calloc (300, sizeof(float));
+	
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -358,12 +360,14 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1rsh {z4.s}, p0/z, %[ca]\n\t"
 		 "fmov v9.4s , #2\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
-		 
+		 "mov x4, #0\n\t"
 				 
 		 ".loop_sve:\n\t"
 
 		 
 		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
+		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
 	/*	 					
@@ -394,12 +398,18 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "cmp x1, %[sz]\n\t"
 		 "b.first .loop_sve\n\t"
 		*/
-		 : [res] "+r" (result)
+		 : [res] "+r" (result), [teste] "+r" (teste)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size-1)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6"
 	);	
-
+	
+	for ( int c = c_start; c < size+c_start; ++c ) 
+	{
+		printf("%f, %f\n", temp[r*col+c], teste[c-c_start]);
+	}
+		
+	free(teste);
 
 /*
     asm volatile (
