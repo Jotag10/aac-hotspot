@@ -71,7 +71,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
         int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
        
-	   /*
+	   
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
         {
             long long start_time_ifs = get_time();
@@ -135,16 +135,15 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
             continue;
         }
-		
-        */
-        double start_time_loop = get_time();
+        
+        long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             
         }
-        double end_time_loop = get_time();
+        long long end_time_loop = get_time();
         
-        total_time_loop +=((end_time_loop - start_time_loop)) / (1000*1000);
+        total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
         
     }
     
