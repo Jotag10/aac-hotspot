@@ -71,54 +71,55 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
         int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
        
+	   /*
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
         {
             long long start_time_ifs = get_time();
             for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
                 for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-                    /* Corner 1 */
+
                     if ( (r == 0) && (c == 0) ) {
                         delta = (Cap_1) * (power[0] +
                             (temp[1] - temp[0]) * Rx_1 +
                             (temp[col] - temp[0]) * Ry_1 +
                             (amb_temp - temp[0]) * Rz_1);
-                    }	/* Corner 2 */
+                    }	
                     else if ((r == 0) && (c == col-1)) {
                         delta = (Cap_1) * (power[c] +
                             (temp[c-1] - temp[c]) * Rx_1 +
                             (temp[c+col] - temp[c]) * Ry_1 +
                         (   amb_temp - temp[c]) * Rz_1);
-                    }	/* Corner 3 */
+                    }	
                     else if ((r == row-1) && (c == col-1)) {
                         delta = (Cap_1) * (power[r*col+c] + 
                             (temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
                             (temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
                         (   amb_temp - temp[r*col+c]) * Rz_1);					
-                    }	/* Corner 4	*/
+                    }	
                     else if ((r == row-1) && (c == 0)) {
                         delta = (Cap_1) * (power[r*col] + 
                             (temp[r*col+1] - temp[r*col]) * Rx_1 + 
                             (temp[(r-1)*col] - temp[r*col]) * Ry_1 + 
                             (amb_temp - temp[r*col]) * Rz_1);
-                    }	/* Edge 1 */
+                    }	
                     else if (r == 0) {
                         delta = (Cap_1) * (power[c] + 
                             (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
                             (temp[col+c] - temp[c]) * Ry_1 + 
                             (amb_temp - temp[c]) * Rz_1);
-                    }	/* Edge 2 */
+                    }	
                     else if (c == col-1) {
                         delta = (Cap_1) * (power[r*col+c] + 
                             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
                             (temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
                             (amb_temp - temp[r*col+c]) * Rz_1);
-                    }	/* Edge 3 */
+                    }	
                     else if (r == row-1) {
                         delta = (Cap_1) * (power[r*col+c] + 
                             (temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
                             (temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
                             (amb_temp - temp[r*col+c]) * Rz_1);
-                    }	/* Edge 4 */
+                    }	
                     else if (c == 0) {
                         delta = (Cap_1) * (power[r*col] + 
                             (temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
@@ -134,10 +135,11 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
             continue;
         }
+		long long start_time_loop = get_time();
+        */
         
-        long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-            kernel(result, temp, power, (size_t)c_start, (size_t)256, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+            kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             
         }
         long long end_time_loop = get_time();
