@@ -366,7 +366,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 		 
 		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
-		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 "st1w z0.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
@@ -406,7 +406,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
-		printf("%f, %f\n", temp[r*col+c], teste[c-c_start]);
+		printf("%f, %f\n", Rx, teste[c-c_start]);
 	}
 		
 	free(teste);
