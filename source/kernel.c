@@ -353,11 +353,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
-		 "ld1rsw {z0.d}, p0/z, %[Rx]\n\t"
-		 "ld1rsw {z1.d}, p0/z, %[Ry]\n\t"
-		 "ld1rsw {z2.d}, p0/z, %[Rz]\n\t"
+		 "ld1rw {z0.d}, p0/z, %[Rx]\n\t"
+		 "ld1rw {z1.s}, p0/z, %[Ry]\n\t"
+		 "ld1rw {z2.s}, p0/z, %[Rz]\n\t"
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
-		 "ld1rsw {z4.d}, p0/z, %[ca]\n\t"
+		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 		 
 		 //"fmov v9.4s , #2\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
@@ -370,10 +370,13 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		
 		 
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
-		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"				//v6 auxiliar, (amb_temp - temp[r*col+c])
-		 "st1w z3.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 "fsub z3.s, p0/m, z3.s, z5.s\n\t"					//(amb_temp - temp[r*col+c])
+		 "mov z3.s, p0/m, z6.s\n\t"							//auxiliar z6
+		 "fmul z6.s, p0/m, z6.s, z5.s\n\t"					//z7 acumulador
+		 
+		 "st1w z6.s, p0, [%[teste], x4, lsl #2]\n\t"
 	/*	 					
-		 "fsub v6.4s, v3.4s, v5.4s\n\t"						//v6 auxiliar, (amb_temp - temp[r*col+c])
+		 
 		 "fmul v7.4s, v6.4s, v2.4s\n\t"						//v7 acumulador
 		 
 		 "sub x3, x2, #1\n\t"								//r*col+c-1
@@ -408,7 +411,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
-		printf("CRALHS normal: %f, new: %f\n", (amb_temp - temp[r*col+c]), teste[c-c_start]);
+		printf("CRALHS normal: %f, new: %f\n", (amb_temp - temp[r*col+c])*Rx_1, teste[c-c_start]);
 	}
 		
 	free(teste);
