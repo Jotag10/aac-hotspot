@@ -90,7 +90,7 @@ run_sve: hotspot_sve
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=2 -c hotspot_sve -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_sve.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_sve.out'
 
 hotspot_host: $(OBJ_host) $(KERNEL).c
 	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
