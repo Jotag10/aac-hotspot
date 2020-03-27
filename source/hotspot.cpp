@@ -303,11 +303,10 @@ int main(int argc, char **argv)
     double end_time = get_time();
 
     printf("Ending simulation\n");
-    printf("Total time: %lf seconds\n", ((float) (end_time - start_time)) / (1000*1000));
-    printf("Total time: %lf seconds\n", ((float) (end_time - start_time)) / (1000*1000));
+    printf("Total time: %lf\n", ((float) (end_time - start_time)) / (1000*1000));
     
-    printf("Total time in ifs loop: %lf seconds\n", total_time_ifs);
-    printf("Total time in loop: %lf seconds\n", total_time_loop);
+    printf("Total time in ifs loop: %lf\n", total_time_ifs);
+    printf("Total time in loop: %lf\n", total_time_loop);
     
     
     writeoutput((1&sim_time) ? result : temp, grid_rows, grid_cols, ofile);
