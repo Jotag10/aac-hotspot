@@ -130,9 +130,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x2, %[sz], x3\n\t"				//* last temp[r*col+c]					
 	
 			 ".loop_neon:\n\t"
-			 "prfm PLDL1STRM, [x3, #32]\n\t"
-			 "prfm PLDL1STRM, [x4, #32]\n\t"
-			 "prfm PSTL1STRM, [x5, #32]\n\t"
+			 //"prfm PLDL1STRM, [x3, #32]\n\t"
+			 //"prfm PLDL1STRM, [x4, #32]\n\t"
+			 //"prfm PSTL1STRM, [x5, #32]\n\t"
 			 
 			 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
 			 "ld1 { v5.4s, v6.4s }, [x3]\n\t"		//v5 e v6 temp[r*col+c]
@@ -153,11 +153,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmla v15.4s, v10.4s, v0.4s\n\t"		//v15 acumulador 
 			 "fmla v20.4s, v11.4s, v0.4s\n\t"		//v20 acumulador 
 			 "add x6, x3, %[col], LSL #2\n\t"		//*temp[(r+1)*col+c+1]
-			 "prfm PLDL1STRM, [x6, #32]\n\t"
+			 //"prfm PLDL1STRM, [x6, #32]\n\t"
 			 "ld1 { v10.4s, v11.4s }, [x6]\n\t"		//v10, v11 auxiliar, temp[(r+1)*col+c]
 			 "sub x6, x3, %[col], LSL #2\n\t"		//*temp[(r-1)*col+c+1]
 			 "add x3, x3, #32\n\t"					//*temp[r*col+c+8]
-			 "prfm PLDL1STRM, [x6, #32]\n\t"
+			 //"prfm PLDL1STRM, [x6, #32]\n\t"
 			 "ld1 { v16.4s, v17.4s }, [x6]\n\t"		//v16, v17 auxiliar, temp[(r-1)*col+c]
 			 "fadd v10.4s, v10.4s, v16.4s\n\t"		//v10 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 			 "fadd v11.4s, v11.4s, v17.4s\n\t"		//v11 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
