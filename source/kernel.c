@@ -128,13 +128,14 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "add x4, %[pow], x2\n\t"				//*power[r*col+c]
 			 "add x5, %[res], x2\n\t"				//*result[r*col+c]
 			 "add x2, %[sz], x3\n\t"				//* last temp[r*col+c]					
-	
-			 ".loop_neon:\n\t"
-			 "prfm PLDL1STRM, [x3, #31]\n\t"
-			 "prfm PLDL1STRM, [x4, #32]\n\t"
-			 "prfm PSTL1STRM, [x5, #32]\n\t"
 			 
-			 "mov x6, x3\n\t"						//cópia de *temp[r*col+c]
+			 ".loop_neon:\n\t"
+			 	
+			 //"sub x6, x3, %[col], LSL #2\n\t"
+			 "prfm PLDL1STRM, [x3, #32]\n\t"
+			 //"prfm PLDL1STRM, [x4, #32]\n\t"
+			 //"prfm PSTL1STRM, [x5, #32]\n\t"
+			 					
 			 "ld1 { v5.4s, v6.4s }, [x3]\n\t"		//v5 e v6 temp[r*col+c]
 			 "fsub v10.4s, v3.4s, v5.4s\n\t"		//v10 auxiliar, (amb_temp - temp[r*col+c])
 			 "fsub v14.4s, v3.4s, v6.4s\n\t"		//v14 auxiliar,(amb_temp - temp[r*col+c])
