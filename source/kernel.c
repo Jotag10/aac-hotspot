@@ -335,7 +335,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	
 	/*CHECK VALUES */
-	
+	/*
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
 		
@@ -353,7 +353,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-	
+	*/
 	//free(teste);
 
 #elif defined(SVE)
