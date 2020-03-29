@@ -386,7 +386,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[r+*col+c]
 		 "fmla z5.s, p0/m, z8.s, z4.s\n\t"					//z6 acumulador
 		 "st1w z5.s, p0, [%[res], x2, lsl #2]\n\t"
-		 "incw x2\n\t"
+		 "add x2, x2, #4\n\t"
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve\n\t"
