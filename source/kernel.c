@@ -393,7 +393,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "b.first .loop_sve\n\t"
 		 */
 		 
-		 : [res] "+r" (result), [teste] "+r" (teste)
+		 : [res] "+r" (result)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size-1)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
@@ -406,7 +406,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
 			
-		//printf("normal: %f, new: %f\n",teste2, result[r*col+c]);
+		printf("normal: %f, new: %f\n", teste2, result[r*col+c]);
 	}
 		
 	free(teste);
