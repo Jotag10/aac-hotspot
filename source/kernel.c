@@ -359,33 +359,31 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 		 
-		 //"fmov v9.4s , #2\n\t"
+		 "fmov z9.s ,p0/m, #2\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 "mov x4, #0\n\t"
 				 
 		 ".loop_sve:\n\t"
-
-		 
-		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"		//temp[r*col+c]
-		
-		 
+		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z5, temp[r*col+c]
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
-		 
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//(amb_temp - temp[r*col+c])
-		 
 		 "fmul z6.s, p0/m, z6.s, z0.s\n\t"					//(amb_temp - temp[r*col+c])*Rx_1
-		 "st1w z6.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 "sub x3, x2, #1\n\t"								//r*col+c-1
+		 "ld1w { z7.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z7, temp[r*col+c-1]
+		 "add x3, x2, #1 \n\t"								//r*col+c+1
+		 "ld1w { z8.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z8, temp[r*col+c-1]
+		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[r*col+c+1]+temp[r*col+c-1]
+		 
+		 "fmls v7.4s, p0/m, v5.4s, v9.4s\n\t"				//z7, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
+		 //"fmla v7.4s, v6.4s, v0.4s\n\t"						//v7 acumulador 
+		 
+		 "st1w z7.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 
 	/*	 					
 		 
-		 "fmul v7.4s, v6.4s, v2.4s\n\t"						//v7 acumulador
+
 		 
-		 "sub x3, x2, #1\n\t"								//r*col+c-1
 		 
-		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[r*col+c-1]
-		 "add x3, x2, #4 \n\t"					//r*col+c+1
-		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[r*col+c+1]
-		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
 		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
@@ -412,7 +410,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
-		printf("CRALHS normal: %f, new: %f\n", (amb_temp - temp[r*col+c])*Rx_1, teste[c-c_start]);
+		printf("CRALHS normal: %f, new: %f\n",(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]), teste[c-c_start]);
 	}
 		
 	free(teste);
