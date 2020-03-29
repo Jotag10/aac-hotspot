@@ -366,33 +366,30 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 ".loop_sve:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z5, temp[r*col+c]
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
-		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//(amb_temp - temp[r*col+c])
-		 "fmul z6.s, p0/m, z6.s, z0.s\n\t"					//(amb_temp - temp[r*col+c])*Rx_1
+		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[r*col+c])
+		 "fmul z6.s, p0/m, z6.s, z0.s\n\t"					//z6, (amb_temp - temp[r*col+c])*Rx_1
 		 "sub x3, x2, #1\n\t"								//r*col+c-1
 		 "ld1w { z7.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z7, temp[r*col+c-1]
 		 "add x3, x2, #1 \n\t"								//r*col+c+1
 		 "ld1w { z8.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z8, temp[r*col+c+1]
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[r*col+c+1]+temp[r*col+c-1]
-		 
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
-		 //"fmla v7.4s, v6.4s, v0.4s\n\t"					//v7 acumulador 
+		 "fmla z6.s, p0/m, v6.4s, z0.s\n\t"					//z6 acumulador 
+		 "add x3, x2, %[col]\n\t"							//(r+1)*col+c
+		 "ld1w { z7.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z7,  temp[(r+1)*col+c]
+		 "sub x3, x2, %[col]\n\t"							//(r-1)*col+c
+		 "ld1w { z8.s }, p0/z, [%[temp], x3, lsl #2]\n\t"	//z8,  temp[(r-1)*col+c]
+		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[(r+1)*col+c]+temp[(r-1)*col+c]
+		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
+		 "fmla z6.s, p0/m, z7.s, z1.s\n\t"					//z6 acumulador
+		 "ld1w { z8.s }, p0/z, [%[pow], x2, lsl #2]\n\t"	//z8, power[r*col+c]
+		 "fadd v8.4s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[r+*col+c]
+		 "fmla z5.s, p0/m, z8.s, z4.s\n\t"					//z6 acumulador
 		 
-		 "st1w z7.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 
 	/*	 					
-		 
-		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
-		 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
-		 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c= (r*col+c)*4+col*4=4(r*col+c+col)
-		 "ldr q6, [%[temp], x3]\n\t"			//v6 auxiliar, temp[(r+1)*col+c]
-		 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
-		 "ldr q8, [%[temp], x3]\n\t"			//v8 auxiliar, temp[(r-1)*col+c]
-		 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
-		 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
-		 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
-		 "ldr q6, [%[pow], x2]\n\t"				//v6 auxiliar, power[r*col+c]
-		 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
-		 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
+
 		 "str q5, [%[res], x2]\n\t"
 		 "add x2, x2, #16\n\t"					//r*col+c+4
 		 "add x1, x1, #16\n\t"					//c+4
@@ -407,7 +404,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
-		printf("CRALHS normal: %f, new: %f\n",(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]), teste[c-c_start]);
+		float teste2=temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+            (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+            (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+            (amb_temp - temp[r*col+c]) * Rz_1));
+			
+		printf("CRALHS normal: %f, new: %f\n",teste2, teste[c-c_start]);
 	}
 		
 	free(teste);
