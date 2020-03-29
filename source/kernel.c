@@ -396,7 +396,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size-1)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
-	
+	/*
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
 		float teste2=temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
@@ -406,7 +406,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			
 		printf("normal: %f, new: %f\n", teste2, result[r*col+c]);
 	}
-		
+	*/	
 	free(teste);
 
 #else
