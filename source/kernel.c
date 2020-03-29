@@ -348,8 +348,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 
 #elif defined(SVE)
 	
-	float *teste = (float *) calloc (300, sizeof(float));
-	
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -397,17 +395,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
 	
-	for ( int c = c_start; c < size+c_start; ++c ) 
-	{
-		float teste2=temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
-            (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-            (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-            (amb_temp - temp[r*col+c]) * Rz_1));
-			
-		printf("normal: %f, new: %f\n", teste2, result[r*col+c]);
-	}
-		
-	free(teste);
 
 #else
 
