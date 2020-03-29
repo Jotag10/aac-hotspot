@@ -406,29 +406,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
 			
-		printf("normal: %f, new: %f\n",teste2, result[r*col+c]);
+		//printf("normal: %f, new: %f\n",teste2, result[r*col+c]);
 	}
 		
 	free(teste);
 
-/*
-    asm volatile (
-        "mov x4, #0\n\t"
-        "whilelt p0.s, x4, %[sz]\n\t"
-        "ld1rw z0.s, p0/z, %[a]\n\t"
-        ".loop_sve:\n\t"
-        "ld1w z1.s, p0/z, [%[x], x4, lsl #2]\n\t"
-        "ld1w z2.s, p0/z, [%[y], x4, lsl #2]\n\t"
-        "fmla z2.s, p0/m, z1.s, z0.s\n\t"
-        "st1w z2.s, p0, [%[y], x4, lsl #2]\n\t"
-        "incw x4\n\t"
-        "whilelt p0.s, x4, %[sz]\n\t"
-        "b.first .loop_sve\n\t"
-        : [y] "+r" (y)
-        : [sz] "r" (size-1), [a] "m" (A), [x] "r" (x)
-        : "x4", "x5", "x6", "memory", "p0", "z0", "z1", "z2"
-    );
-*/
 #else
 
     for ( int c = c_start; c < c_start + size; ++c ) 
