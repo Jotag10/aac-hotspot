@@ -268,6 +268,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
 
 	#else
+		/*
 		 asm volatile (
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
 			 "lsl x2, %[r], #2 \n\t"
@@ -310,6 +311,61 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 			 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
+		);
+		*/
+		
+		
+		asm volatile (
+			 "lsl x1, %[c], #2 \n\t"				//c=c_start
+			 "lsl x2, %[r], #2 \n\t"
+
+			 "ld1r { v4.4s } , [%[ca]]\n\t"
+			 "madd x2, x2, %[col], x1\n\t"			//iterador(r*col+c)	
+			 "fmov v9.4s , #2\n\t"
+			 "sub x3, x2, #4\n\t"					//r*col+c-1
+			 "add x4, %[temp], x2\n\t"				//x4, *temp[r*col+c]
+			 "add x5, %[pow], x2\n\t"				//x5, *power[r*col+c]
+			 "add x6, %[temp], x3\n\t"				//x6, *temp[r*col+c-1]
+			 "add x3, x2, #4\n\t"					//r*col+c+1
+			 "ld1r { v1.4s } , [%[Ry]]\n\t"
+			 "add x7, %[temp], x3\n\t"				//x7, *temp[r*col+c+1]
+			 "add x3, x2, %[col], LSL #2\n\t"		//(r+1)*col+c
+			 "ld1r { v0.4s } , [%[Rx]]\n\t"
+			 "add x9, %[temp], x3\n\t"				//x9, *temp[(r+1)*col+c]
+			 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col+c
+			 "ld1r { v2.4s } , [%[Rz]]\n\t"
+			 "ld1r { v3.4s } , [%[amb]]\n\t"
+			 "add x10, %[temp], x3\n\t"				//x10,*temp[(r-1)*col+c]
+			 "mov x1, #0\n\t"						//iterador
+			 "add x11, %[res], x2\n\t"				//x11,*result[r*col+c]
+			 
+														
+			 ".loop_neon:\n\t"
+			 "ldr q5, [x4, x1]\n\t"					//temp[r*col+c]
+			 "ldr q8, [x6, x1]\n\t"					//v8 auxiliar, temp[r*col+c-1]
+			 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
+			 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
+			 "ldr q10, [x7, x1]\n\t"				//v10 auxiliar, temp[r*col+c+1]
+			 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
+			 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
+			 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
+			 "ldr q6, [x9, x1]\n\t"					//v6 auxiliar, temp[(r+1)*col+c]
+			 "ldr q8, [x10, x1]\n\t"				//v8 auxiliar, temp[(r-1)*col+c]
+			 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
+			 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
+			 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
+			 "ldr q6, [x5, x1]\n\t"					//v6 auxiliar, power[r*col+c]
+			 "fadd v8.4s, v6.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
+			 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
+			 "str q5, [x11, x1]\n\t"
+			 "add x1, x1, #16\n\t"					//iterador+4
+			 "cmp x1, %[sz]\n\t"
+			 "b.ne .loop_neon\n\t"
+			
+			 : [res] "+r" (result)
+			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
+			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter1*4)
+			 : "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x9", "x10", "x11", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
 		);
 	#endif
 	
