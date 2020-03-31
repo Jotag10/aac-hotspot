@@ -77,7 +77,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+				kernel_ifs(teste, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 			}
 			
 			long long start_time_ifs = get_time();
@@ -86,14 +86,14 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				//if (r == 0) 
 				{
-				teste[c] =temp[c]+(Cap_1) * (power[c] + 
+				result[c] =temp[c]+(Cap_1) * (power[c] + 
 						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
 				}
 				//else if (r == row-1) 
 				{
-				teste[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
+				result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
 							(temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
 							(temp[(row-2)*col+c] - temp[(row-1)*col+c]) * Ry_1 + 
 							(amb_temp - temp[(row-1)*col+c]) * Rz_1);
@@ -103,14 +103,14 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				//if (c == col-1) 
 				{
-				teste[r*col+col-1] = temp[r*col+col-1] +(Cap_1) * (power[r*col+col-1] + 
+				result[r*col+col-1] = temp[r*col+col-1] +(Cap_1) * (power[r*col+col-1] + 
 							(temp[(r+1)*col+col-1] + temp[(r-1)*col+col-1] - 2.0*temp[r*col+col-1]) * Ry_1 + 
 							(temp[r*col+col-2] - temp[r*col+col-1]) * Rx_1 + 
 							(amb_temp - temp[r*col+col-1]) * Rz_1);
 				}
 				//else if (c == 0) 
 				{
-				teste[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
+				result[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
 							(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 							(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 							(amb_temp - temp[r*col]) * Rz_1);
@@ -154,25 +154,25 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 				}
 			}
 			*/
-			teste[0] = temp[0]+ (Cap_1) * (power[0] +
+			result[0] = temp[0]+ (Cap_1) * (power[0] +
 				(temp[1] - temp[0]) * Rx_1 +
 				(temp[col] - temp[0]) * Ry_1 +
 				(amb_temp - temp[0]) * Rz_1);
 			//printf("Corner1\n");
 			
-			teste[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
+			result[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
 				(temp[col-2] - temp[col-1]) * Rx_1 +
 				(temp[2*col-1] - temp[col-1]) * Ry_1 +
 				(amb_temp - temp[col-1]) * Rz_1);
 			//printf("Corner2\n");
 			
-			teste[(row-1)*col+col-1] =temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] + 
+			result[(row-1)*col+col-1] =temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] + 
 				(temp[(row-1)*col+col-2] - temp[(row-1)*col+col-1]) * Rx_1 + 
 				(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 + 
 				(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);	
 			//printf("Corner3\n");						
 
-			teste[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
+			result[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
 				(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 + 
 				(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
 				(amb_temp - temp[(row-1)*col]) * Rz_1);
