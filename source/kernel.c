@@ -472,6 +472,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 {
 #if defined(SVE)
 
+
+	
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
