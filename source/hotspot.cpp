@@ -84,28 +84,33 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			
 			for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 			{
+				if (r == 0) {
 				result[c] =temp[c]+(Cap_1) * (power[c] + 
 						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
-						
+				}
+				if (r == row-1) {
 				result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
 							(temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
 							(temp[(row-2)*col+c] - temp[(row-1)*col+c]) * Ry_1 + 
 							(amb_temp - temp[(row-1)*col+c]) * Rz_1);
+				}
 			}
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
+				if (c == col-1) {
 				result[r*col+col-1] = temp[r*col+col-1] +(Cap_1) * (power[r*col+col-1] + 
 							(temp[(r+1)*col+col-1] + temp[(r-1)*col+col-1] - 2.0*temp[r*col+col-1]) * Ry_1 + 
 							(temp[r*col+col-2] - temp[r*col+col-1]) * Rx_1 + 
 							(amb_temp - temp[r*col+col-1]) * Rz_1);
-				
+				}
+				if (c == 0) {
 				result[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
 							(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 							(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 							(amb_temp - temp[r*col]) * Rz_1);
-				
+				}
 			}
 			/*
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
