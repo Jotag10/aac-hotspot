@@ -520,7 +520,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);	
 	
 #else
-
+	
+    float delta;
 	for ( c = c_start; c < c_start + size; ++c ) 
 	{
 		if ( (r == 0) && (c == 0) ) {
