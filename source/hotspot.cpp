@@ -74,12 +74,12 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	   
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
         {
-			
+			/*
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 			}
-
+			*/
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
@@ -113,35 +113,35 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 							(amb_temp - temp[r*col]) * Rz_1);
 							//printf("Edge4\n");
 					}
-					teste[r*col+c] =temp[r*col+c]+ delta;
+					result[r*col+c] =temp[r*col+c]+ delta;
 				}
 			}
-			teste[0] = temp[0]+ (Cap_1) * (power[0] +
+			result[0] = temp[0]+ (Cap_1) * (power[0] +
 				(temp[1] - temp[0]) * Rx_1 +
 				(temp[col] - temp[0]) * Ry_1 +
 				(amb_temp - temp[0]) * Rz_1);
 			//printf("Corner1\n");
 			
-			teste[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
+			result[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
 				(temp[col-2] - temp[col-1]) * Rx_1 +
 				(temp[2*col-1] - temp[col-1]) * Ry_1 +
 				(amb_temp - temp[col-1]) * Rz_1);
 			//printf("Corner2\n");
 			
-			teste[(row-1)*col+col-1] =temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] + 
+			result[(row-1)*col+col-1] =temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] + 
 				(temp[(row-1)*col+col-2] - temp[(row-1)*col+col-1]) * Rx_1 + 
 				(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 + 
 				(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);	
 			//printf("Corner3\n");						
 
-			teste[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
+			result[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
 				(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 + 
 				(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
 				(amb_temp - temp[(row-1)*col]) * Rz_1);
 				//printf("Corner4\n");
 			//long long end_time_ifs = get_time();
 			//total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
-			
+			/*
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
@@ -155,6 +155,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 					}
 				}
 			}
+			*/
 			
 			continue;
 		}
