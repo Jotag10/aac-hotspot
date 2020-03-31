@@ -56,7 +56,6 @@ double total_time_loop=0;
 void single_iteration(float *result, float *temp, float *power, int row, int col,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float step)
 {
-    float delta;
     int r, c;
     int chunk;
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
