@@ -194,7 +194,8 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 					{
 						if (teste[r*col+c]!=result[r*col+c])
 						{
-							printf("ERROU! linha:%d coluna:%d. %f, %f\n\n", r, c, result[r*col+c], teste[r*col+c]);
+							printf("ERROU! linha:%d coluna:%d. %f, %f\n", r, c, result[r*col+c], teste[r*col+c]);
+							printf("r_start:%d, r_end:%d c_start:%d, c_end:%d\n\n", r_start, r_end,c_start, c_end);
 						}
 					}
 				}
