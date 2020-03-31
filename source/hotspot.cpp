@@ -146,9 +146,12 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 				{
-					if (teste[r*col+c]!=result[r*col+c])
+					if ( ((r == 0) && (c == 0)) ||((r == 0) && (c == col-1))|| ((r == row-1) && (c == col-1)) ||((r == row-1) && (c == 0))|| (r == 0)|| (c == col-1)|| (r == row-1) || (c == 0))
 					{
-						printf("ERROU! linha:%d coluna:%d\n\n", r, c);
+						if (teste[r*col+c]!=result[r*col+c])
+						{
+							printf("ERROU! linha:%d coluna:%d\n\n", r, c);
+						}
 					}
 				}
 			}
