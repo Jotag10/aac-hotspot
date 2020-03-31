@@ -62,7 +62,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
 	float delta;
-    float teste = (float *) calloc (64 * 64, sizeof(float));
+    float *teste = (float *) calloc (64 * 64, sizeof(float));
 	
     for ( chunk = 0; chunk < num_chunk; ++chunk )
     {
@@ -82,7 +82,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				for ( c = c_start; c < c_start + size; ++c ) 
+				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 				{
 					if (r == 0) {
 						
