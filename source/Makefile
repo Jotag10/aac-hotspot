@@ -42,7 +42,7 @@ run_host: hotspot_host
 	@echo "WARNING: Running with 1000 iterations... "
 	@echo "you may change the number of iterations and the problem size"
 	@echo "======================================================================"
-	./hotspot_host 1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
+	./hotspot_host 1024 1024 1000 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
 	
 run_gem5: hotspot_gem5
 	@echo "======================================================================"
