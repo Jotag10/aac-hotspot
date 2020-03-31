@@ -134,7 +134,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 				(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);	
 			//printf("Corner3\n");						
 
-			teste[(row-1)*col] =temp[(row-1)*col] (Cap_1) * (power[(row-1)*col] + 
+			teste[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
 				(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 + 
 				(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
 				(amb_temp - temp[(row-1)*col]) * Rz_1);
@@ -146,7 +146,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 				{
-					if (teste[r*col+c]!result[r*col+c])
+					if (teste[r*col+c]!=result[r*col+c])
 					{
 						printf("ERROU! linha:%d coluna:%d\n\n", r, c);
 					}
