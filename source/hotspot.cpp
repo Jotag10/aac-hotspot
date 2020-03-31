@@ -89,7 +89,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
 						
-				result[(row-1)*col+c] =temp[(row-1)*col+c] (Cap_1) * (power[(row-1)*col+c] + 
+				result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
 							(temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
 							(temp[(row-2)*col+c] - temp[(row-1)*col+c]) * Ry_1 + 
 							(amb_temp - temp[(row-1)*col+c]) * Rz_1);
