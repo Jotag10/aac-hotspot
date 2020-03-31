@@ -90,7 +90,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
 				}
-				if (r == row-1) {
+				else if (r == row-1) {
 				result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
 							(temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
 							(temp[(row-2)*col+c] - temp[(row-1)*col+c]) * Ry_1 + 
@@ -105,7 +105,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 							(temp[r*col+col-2] - temp[r*col+col-1]) * Rx_1 + 
 							(amb_temp - temp[r*col+col-1]) * Rz_1);
 				}
-				if (c == 0) {
+				else if (c == 0) {
 				result[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
 							(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 							(temp[r*col+1] - temp[r*col]) * Rx_1 + 
