@@ -64,7 +64,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	float delta;
     float *teste = (float *) calloc (1024 * 1024, sizeof(float));
 
-
+/*
     for ( r = 0; r < row; ++r ) 
     {
         //if (c_start == 0) 
@@ -128,6 +128,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         (temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
         (amb_temp - temp[(row-1)*col]) * Rz_1);
         //printf("Corner4\n");
+*/
+
+
+    for ( r = 0; r < row; ++r ) 
+    {
+        kernel_ifs(result, temp, power, (size_t)0, (size_t)col, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+    }
 
     for ( chunk = 0; chunk < num_chunk; ++chunk )
     {
@@ -145,9 +152,9 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 				kernel_ifs(teste, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 			}
 			
-/*			long long start_time_ifs = get_time();
+			//long long start_time_ifs = get_time();
 			
-			
+			/*
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				if (c_start == 0) 
@@ -249,7 +256,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 				(amb_temp - temp[(row-1)*col]) * Rz_1);
 				//printf("Corner4\n");
 			long long end_time_ifs = get_time();
-			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
+			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);			
 */			
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
@@ -265,7 +272,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 					}
 				}
 			}
-			
 			
 			continue;
 		}
