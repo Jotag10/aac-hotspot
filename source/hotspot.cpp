@@ -195,9 +195,9 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             }            
 
 
-    for ( r = 1; r < row - 1 ; ++r ) {
+    for ( r = 16; r < row - 16 ; ++r ) {
         //kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-        kernel(result, temp, power, (size_t)1, (size_t)(col-1), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+        kernel(result, temp, power, (size_t)16, (size_t)(col-16), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
     }
 
 
