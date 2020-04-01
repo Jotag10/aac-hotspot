@@ -135,8 +135,27 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         //printf("Corner4\n");
 */
 
-	for ( r = 0; r < row; ++r ) {
-		for ( c = 0; c < col; ++c ) {
+    for ( chunk = 0; chunk < num_chunk; ++chunk )
+    {
+        int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
+        int c_start = BLOCK_SIZE_C*(chunk%chunks_in_row); 
+        int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
+        int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
+       
+	   
+        if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
+        {
+			/*
+			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
+			{
+				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+			}
+            */
+
+
+
+	for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
+		for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
 			/* Corner 1 */
 			if ( (r == 0) && (c == 0) ) {
 				delta = (Cap_1) * (power[0] +
@@ -189,24 +208,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			result[r*col+c] =temp[r*col+c]+ delta;
 		}
 	}
-
-
-    for ( chunk = 0; chunk < num_chunk; ++chunk )
-    {
-        int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
-        int c_start = BLOCK_SIZE_C*(chunk%chunks_in_row); 
-        int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
-        int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
-       
-	   
-        if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
-        {
-			/*
-			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
-			{
-				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-			}
-            */
 
 
 
