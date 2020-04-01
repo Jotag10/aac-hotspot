@@ -136,9 +136,9 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 */
 
 
-            //for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
+            // for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {}
 	        for ( r = 0; r < row; ++r ) {
-		        //for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
+		        // for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {}
 		        for ( c = 0; c < col; ++c ) {
                     /* Corner 1 */
                     if ( (r == 0) && (c == 0) ) {
@@ -344,7 +344,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			}
 */			
 			
-		}
+		//}
 		
 		
 //        long long start_time_loop = get_time();
