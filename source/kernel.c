@@ -268,7 +268,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		);
 
 	#else
-		
+		/*
 		 asm volatile (
 			 "lsl x1, %[c], #2 \n\t"				//iterador c=c_start
 			 "lsl x2, %[r], #2 \n\t"
@@ -312,9 +312,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
 			 : "x1", "x2", "x3", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
 		);
+		*/
 		
 		
-		/*
 		asm volatile (
 			 "lsl x1, %[c], #2 \n\t"				//c=c_start
 			 "lsl x2, %[r], #2 \n\t"
@@ -368,7 +368,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 : "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x9", "x10", "x11", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
 		);
 		
-		*/
+		
 	#endif
 	
     rem = (size+c_start) % (NEON_STRIDE*unroll);
