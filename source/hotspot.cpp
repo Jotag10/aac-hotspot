@@ -67,7 +67,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 
     for ( r = 0; r < row; ++r ) 
     {
-        if (c_start == 0) 
+        //if (c_start == 0) 
         {
         result[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
                     (temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
@@ -75,7 +75,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                     (amb_temp - temp[r*col]) * Rz_1);
         }
         
-        if (c_end == col) 
+        //if (c_end == col) 
         {
         result[r*col+col-1] = temp[r*col+col-1] +(Cap_1) * (power[r*col+col-1] + 
                     (temp[(r+1)*col+col-1] + temp[(r-1)*col+col-1] - 2.0*temp[r*col+col-1]) * Ry_1 + 
@@ -86,7 +86,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     }
     for ( c = 0; c < col; ++c ) 
     {
-        if (r_end == row) 
+        //if (r_end == row) 
         {
         result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
                     (temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
@@ -94,7 +94,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                     (amb_temp - temp[(row-1)*col+c]) * Rz_1);
         }
         
-        if (r_start == 0) 
+        //if (r_start == 0) 
         {
         result[c] =temp[c]+(Cap_1) * (power[c] + 
                 (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
