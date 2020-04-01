@@ -104,7 +104,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         }
         
     }
+*/
 
+    for ( r = 0; r < row; ++r ) 
+    {
+        kernel_ifs(teste, temp, power, (size_t)0, (size_t)col, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+    }
+    
     result[0] = temp[0]+ (Cap_1) * (power[0] +
         (temp[1] - temp[0]) * Rx_1 +
         (temp[col] - temp[0]) * Ry_1 +
@@ -128,13 +134,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         (temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
         (amb_temp - temp[(row-1)*col]) * Rz_1);
         //printf("Corner4\n");
-*/
-
-
-    for ( r = 0; r < row; ++r ) 
-    {
-        kernel_ifs(result, temp, power, (size_t)0, (size_t)col, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-    }
 
     for ( chunk = 0; chunk < num_chunk; ++chunk )
     {
@@ -149,7 +148,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				kernel_ifs(teste, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 			}
 			
 			//long long start_time_ifs = get_time();
