@@ -220,7 +220,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 
 
 			
-			//long long start_time_ifs = get_time();
+			long long start_time_ifs = get_time();
 			
 			/*
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
