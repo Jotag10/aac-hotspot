@@ -97,7 +97,7 @@ hotspot_host: $(OBJ_host) $(KERNEL).c
 	$(link_objs_host)
 
 hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
-	$(GEM5_CC) $(GEM5_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS_0) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
 	$(link_objs_gem5)
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
