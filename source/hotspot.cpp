@@ -301,7 +301,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			
 		}
 		
-		
+		/*
         long long start_time_loop = get_time();
         for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
             kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
@@ -309,8 +309,9 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
         }
        long long end_time_loop = get_time();
 		total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
+		*/
     }
-/*
+
 	long long start_time_loop = get_time();
 	for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
 		//kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
@@ -318,7 +319,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	}
 	long long end_time_loop = get_time();
     total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
-	*/
+	
 }
 
 /* Transient solver driver routine: simply converts the heat 
