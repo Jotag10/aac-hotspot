@@ -346,7 +346,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fsub v6.4s, v3.4s, v5.4s\n\t"			//v6 auxiliar, (amb_temp - temp[r*col+c])
 			 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 			 "ldr q10, [x7, x1]\n\t"				//v10 auxiliar, temp[r*col+c+1]
-			 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
+			 "fadd v6.4s, v10.4s, v8.4s\n\t"			//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
 			 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 			 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
 			 "ldr q6, [x9, x1]\n\t"					//v6 auxiliar, temp[(r+1)*col+c]
@@ -373,7 +373,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
     rem = (size+c_start) % (NEON_STRIDE*unroll);
     
-    for ( int c = iter; c < rem + iter; ++c ) 
+	//ONLY WORKS FOR NEON
+    for ( int c = iter; c < rem + iter1; ++c ) 
     {
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
@@ -469,10 +470,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
-#if defined(SVE)
-
-
 	
+//#if defined(SVE)
+	/*
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -519,8 +519,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
-	
-#else
+	*/
+//#else
 	
 	int c;
     float delta;
@@ -586,7 +586,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		//printf("IFS: r*col+c: %d\n", r*col+c);
 	}
-#endif
+//#endif
 }					  
 						  
 						  
