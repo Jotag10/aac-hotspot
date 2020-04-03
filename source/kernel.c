@@ -491,9 +491,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
-	
-//#if defined(SVE)
-	/*
+#if defined(SVE)
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -540,8 +538,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
-	*/
-//#else
+	
+#else
 	
 	int c;
     float delta;
@@ -607,7 +605,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		//printf("IFS: r*col+c: %d\n", r*col+c);
 	}
-//#endif
+#endif
 }					  
 						  
 						  
