@@ -491,7 +491,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
 #if defined(SVE)
-/*
+
 	asm volatile (
 		 
 		 //if (r==0)
@@ -537,16 +537,15 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
-
-
-
- 
-		 "sub x1, %[row], #1\n\t"
-		 "cmp %[r], x1\n\t"
+		//CORNER
+		 "sub x2, %[col], #1\n\t"
+		 "cmp x1, x2\n\t"
 		 "b.e .conerRU\n\t"
-		 
-		 
+		 "b .end\n\t"										//COMFIRMAR NOME
 		 ".conerRU:\n\t"
+		 
+		 
+		 
 		 
 		 
 		 : [res] "+r" (result)
@@ -554,7 +553,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
-	*/
+
 #else
 	
 	int c;
