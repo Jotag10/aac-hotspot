@@ -61,7 +61,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
-	float delta;
+	float delta, delta1;
     //float *teste = (float *) calloc (1024 * 1024, sizeof(float));
 
 	for ( chunk = 0; chunk < num_chunk; ++chunk )
@@ -79,7 +79,19 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 				{
-                    if (r == 0) {
+					if ((r == 0) && (c == col-1)) {
+                        delta = (Cap_1) * (power[c] +
+                            (temp[c-1] - temp[c]) * Rx_1 +
+                            (temp[c+col] - temp[c]) * Ry_1 +
+							(amb_temp - temp[c]) * Rz_1);
+							
+						delta1 = (Cap_1) * (power[c] +
+                            (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 +
+                            (temp[col+c] - temp[c]) * Ry_1 +
+                            (amb_temp - temp[c]) * Rz_1);
+						printf("CORNER, delta: %f, delta1: %f\n", delta, delta1);
+                    }  
+                    else if (r == 0) {
                         delta = (Cap_1) * (power[c] +
                             (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 +
                             (temp[col+c] - temp[c]) * Ry_1 +
