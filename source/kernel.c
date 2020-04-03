@@ -464,9 +464,9 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
 			(amb_temp - temp[r*col+c]) * Rz_1));
 		
-		//if (teste1!=result[r*col+c])
+		if (teste1!=result[r*col+c])
 		{
-			//printf("ERROR\n");
+			printf("ERROR\n");
 			printf("LOOP: r*col+c: %d\n", r*col+c);
 			//printf("%f, %f\n", temp[(r+1)*col+c], teste[c-c_start]);
 			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
