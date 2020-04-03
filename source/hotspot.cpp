@@ -79,31 +79,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			{
 				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
 				{
-					if ( (r == 0) && (c == 0) ) {
-                        delta = (Cap_1) * (power[0] +
-                            (temp[1] - temp[0]) * Rx_1 +
-                            (temp[col] - temp[0]) * Ry_1 +
-                            (amb_temp - temp[0]) * Rz_1);
-                    }   
-                    else if ((r == 0) && (c == col-1)) {
-                        delta = (Cap_1) * (power[c] +
-                            (temp[c-1] - temp[c]) * Rx_1 +
-                            (temp[c+col] - temp[c]) * Ry_1 +
-                        (   amb_temp - temp[c]) * Rz_1);
-                    }  
-                    else if ((r == row-1) && (c == col-1)) {
-                        delta = (Cap_1) * (power[r*col+c] +
-                            (temp[r*col+c-1] - temp[r*col+c]) * Rx_1 +
-                            (temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 +
-                        (   amb_temp - temp[r*col+c]) * Rz_1);
-                    }   
-                    else if ((r == row-1) && (c == 0)) {
-                        delta = (Cap_1) * (power[r*col] +
-                            (temp[r*col+1] - temp[r*col]) * Rx_1 +
-                            (temp[(r-1)*col] - temp[r*col]) * Ry_1 +
-                            (amb_temp - temp[r*col]) * Rz_1);
-                    }   
-                    else if (r == 0) {
+                    if (r == 0) {
                         delta = (Cap_1) * (power[c] +
                             (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 +
                             (temp[col+c] - temp[c]) * Ry_1 +
@@ -166,6 +142,30 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	long long end_time_loop = get_time();
     total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
 	*/
+	
+	
+	result[0] = temp[0]+ (Cap_1) * (power[0] +
+				(temp[1] - temp[0]) * Rx_1 +
+				(temp[col] - temp[0]) * Ry_1 +
+				(amb_temp - temp[0]) * Rz_1);
+	  
+	result[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
+					(temp[col-2] - temp[col-1]) * Rx_1 +
+					(temp[col-1+col] - temp[col-1]) * Ry_1 +
+					(amb_temp - temp[col-1]) * Rz_1);
+  
+
+	result[(row-1)*col+col-1] = temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] +
+								(temp[(row-1)*col+c-1] - temp[(row-1)*col+col-1]) * Rx_1 +
+								(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 +
+								(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);
+	   
+
+	result[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] +
+						(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 +
+						(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 +
+						(amb_temp - temp[(row-1)*col]) * Rz_1);
+	  
 }
 
 /* Transient solver driver routine: simply converts the heat 
