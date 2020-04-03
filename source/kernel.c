@@ -384,7 +384,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	
 	/*CHECK VALUES */
-	
+	/*
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
 		
@@ -402,6 +402,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
+	*/
 	//free(teste);
 
 #elif defined(SVE)
@@ -453,6 +454,25 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
 	
+	/*CHECK VALUES */
+	
+	for ( int c = c_start; c < size+c_start; ++c ) 
+	{
+		
+		float teste1 =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
+			(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
+			(temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
+			(amb_temp - temp[r*col+c]) * Rz_1));
+		
+		if (teste1!=result[r*col+c])
+		{
+			printf("ERROR\n", teste1);
+			printf("LOOP: r*col+c: %d\n", r*col+c);
+			//printf("%f, %f\n", temp[(r+1)*col+c], teste[c-c_start]);
+			printf("normal: %f, new: %f\n", teste1, result[r*col+c]);
+		}
+		
+	}
 
 #else
 
