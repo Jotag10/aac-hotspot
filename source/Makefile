@@ -2,7 +2,7 @@ HOST_CC = g++
 HOST_CC_FLAGS = -g -O0
 
 GEM5_CC = aarch64-linux-g++
-GEM5_CC_FLAGS = -g -O1 -static
+GEM5_CC_FLAGS = -g -O3 -static
 
 GEM5_CC_FLAGS_0 = -g -O -static
 GEM5_CC_FLAGS_1 = -g -O1 -static
@@ -121,7 +121,7 @@ hotspot_sve: $(OBJ_gem5) $(KERNEL).c
 	$(link_objs_gem5)
 
 $(OBJDIR)/$(SOBJ_host) : hotspot.cpp
-	$(HOST_CC) $(HOST_CC_FLAGS) -c $< -o $@
+	$(HOST_CC) $(HOST_CC_FLAGS_0) -c $< -o $@
 	
 $(OBJDIR)/$(SOBJ_gem5) : hotspot.cpp
 	$(GEM5_CC) $(HOST_CC_gem5) -fno-tree-vectorize -c $< -o $@
