@@ -143,61 +143,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
        
 	   
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
-        {
-			/*
-			long long start_time_ifs = get_time();
-			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
-			{
-				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-			}
-            
-            long long end_time_ifs = get_time();
-			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
-			continue;
-			*/
-			
-			/*
-			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
-			{
-				if (c_start == 0) 
-				{
-				result[r*col] = temp[r*col] + (Cap_1) * (power[r*col] + 
-							(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
-							(temp[r*col+1] - temp[r*col]) * Rx_1 + 
-							(amb_temp - temp[r*col]) * Rz_1);
-				}
-				
-				if (c_end == col) 
-				{
-				result[r*col+col-1] = temp[r*col+col-1] +(Cap_1) * (power[r*col+col-1] + 
-							(temp[(r+1)*col+col-1] + temp[(r-1)*col+col-1] - 2.0*temp[r*col+col-1]) * Ry_1 + 
-							(temp[r*col+col-2] - temp[r*col+col-1]) * Rx_1 + 
-							(amb_temp - temp[r*col+col-1]) * Rz_1);
-				}
-				
-			}
-			for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
-			{
-				if (r_end == row) 
-				{
-				result[(row-1)*col+c] =temp[(row-1)*col+c] +(Cap_1) * (power[(row-1)*col+c] + 
-							(temp[(row-1)*col+c+1] + temp[(row-1)*col+c-1] - 2.0*temp[(row-1)*col+c]) * Rx_1 + 
-							(temp[(row-2)*col+c] - temp[(row-1)*col+c]) * Ry_1 + 
-							(amb_temp - temp[(row-1)*col+c]) * Rz_1);
-				}
-				
-				if (r_start == 0) 
-				{
-				result[c] =temp[c]+(Cap_1) * (power[c] + 
-						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-						(temp[col+c] - temp[c]) * Ry_1 + 
-						(amb_temp - temp[c]) * Rz_1);
-						
-				}
-				
-			}
-			*/
-			
+        {		
 			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
@@ -256,51 +202,19 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			}
 			long long end_time_ifs = get_time();
 			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
-			continue;
+			continue;	
 			
 			/*
-			result[0] = temp[0]+ (Cap_1) * (power[0] +
-				(temp[1] - temp[0]) * Rx_1 +
-				(temp[col] - temp[0]) * Ry_1 +
-				(amb_temp - temp[0]) * Rz_1);
-			//printf("Corner1\n");
-			
-			result[col-1] = temp[col-1]+ (Cap_1) * (power[col-1] +
-				(temp[col-2] - temp[col-1]) * Rx_1 +
-				(temp[2*col-1] - temp[col-1]) * Ry_1 +
-				(amb_temp - temp[col-1]) * Rz_1);
-			//printf("Corner2\n");
-			
-			result[(row-1)*col+col-1] =temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] + 
-				(temp[(row-1)*col+col-2] - temp[(row-1)*col+col-1]) * Rx_1 + 
-				(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 + 
-				(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);	
-			//printf("Corner3\n");						
-
-			result[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] + 
-				(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 + 
-				(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 + 
-				(amb_temp - temp[(row-1)*col]) * Rz_1);
-				//printf("Corner4\n");
-				*/
-			
-			/*
+			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) 
-				{
-					if ( ((r == 0) && (c == 0)) ||((r == 0) && (c == col-1))|| ((r == row-1) && (c == col-1)) ||((r == row-1) && (c == 0))|| (r == 0)|| (c == col-1)|| (r == row-1) || (c == 0))
-					{
-						if (teste[r*col+c]!=result[r*col+c])
-						{
-							printf("ERROU! linha:%d coluna:%d. %f, %f\n", r, c, result[r*col+c], teste[r*col+c]);
-							printf("r_start:%d, r_end:%d c_start:%d, c_end:%d, col: %d, row: %d\n\n", r_start, r_end,c_start, c_end, col, row);
-						}
-					}
-				}
+				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 			}
-*/			
-			
+            
+            long long end_time_ifs = get_time();
+			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
+			continue;
+			*/
 		}
 		
 		
@@ -309,7 +223,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
             kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
             //kernel(result, temp, power, (size_t)c_start, (size_t)(col-1), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
         }
-       long long end_time_loop = get_time();
+        long long end_time_loop = get_time();
 		total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
 		
     }
