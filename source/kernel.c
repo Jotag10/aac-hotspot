@@ -488,13 +488,12 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 }
 
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
-					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *d)
 {
 #if defined(SVE)
-
+	float delta = *d;
 	asm volatile (
-		 
-		 
+	
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
 		 "b.eq .sve_r_0\n\t"
@@ -535,12 +534,13 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fmla s1, s6, s3\n\t"								//acumulador
 		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col]
 		 "fmul s0, s1, s8\n\t"								//delta  
+		 "mov %[delta], s0\n\t"
 		 "fadd s1, s0, s5\n\t"								//result[r*col]
 		 "str s1, [%[res], x1]\n\t"
 		 "mov x1, #1\n\t"									//c=1
 		
 		
-		".sve_normal:\n\t"
+		 ".sve_normal:\n\t"
 		 //x1 iterador c=c_start || c=1
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 //loop
@@ -554,27 +554,47 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_normal\n\t"
 		 
-
 		 "sub x2, %[col], #1\n\t"
 		 "cmp x1, x2\n\t"
 		 "b.neq .sve_end\n\t"
 		 
+		 
 		 //c=col-1
-		 
-		 
-		 
-		 
-		 
+		 "lsl x1, x1, #2\n\t"								//col-1
+		 "lsl x2, %[r], #2 \n\t"							//r
+		 "madd x2, x2, %[col], x1\n\t"						//r*col+c
+		 "ldr s1, %[amb]\n\t"								//amb_temp
+		 "ldr s5, [%[temp], x2]\n\t"						//temp[r*col+c]
+		 "ldr s2, %[Rx]\n\t"								//Rx_1
+		 "ldr s3, %[Ry]\n\t"								//Ry_1
+		 "ldr s4, %[Rz]\n\t"								//Rz_1
+		 "fsub s1, s1, s5\n\t"								//amb_temp - temp[r*col+c]
+		 "sub x3, x2, #4\n\t"								///r*col+c-1
+		 "fmul s1, s4, s1\n\t"
+		 "ldr s6, [%[temp], x3]\n\t"						//temp[r*col+c-1]
+		 "fsub s6, s6, s5\n\t"								//temp[r*col+c-1] - temp[r*col+c]
+		 "ldr s4, [%[pow], x2]\n\t"							//power[r*col]
+		 "fmla s1, s6, s2\n\t"								//acumulador
+		 "add x3, x2, %[col], lsl #2\n\t"					//(r+1)*col+c
+		 "ldr s6, [%[temp], x3]\n\t"						//temp[(r+1)*col+c]
+		 "sub x3, x2, %[col], lsl #2\n\t"					//(r-1)*col+c
+		 "fmov s7, #2\n\t"
+		 "ldr s2, [%[temp], x3]\n\t"						//temp[(r-1)*col]
+		 "ldr s8, %[ca]\n\t"								//cap_1
+		 "fadd s6, s6, s2\n\t"								//temp[(r+1)*col+c] + temp[(r-1)*col+c]
+		 "fmls s6, s7, s5\n\t"								//temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]
+		 "fmla s1, s6, s3\n\t"								//acumulador
+		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col+c]
+		 "fmul s0, s1, s8\n\t"								//delta  
+		 "fadd s1, s0, s5\n\t"								//result[r*col+c]
+		 "str s1, [%[res], x1]\n\t"
 		 
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 
-
-		 
-		 //TO DO
 		 
 		 //r=0
 		 ".sve_r_0:\n\t"
-		 "mov x1, %[c] \n\t"								//iterador c=c_start
+		 "mov x1, %[c]\n\t"									//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "ld1rw {z0.s}, p0/z, %[Rx]\n\t"
 		 "ld1rw {z1.s}, p0/z, %[Ry]\n\t"
@@ -613,7 +633,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
-		 "b .sve_end\n\t"										//COMFIRMAR NOME
+		 "b .sve_end\n\t"
 		 
 		 
 		 // r=0 && c=col-1
@@ -644,7 +664,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 
 		 
 		 // r = row-1
-		 ".r_end:\n\t"	  
+		 ".sve_r_end:\n\t"	  
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "madd x2, %[r], %[col], %[c]\n\t"					//r*col+c
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -683,14 +703,15 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "b.first .loop_sve_r_end\n\t"
 	
 		 ".sve_end:\n\t"
-		 
-		 
+		 "mov %[delta], s0\n\t"
 		 
 		 : [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
-		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
+		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
+	
+	*d=delta;
 
 #else
 	
