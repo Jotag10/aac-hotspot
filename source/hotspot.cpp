@@ -61,7 +61,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
-	float delta, delta1;
+	float *delta;
     //float *teste = (float *) calloc (1024 * 1024, sizeof(float));
 
 	for ( chunk = 0; chunk < num_chunk; ++chunk )
@@ -73,7 +73,8 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
        
 	   
         if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
-        {		
+        {	
+			/*
 			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
@@ -115,18 +116,18 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			long long end_time_ifs = get_time();
 			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
 			continue;	
+			*/
 			
-			/*
 			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
 			}
             
             long long end_time_ifs = get_time();
 			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
 			continue;
-			*/
+			
 		}
 		
 		
