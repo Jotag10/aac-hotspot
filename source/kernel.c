@@ -488,10 +488,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 }
 
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
-					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *d)
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
 #if defined(SVE)
-	float delta = *d;
+
 	asm volatile (
 	
 		 //if (r==0)
@@ -534,7 +534,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fmadd s1, s6, s3, s1\n\t"							//acumulador
 		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col]
 		 "fmul s0, s1, s8\n\t"								//delta  
-		 "mov %[delta], s0\n\t"
+		 "str s0, [%[delta]]\n\t"
 		 "fadd s1, s0, s5\n\t"								//result[r*col]
 		 "str s1, [%[res], x1]\n\t"
 		 "mov x1, #1\n\t"									//c=1
@@ -546,7 +546,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //loop
 		 ".loop_sve_normal:\n\t"
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
-		 "fmov z2.s ,p0/m, %[delta]\n\t"					//z2, delta
+		 "ld1rw {z2.s}, p0/z, %[delta]\n\t"					//z2, delta				
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
 		 "st1w z1.s, p0, [%[res], x2, lsl #2]\n\t"
 		 "incw x2\n\t"
@@ -703,15 +703,14 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "b.first .loop_sve_r_end\n\t"
 	
 		 ".sve_end:\n\t"
-		 "mov %[delta], s0\n\t"
+		 "str s0, [%[delta]]\n\t"
 		 
 		 : [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
-	
-	*d=delta;
+
 
 #else
 	
