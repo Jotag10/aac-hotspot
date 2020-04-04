@@ -522,7 +522,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[r*col+1]
 		 "fsub s6, s6, s5\n\t"								//temp[r*col+1] - temp[r*col]
 		 "ldr s4, [%[pow], x1]\n\t"							//power[r*col]
-		 "fmla S1, S6, S2\n\t"								//acumulador
+		 "fmadd s1, s6, s2, s1\n\t"							//acumulador
 		 "add x2, x1, %[col], lsl #2\n\t"					//(r+1)*col
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[(r+1)*col]
 		 "sub x2, x1, %[col], lsl #2\n\t"					//(r-1)*col
@@ -530,8 +530,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s2, [%[temp], x2]\n\t"						//temp[(r-1)*col]
 		 "ldr s8, %[ca]\n\t"								//cap_1
 		 "fadd s6, s6, s2\n\t"								//temp[(r+1)*col]+ temp[(r-1)*col]
-		 "fmls s6, s7, s5\n\t"								//temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]
-		 "fmla s1, s6, s3\n\t"								//acumulador
+		 "fmsub s6, s7, s5, s6\n\t"							//temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]
+		 "fmadd s1, s6, s3, s1\n\t"							//acumulador
 		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col]
 		 "fmul s0, s1, s8\n\t"								//delta  
 		 "mov %[delta], s0\n\t"
@@ -574,7 +574,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s6, [%[temp], x3]\n\t"						//temp[r*col+c-1]
 		 "fsub s6, s6, s5\n\t"								//temp[r*col+c-1] - temp[r*col+c]
 		 "ldr s4, [%[pow], x2]\n\t"							//power[r*col]
-		 "fmla S1, S6, S2\n\t"								//acumulador
+		 "fmadd s1, s6, s2, s1\n\t"							//acumulador
 		 "add x3, x2, %[col], lsl #2\n\t"					//(r+1)*col+c
 		 "ldr s6, [%[temp], x3]\n\t"						//temp[(r+1)*col+c]
 		 "sub x3, x2, %[col], lsl #2\n\t"					//(r-1)*col+c
@@ -582,8 +582,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s2, [%[temp], x3]\n\t"						//temp[(r-1)*col]
 		 "ldr s8, %[ca]\n\t"								//cap_1
 		 "fadd s6, s6, s2\n\t"								//temp[(r+1)*col+c] + temp[(r-1)*col+c]
-		 "fmls s6, s7, s5\n\t"								//temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]
-		 "fmla s1, s6, s3\n\t"								//acumulador
+		 "fmsub s6, s7, s5, s6\n\t"							//temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]
+		 "fmadd s1, s6, s3, s1\n\t"							//acumulador
 		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col+c]
 		 "fmul s0, s1, s8\n\t"								//delta  
 		 "fadd s1, s0, s5\n\t"								//result[r*col+c]
@@ -650,12 +650,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[col-1+col]
 		 "fsub s6, s6, s5\n\t"								//temp[c+col] - temp[c]
 		 "ldr s4, %[ca]\n\t"								//cap_1
-		 "fmla s1, s6, s3\n\t"								//acumulador
+		 "fmadd s1, s6, s3, s1\n\t"								//acumulador
 		 "sub x2, x1, #4\n\t"								//col-1-1
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[col-1-1]
 		 "ldr s3, [%[pow], x1]\n\t"							//power[col-1]
 		 "fsub s6, s6, s5\n\t"								//temp[col-1-1]- temp[col-1]
-		 "fmla S1, S6, S2\n\t"								//acumulador
+		 "fmadd s1, s6, s2, s1\n\t"								//acumulador
 		 "fadd s1, s3, s1\n\t"								//acumulador+power[col-1]
 		 "fmul s0, s1, s4\n\t"								//delta
 		 "fadd s1, s0, s5\n\t"								//result[col-1]
