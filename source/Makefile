@@ -2,7 +2,7 @@ HOST_CC = g++
 HOST_CC_FLAGS = -g -O0
 
 GEM5_CC = aarch64-linux-g++
-GEM5_CC_FLAGS = -g -O2 -static
+GEM5_CC_FLAGS = -g -O3 -static
 
 GEM5_CC_FLAGS_0 = -g -O -static
 GEM5_CC_FLAGS_1 = -g -O1 -static
@@ -42,7 +42,7 @@ run_host: hotspot_host
 	@echo "WARNING: Running with 1000 iterations... "
 	@echo "you may change the number of iterations and the problem size"
 	@echo "======================================================================"
-	./hotspot_host 64 64 2 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_host.out
+	./hotspot_host 1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
 	
 run_gem5: hotspot_gem5
 	@echo "======================================================================"
@@ -82,7 +82,7 @@ run_neon_u3: hotspot_neon_u3
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u3 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u3.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u3 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u3.out'
 
 run_sve: hotspot_sve
 	@echo "======================================================================"
@@ -98,7 +98,7 @@ hotspot_host: $(OBJ_host) $(KERNEL).c
 
 hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
-	$(link_objs_gem5)	
+	$(link_objs_gem5)
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DNEON
@@ -117,7 +117,7 @@ hotspot_neon_u3: $(OBJ_gem5) $(KERNEL).c
 	$(link_objs_gem5)
 	
 hotspot_sve: $(OBJ_gem5) $(KERNEL).c
-	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+sve -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DSVE
+	$(GEM5_CC) $(GEM5_CC_FLAGS_0) -march=armv8-a+sve -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DSVE
 	$(link_objs_gem5)
 
 $(OBJDIR)/$(SOBJ_host) : hotspot.cpp
