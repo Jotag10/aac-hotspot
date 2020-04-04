@@ -506,7 +506,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //if (c ==0)
 		 "mov x1, %[c]\n\t"
 		 "cmp %[c], #0\n\t"
-		 "b.neq .sve_normal\n\t"
+		 "b.ne .sve_normal\n\t"
 		 
 		 //c =0
 		 "lsl x1, %[r], #2\n\t"								//r
@@ -556,7 +556,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 
 		 "sub x2, %[col], #1\n\t"
 		 "cmp x1, x2\n\t"
-		 "b.neq .sve_end\n\t"
+		 "b.ne .sve_end\n\t"
 		 
 		 
 		 //c=col-1
@@ -638,7 +638,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 
 		 // r=0 && c=col-1
 		 ".sve_conerRU:\n\t"
-		 "lsl x1, x1 #2\n\t"								//col-1
+		 "lsl x1, x1, #2\n\t"								//col-1
 		 "ldr s1, %[amb]\n\t"								//amb_temp
 		 "ldr s5, [%[temp], x1]\n\t"						//temp[col-1]
 		 "ldr s2, %[Rx]\n\t"								//Rx_1
