@@ -84,12 +84,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                             (temp[c-1] - temp[c]) * Rx_1 +
                             (temp[c+col] - temp[c]) * Ry_1 +
 							(amb_temp - temp[c]) * Rz_1);
-							
-						delta1 = (Cap_1) * (power[c] +
-                            (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 +
-                            (temp[col+c] - temp[c]) * Ry_1 +
-                            (amb_temp - temp[c]) * Rz_1);
-						printf("CORNER, delta: %f, delta1: %f\n", delta, delta1);
                     }  
                     else if (r == 0) {
                         delta = (Cap_1) * (power[c] +
