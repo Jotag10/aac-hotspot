@@ -499,12 +499,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
 		 "b.eq .sve_r_0\n\t"
-		 /*
+		 
 		 //if (r==row-1)
 		 "sub x1, %[row], #1\n\t"
 		 "cmp %[r], x1\n\t"
 		 "b.eq .sve_r_end\n\t"
-		 
+		 /*
 		 //if (c ==0)
 		 "mov x1, %[c]\n\t"
 		 "cmp %[c], #0\n\t"
@@ -664,7 +664,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "str s1, [%[res], x1]\n\t"
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 
-		 /*
+		 
 		 // r = row-1
 		 ".sve_r_end:\n\t"	  
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
@@ -704,7 +704,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_end\n\t"
 		
-		*/
+		
 		 ".sve_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
 		 
@@ -714,41 +714,19 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
-	if (r==0)
+	if (r==row-1)
 	{
 		for (int c=c_start; c < c_start+size; c++)
 		{
-			/*
-			float teste1= (Cap_1) * (power[c] + 
-						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-						(temp[col+c] - temp[c]) * Ry_1 + 
-						(amb_temp - temp[c]) * Rz_1);
-			*/
-/*			
-			float teste_result=(Cap_1) *(power[c] + 
-				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-				(temp[col+c] - temp[c]) * Ry_1 + 
-				(amb_temp - temp[c]) * Rz_1);
-			*/
-			//printf("%f, %f\n", teste1+temp[r*col+c], result[r*col+c]);
-			if (c==col-1)
-			{
-				float teste_delta=(Cap_1) * (power[c] +
-				(temp[c-1] - temp[c]) * Rx_1 +
-				(temp[c+col] - temp[c]) * Ry_1 +
-				(amb_temp - temp[c]) * Rz_1);
-				
-				float teste_result=temp[r*col+c] + teste_delta;
-				
-				printf("CORNER %f, %f\n", result[r*col+c], teste_result);
-				printf("CORNER %f, %f\n", delta[0], teste_delta);
-			}
-			else
-			{
-				
-				
-				
-			}
+			float teste_delta=(Cap_1) * (power[r*col+c] + 
+				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
+				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
+				(amb_temp - temp[r*col+c]) * Rz_1);
+			
+			float teste_result=temp[r*col+c] + teste_delta;
+			
+			printf("%f, %f\n", result[r*col+c], teste_result);
+			printf("%f, %f\n", delta[0], teste_delta);
 		}
 		printf("\n");
 	}
