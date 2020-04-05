@@ -553,7 +553,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
 		 "st1w z1.s, p0, [%[res], x2, lsl #2]\n\t"
-		 "st1w z1.s, p0, [%[teste], x4, lsl #2]\n\t"
+		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "incw x4\n\t"					//APAGAR
 		 "incw x2\n\t"
 		 "incw x1\n\t"
@@ -777,7 +777,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta, delta[0]); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta, teste[c-c-c_start]); 
 		}
 	}
 	
