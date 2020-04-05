@@ -716,7 +716,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);
 	
 	
-	if (c_start+size==col-1 && !(r==0 || r==row-1))
+	if ((c_start+size)==(col-1) && !(r==0 || r==row-1))
 	{
 		int c=c_start+size;
 		float teste_delta= (Cap_1) * (power[r*col+c] + 
