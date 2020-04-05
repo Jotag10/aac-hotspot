@@ -499,7 +499,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
 		 "b.eq .sve_r_0\n\t"
-		 
+		 /*
 		 //if (r==row-1)
 		 "sub x1, %[row], #1\n\t"
 		 "cmp %[r], x1\n\t"
@@ -594,7 +594,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "str s1, [%[res], x2]\n\t"
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 
-		 
+		 */
 		 //r=0
 		 ".sve_r_0:\n\t"
 		 "mov x1, %[c]\n\t"									//iterador c=c_start
@@ -632,11 +632,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
 		 
-		 
+		 /*
 		//vê se é o CORNER
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
+		 */
 		 "b .sve_end\n\t"
 		 
 		 // r=0 && c=col-1
@@ -716,24 +717,30 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);
 	
 	
-	/*
-	int c=c_start+size-1;
-	if (c==(col-1))
+	
+	if (r==0)
 	{
-		
-		float teste_delta= (Cap_1) * (power[r*col+c] + 
-				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
-				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
-				(amb_temp - temp[r*col+c]) * Rz_1);
-		float teste_result= temp[r*col+c]+teste_delta;
-		
+		for (int c=c_start; c < c_start+size; c++)
+		{
+			
+			float teste_delta = (Cap_1) * (power[c] + 
+					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
+					(temp[col+c] - temp[c]) * Ry_1 + 
+					(amb_temp - temp[c]) * Rz_1);
+			float teste_result= temp[r*col+c]+teste_delta;
+		}
 		printf("r: %d, c: %d\n", r, c);
 		printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
 		printf("normal: %f, new: %f\n\n", teste_delta, delta[0]);
+		if (result[r*col+c] != teste_result)
+		{
+			
+			printf("ERROR\n");
+		}
 	}
-	printf("\n");
-	*/
 	
+	
+	/*
 	for (int c = c_start; c < c_start + size; ++c ) 
 	{
 		float teste_delta;
@@ -780,6 +787,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta, teste[c-c-c_start]); 
 		}
 	}
+	*/
 	printf("\n");
 	free(teste);
 
