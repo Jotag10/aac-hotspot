@@ -716,7 +716,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);
 	
 	
-	if ((c_start+size)==(col-1) && !(r==0 || r==row-1))
+	if ((c_start+size)==(col-1))
 	{
 		int c=c_start+size;
 		float teste_delta= (Cap_1) * (power[r*col+c] + 
@@ -724,9 +724,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 		float teste_result= temp[r*col+c]+teste_delta;
-		
+		printf("r: %d, c: %d\n", r, c);
 		printf("%f, %f\n", teste_result, result[r*col+c]);
-		printf("%f, %f\n", teste_delta, delta[0]);
+		printf("%f, %f\n\n", teste_delta, delta[0]);
 	}
 	
 	/*
@@ -781,23 +781,6 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 	
 	free(teste);
-	/*
-	if (r==0)
-	{
-		int c = c_start+size;
-		
-		float teste_delta= (Cap_1) * (power[c] + 
-					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-					(temp[col+c] - temp[c]) * Ry_1 + 
-					(amb_temp - temp[c]) * Rz_1);
-					
-			printf("delta- normal:%f, new:%f\n", teste_delta, *delta);
-			printf("result- normal:%f, new:%f\n", teste_delta+temp[r*col+c], result[r*col+c]);
-		
-
-	}
-	*/
-
 
 #else
 	
@@ -805,42 +788,40 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	for ( c = c_start; c < c_start + size; ++c ) 
 	{
 		if ((r == 0) && (c == col-1)) {
-			*delta = (Cap_1) * (power[c] +
+			delta[0] = (Cap_1) * (power[c] +
 				(temp[c-1] - temp[c]) * Rx_1 +
 				(temp[c+col] - temp[c]) * Ry_1 +
 				(amb_temp - temp[c]) * Rz_1);
         }
 		else if (r == 0) {
-			*delta = (Cap_1) * (power[c] + 
+			delta[0] = (Cap_1) * (power[c] + 
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
 				//printf("Edge1\n");
 		}
 		else if (c == col-1) {
-			*delta = (Cap_1) * (power[r*col+c] + 
+			delta[0] = (Cap_1) * (power[r*col+c] + 
 				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
 				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 				//printf("Edge2\n");
 		}	
 		else if (r == row-1) {
-			*delta = (Cap_1) * (power[r*col+c] + 
+			delta[0] = (Cap_1) * (power[r*col+c] + 
 				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
 				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 				//printf("Edge3\n");
 		}	
 		else if (c == 0) {
-			*delta = (Cap_1) * (power[r*col] + 
+			delta[0] = (Cap_1) * (power[r*col] + 
 				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 				(amb_temp - temp[r*col]) * Rz_1);
 				//printf("Edge4\n");
 		}
-		result[r*col+c] =temp[r*col+c]+ (*delta);
-		
-		//printf("IFS: r*col+c: %d\n", r*col+c);
+		result[r*col+c] =temp[r*col+c]+ delta[0];
 	}
 	
 	
