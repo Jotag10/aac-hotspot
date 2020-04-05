@@ -491,7 +491,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
 #if defined(SVE)
-
+	
+	float *teste = (float *) calloc (300, sizeof(float));
 	asm volatile (
 	
 		 //if (r==0)
@@ -602,6 +603,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 		 "fmov z9.s ,p0/m, #2\n\t"
+		 "mov x4, #0\n\t"				//APAGAR				
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
@@ -625,7 +627,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z6 acumulador
 		 "st1w z5.s, p0, [%[res], x1, lsl #2]\n\t"
+		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "incw x1\n\t"
+		 /*
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
 		 
@@ -709,12 +713,24 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 ".sve_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
 		 
-		 : [res] "+r" (result), [delta] "+r" (delta)
+		 : [res] "+r" (result), [delta] "+r" (delta), [teste] "+r" (teste)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
-	
+	if (r==0)
+	{
+		for (c=c_start; c < c_start+size; c++)
+		{
+			float teste_delta= (Cap_1) * (power[c] + 
+						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
+						(temp[col+c] - temp[c]) * Ry_1 + 
+						(amb_temp - temp[c]) * Rz_1);
+			printf("result- normal:%f, new:%f\n", teste_delta+temp[r*col+c], teste[c-c_start]);
+		}
+	}
+		
+	/*
 	if (r==0)
 	{
 		int c = c_start+size;
@@ -724,11 +740,13 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					(temp[col+c] - temp[c]) * Ry_1 + 
 					(amb_temp - temp[c]) * Rz_1);
 					
-			printf("delta %f, %f\n", teste_delta, *delta);
-			printf("result %f, %f\n", result[r*col+c], teste_delta+temp[r*col+c]);
+			printf("delta- normal:%f, new:%f\n", teste_delta, *delta);
+			printf("result- normal:%f, new:%f\n", teste_delta+temp[r*col+c], result[r*col+c]);
 		
 
 	}
+	*/
+	free(teste);
 #else
 	
 	int c;
