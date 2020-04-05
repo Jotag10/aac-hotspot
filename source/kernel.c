@@ -720,23 +720,28 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 	if (r==0)
 	{
-		for (int c=c_start; c < c_start+size; c++)
+		float teste_delta;
+		float teste_result;
+		int c;
+		for (c=c_start; c < c_start+size; c++)
 		{
 			
-			float teste_delta = (Cap_1) * (power[c] + 
+			teste_delta = (Cap_1) * (power[c] + 
 					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 					(temp[col+c] - temp[c]) * Ry_1 + 
 					(amb_temp - temp[c]) * Rz_1);
-			float teste_result= temp[r*col+c]+teste_delta;
-		}
-		printf("r: %d, c: %d\n", r, c);
-		printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
-		printf("normal: %f, new: %f\n\n", teste_delta, delta[0]);
-		if (result[r*col+c] != teste_result)
-		{
+			teste_result= temp[r*col+c]+teste_delta;
 			
-			printf("ERROR\n");
+			printf("r: %d, c: %d\n", r, c);
+			printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
+			printf("normal: %f, new: %f\n\n", teste_delta, delta[0]);
+			if (result[r*col+c] != teste_result)
+			{
+				
+				printf("ERROR\n");
+			}
 		}
+		
 	}
 	
 	
