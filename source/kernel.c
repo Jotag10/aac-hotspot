@@ -490,9 +490,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
+	float *teste = (float *) calloc (300, sizeof(float));
 #if defined(SVE)
 	
-	float *teste = (float *) calloc (300, sizeof(float));
+	
 	asm volatile (
 	
 		 //if (r==0)
@@ -720,18 +721,6 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
 	
-	//if (r==0)
-	{
-		for (int c=c_start; c < c_start+size; c++)
-		{
-			float teste_delta= (Cap_1) * (power[c] + 
-						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-						(temp[col+c] - temp[c]) * Ry_1 + 
-						(amb_temp - temp[c]) * Rz_1);
-			printf("normal:%f, new:%f\n", teste_delta+temp[r*col+c], teste[c-c_start]);
-		}
-	}
-	
 	/*
 	if (r==0)
 	{
@@ -748,8 +737,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 
 	}
 	*/
-	//free(teste);
-	//free(teste);
+
+
 #else
 	
 	int c;
@@ -793,6 +782,21 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		//printf("IFS: r*col+c: %d\n", r*col+c);
 	}
+	
+	
 #endif
+
+	//if (r==0)
+	{
+		for (int c=c_start; c < c_start+size; c++)
+		{
+			float teste_delta= (Cap_1) * (power[c] + 
+						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
+						(temp[col+c] - temp[c]) * Ry_1 + 
+						(amb_temp - temp[c]) * Rz_1);
+			printf("normal:%f, new:%f\n", teste_delta+temp[r*col+c], teste[c-c_start]);
+		}
+	}
+	free(teste);
 }					  
 						  
