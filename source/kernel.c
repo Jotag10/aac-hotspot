@@ -597,6 +597,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 ".sve_r_0:\n\t"
 		 "mov x1, %[c]\n\t"									//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
+		 /*
 		 "ld1rw {z0.s}, p0/z, %[Rx]\n\t"
 		 "ld1rw {z1.s}, p0/z, %[Ry]\n\t"
 		 "ld1rw {z2.s}, p0/z, %[Rz]\n\t"
@@ -607,7 +608,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
-		 /*
+		 
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[c])
 		 "add x2, x1, %[col]\n\t"							//col+c
