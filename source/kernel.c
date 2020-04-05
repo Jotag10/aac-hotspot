@@ -625,8 +625,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fmla z6.s, p0/m, z7.s, z0.s\n\t"					//z6 acumulador
 		 "ld1w { z8.s }, p0/z, [%[pow], x1, lsl #2]\n\t"	//z8, power[c]
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[c]
-		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
+		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
+		 
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z6 acumulador
 		 "st1w z5.s, p0, [%[res], x1, lsl #2]\n\t"
 		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
@@ -712,7 +713,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		*/
 		 ".sve_end:\n\t"
-		 "str s0, [%[delta], #0]\n\t"
+		 "str s0, [%[delta]]\n\t"
 		 
 		 : [teste] "+r" (teste), [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
@@ -730,7 +731,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
 			*/		
-			float teste_delta=(Cap_1) * (power[c_start+size] + 
+			float teste_delta=(power[c_start+size] + 
 						(temp[c_start+size+1] + temp[c_start+size-1] - 2.0*temp[c_start+size]) * Rx_1 + 
 						(temp[col+c_start+size] - temp[c_start+size]) * Ry_1 + 
 						(amb_temp - temp[c_start+size]) * Rz_1);
