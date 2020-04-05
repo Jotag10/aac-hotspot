@@ -741,7 +741,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 				float teste_result=temp[r*col+c] + teste_delta;
 				
 				printf("CORNER %f, %f\n", result[r*col+c], teste_result);
-				printf("CORNER %f, %f\n", delta[0], teste_result);
+				printf("CORNER %f, %f\n", delta[0], teste_delta);
 			}
 			else
 			{
