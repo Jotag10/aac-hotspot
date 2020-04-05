@@ -565,7 +565,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "mov x1, %[col]\n\t"			//APAGAR
 		 "sub x1, x1, #1\n\t"			//APAGAR
 		 //c=col-1
-		 "lsl x1, x1, #2\n\t"								//col-1
+		 "lsl x1, x1, #2\n\t"								//c
 		 "lsl x2, %[r], #2 \n\t"							//r
 		 "madd x2, x2, %[col], x1\n\t"						//r*col+c
 		 "ldr s1, %[amb]\n\t"								//amb_temp
@@ -592,7 +592,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fadd s1, s4, s1\n\t"								//acumulador+power[r*col+c]
 		 "fmul s0, s1, s8\n\t"								//delta  
 		 "fadd s1, s0, s5\n\t"								//result[r*col+c]
-		 "str s1, [%[res], x1]\n\t"
+		 "str s1, [%[res], x2]\n\t"
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 
 		 
@@ -728,8 +728,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		float teste_result= temp[r*col+c]+teste_delta;
 		
 		printf("r: %d, c: %d\n", r, c);
-		printf("%f, %f\n", teste_result, result[r*col+c]);
-		printf("%f, %f\n\n", teste_delta, delta[0]);
+		printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
+		printf("normal: %f, new: %f\n\n", teste_delta, delta[0]);
 	}
 	printf("\n");
 	
