@@ -630,8 +630,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "st1w z5.s, p0, [%[res], x1, lsl #2]\n\t"
 		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "incw x1\n\t"
-		 "whilelt p0.s, x1, %[sz]\n\t"
-		 "b.first .loop_sve_r_0\n\t"
+		 //"whilelt p0.s, x1, %[sz]\n\t"
+		 //"b.first .loop_sve_r_0\n\t"
 		 
 		 /*
 		//vê se é o CORNER
