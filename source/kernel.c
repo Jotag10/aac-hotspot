@@ -497,7 +497,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
 		 "b.eq .sve_r_0\n\t"
-		 
+		 /*
 		 //if (r==row-1)
 		 "sub x1, %[row], #1\n\t"
 		 "cmp %[r], x1\n\t"
@@ -590,7 +590,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "str s1, [%[res], x1]\n\t"
 		 
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
-		 
+		 */
 		 
 		 //r=0
 		 ".sve_r_0:\n\t"
@@ -629,13 +629,16 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
 		 
+		 /*
 		//vê se é o CORNER
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
+		 */
+		 
 		 "b .sve_end\n\t"
 		 
-		 
+		 /*
 		 // r=0 && c=col-1
 		 ".sve_conerRU:\n\t"
 		 "lsl x1, x1, #2\n\t"								//col-1
@@ -701,7 +704,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_end\n\t"
-	
+		
+		*/
 		 ".sve_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
 		 
@@ -710,8 +714,18 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
-
-
+	
+	
+	for ( c = c_start; c < c_start + size; ++c )
+	{
+		float teste_delta= (Cap_1) * (power[c] + 
+				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
+				(temp[col+c] - temp[c]) * Ry_1 + 
+				(amb_temp - temp[c]) * Rz_1);
+		printf("%f, %f\n", teste_delta, *delta);
+		printf("%f, %f\n", result[r*col+c], teste_delta+temp[r*col+c]);
+	}
+	printf("\n");
 #else
 	
 	int c;
