@@ -562,7 +562,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "cmp x1, x2\n\t"
 		 "b.ne .sve_end\n\t"
 		 */
-		 
+		 "mov x1, %[col]\n\t"			//APAGAR
+		 "sub x1, x1, #1\n\t"			//APAGAR
 		 //c=col-1
 		 "lsl x1, x1, #2\n\t"								//col-1
 		 "lsl x2, %[r], #2 \n\t"							//r
@@ -717,7 +718,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 	int c=c_start+size;
 	
-	if (c==(col-1))
+	if (c==col)
 	{
 		
 		float teste_delta= (Cap_1) * (power[r*col+c] + 
