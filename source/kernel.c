@@ -599,7 +599,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 ".sve_r_0:\n\t"
 		 "mov x1, %[c]\n\t"									//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
-		 "ld1rw {z0.s}, p0/z, %[Rx]\n\t"
+		 "ld1rw {z10.s}, p0/z, %[Rx]\n\t"
 		 "ld1rw {z1.s}, p0/z, %[Ry]\n\t"
 		 "ld1rw {z2.s}, p0/z, %[Rz]\n\t"
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
@@ -622,8 +622,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1w { z8.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z8, temp[c-1]
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[c+1]+temp[c-1]
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7,(temp[c+1]+temp[c-1] - 2.0*temp[c])
-		 "fmla z6.s, p0/m, z7.s, z0.s\n\t"					//z6 acumulador
-		 "st1w z0.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
+		 "fmla z6.s, p0/m, z7.s, z10.s\n\t"					//z6 acumulador
+		 "st1w z10.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "ld1w { z8.s }, p0/z, [%[pow], x1, lsl #2]\n\t"	//z8, power[c]
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[c]
 		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
@@ -717,7 +717,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : [teste] "+r" (teste), [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
-		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
+		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "z10", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
 	
