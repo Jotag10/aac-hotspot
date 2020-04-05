@@ -738,6 +738,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 			printf("%f, %f\n", teste_delta, delta[0]);
 		}
 	}
+	printf("\n");
 	
 	free(teste);
 	/*
