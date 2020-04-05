@@ -718,7 +718,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : [teste] "+r" (teste) 
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
-		 : "x1", "x2", "x3", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
+		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);	
 	//if (r==0)
 	
