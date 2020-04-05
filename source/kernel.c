@@ -543,6 +543,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		
 		 ".sve_normal:\n\t"
+		 /*
 		 //x1 iterador c=c_start || c=1
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
@@ -560,7 +561,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "sub x2, %[col], #1\n\t"
 		 "cmp x1, x2\n\t"
 		 "b.ne .sve_end\n\t"
-		 
+		 */
 		 
 		 //c=col-1
 		 "lsl x1, x1, #2\n\t"								//col-1
@@ -714,6 +715,21 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
+	
+	if (c_start+size==col-1 && !(r==0 || r==row-1))
+	{
+		int c=c_start+size;
+		float teste_delta= (Cap_1) * (power[r*col+c] + 
+				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
+				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
+				(amb_temp - temp[r*col+c]) * Rz_1);
+		float teste_result= temp[r*col+c]+teste_delta;
+		
+		printf("%f, %f\n", teste_result, result[r*col+c]);
+		printf("%f, %f\n", teste_delta, delta[0]);
+	}
+	
+	/*
 	for (int c = c_start; c < c_start + size; ++c ) 
 	{
 		float teste_delta;
@@ -759,11 +775,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		{
 			printf("ERROR r: %d, c: %d, new: %f, old: %f\n", r, c, result[r*col+c],teste_result); 
 		}
-		
-
 	}
 	
-	
+	*/
 	
 	
 	free(teste);
