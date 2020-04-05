@@ -61,7 +61,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
-	float *delta; //= (float *) calloc (1, sizeof(float));
+	float *delta = (float *) calloc (1, sizeof(float));
 
 
 	for ( chunk = 0; chunk < num_chunk; ++chunk )
