@@ -721,7 +721,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 	if (r==0)
 	{
-		for (int c=c_start; c < c_start+size; c++)
+		for (int c=c_start; c < c_start+4; c++)
 		{
 			/*
 			float teste1= (Cap_1) * (power[c] + 
