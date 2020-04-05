@@ -603,8 +603,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1rw {z2.s}, p0/z, %[Rz]\n\t"
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
-		 "fmov z9.s ,p0/m, #2\n\t"
-		 "mov x4, #0\n\t"				//APAGAR				
+		 "fmov z9.s ,p0/m, #2\n\t"				
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
@@ -628,21 +627,17 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z6 acumulador
 		 "st1w z5.s, p0, [%[res], x1, lsl #2]\n\t"
-		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
 		 
-		 /*
+		 
 		//vê se é o CORNER
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
-		 */
-		 
 		 "b .sve_end\n\t"
 		 
-		 /*
 		 // r=0 && c=col-1
 		 ".sve_conerRU:\n\t"
 		 "lsl x1, x1, #2\n\t"								//col-1
@@ -669,7 +664,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "str s1, [%[res], x1]\n\t"
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 
-		 
+		 /*
 		 // r = row-1
 		 ".sve_r_end:\n\t"	  
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
@@ -728,14 +723,32 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
-			*/		
-			float teste_delta=(Cap_1) *(power[c] + 
+			*/
+/*			
+			float teste_result=(Cap_1) *(power[c] + 
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
-						
+			*/
 			//printf("%f, %f\n", teste1+temp[r*col+c], result[r*col+c]);
-			printf("%f, %f\n", teste_delta, delta[0]);
+			if (c==col-1)
+			{
+				float teste_delta=(Cap_1) * (power[c] +
+				(temp[c-1] - temp[c]) * Rx_1 +
+				(temp[c+col] - temp[c]) * Ry_1 +
+				(amb_temp - temp[c]) * Rz_1);
+				
+				float teste_result=temp[r*col+c] + teste_delta;
+				
+				printf("CORNER %f, %f\n", result[r*col+c], teste_result);
+				printf("CORNER %f, %f\n", delta[0], teste_result);
+			}
+			else
+			{
+				
+				
+				
+			}
 		}
 		printf("\n");
 	}
