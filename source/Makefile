@@ -35,7 +35,7 @@ compile_sve: hotspot_sve
 
 
 link_objs_host = $(HOST_CC) $(HOST_CC_FLAGS) -o $@ $(OBJ_host) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
-link_objs_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS_0) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
+link_objs_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
 
 run_host: hotspot_host
 	@echo "======================================================================"
