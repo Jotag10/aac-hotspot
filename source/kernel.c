@@ -506,7 +506,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "b.eq .sve_r_end\n\t"
 		 
 		 //if (c ==0)
-		 "mov x1, %[c]\n\t"
+		 "mov x1, %[c]\n\t" 								//c=c_start caso c!=0
 		 "cmp %[c], #0\n\t"
 		 "b.ne .sve_normal\n\t"
 		 
@@ -543,6 +543,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		
 		 ".sve_normal:\n\t"
+		 "mov x4, #0\n\t"				//APAGAR
 		 //x1 iterador c=c_start || c=1
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
@@ -550,6 +551,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta	
 		 ".loop_sve_normal:\n\t"
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
+		 "st1w z1.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
 		 "st1w z1.s, p0, [%[res], x2, lsl #2]\n\t"
 		 "incw x2\n\t"
@@ -774,7 +776,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f\n", r, c, result[r*col+c],teste_result); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f\n", r, c, temp[r*col+c],teste[c-c_start]); 
 		}
 	}
 	
