@@ -735,7 +735,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 						(amb_temp - temp[c_start+size]) * Rz_1);
 						
 			printf("%f, %f\n", teste1+temp[r*col+c], result[r*col+c]);
-			printf("%f, %f\n", teste_delta, delta);
+			printf("%f, %f\n", teste_delta, *delta);
 		}
 	}
 	
