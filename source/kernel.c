@@ -777,7 +777,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f\n", r, c, result[r*col+c], teste_result); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta, delta[0]); 
 		}
 	}
 	
