@@ -504,7 +504,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "sub x1, %[row], #1\n\t"
 		 "cmp %[r], x1\n\t"
 		 "b.eq .sve_r_end\n\t"
-		 /*
+		 
 		 //if (c ==0)
 		 "mov x1, %[c]\n\t"
 		 "cmp %[c], #0\n\t"
@@ -544,6 +544,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		 ".sve_normal:\n\t"
 		 //x1 iterador c=c_start || c=1
+		 /*
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 //loop
 		 ".loop_sve_normal:\n\t"
@@ -590,9 +591,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fmul s0, s1, s8\n\t"								//delta  
 		 "fadd s1, s0, s5\n\t"								//result[r*col+c]
 		 "str s1, [%[res], x1]\n\t"
-		 
-		 "b .sve_end\n\t"									//COMFIRMAR NOME
 		 */
+		 "b .sve_end\n\t"									//COMFIRMAR NOME
+		 
 		 
 		 //r=0
 		 ".sve_r_0:\n\t"
@@ -714,22 +715,20 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "x4", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
-	if (r==row-1)
-	{
-		for (int c=c_start; c < c_start+size; c++)
-		{
-			float teste_delta=(Cap_1) * (power[r*col+c] + 
-				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
-				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
-				(amb_temp - temp[r*col+c]) * Rz_1);
-			
-			float teste_result=temp[r*col+c] + teste_delta;
-			
-			printf("%f, %f\n", result[r*col+c], teste_result);
-			printf("%f, %f\n", delta[0], teste_delta);
-		}
-		printf("\n");
-	}
+	
+	
+	float teste_delta=(Cap_1) * (power[r*col] + 
+				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
+				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
+				(amb_temp - temp[r*col]) * Rz_1);
+		
+	float teste_result=temp[r*col] + teste_delta;
+		
+	printf("%f, %f\n", result[r*col], teste_result);
+	printf("%f, %f\n", delta[0], teste_delta);
+	
+	printf("\n");
+	
 	
 	
 	free(teste);
