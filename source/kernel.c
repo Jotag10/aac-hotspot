@@ -717,16 +717,17 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 	if (r==0)
 	{
-		for (int c = c_start; c < c_start + size; ++c )
-		{
-			float teste_delta= (Cap_1) * (power[c] + 
+		int c = c_start+size;
+		
+		float teste_delta= (Cap_1) * (power[c] + 
 					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 					(temp[col+c] - temp[c]) * Ry_1 + 
 					(amb_temp - temp[c]) * Rz_1);
+					
 			printf("delta %f, %f\n", teste_delta, *delta);
 			printf("result %f, %f\n", result[r*col+c], teste_delta+temp[r*col+c]);
-		}
-		printf("\n");
+		
+
 	}
 #else
 	
