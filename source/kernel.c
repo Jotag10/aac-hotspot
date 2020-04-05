@@ -614,8 +614,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "add x2, x1, %[col]\n\t"							//col+c
 		 "ld1w { z7.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z7, temp[col+c]
 		 "fmul z6.s, p0/m, z6.s, z2.s\n\t"					//z6, (amb_temp - temp[c])*Rz_1
-		 "st1w z6.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "fsub z7.s, p0/m, z7.s, z5.s\n\t"					//z7, temp[col+c]-temp[c]
+		 "st1w z7.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "fmla z6.s, p0/m, z7.s, z1.s\n\t"					//z6, acumulador 
 		 "add x2, x1, #1\n\t"								//c+1
 		 "ld1w { z7.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z7, temp[c+1]
@@ -736,7 +736,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					(temp[col+c] - temp[c]) * Ry_1 + 
 					(amb_temp - temp[c]) * Rz_1);
 					
-			float teste1 = (amb_temp - temp[c]) * Rz_1;
+			float teste1 = temp[col+c]-temp[c];
 			
 			teste_result= temp[r*col+c]+teste_delta;
 			
