@@ -634,11 +634,11 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 
 		 
 		//vê se é o CORNER
-		/*
+		
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
-		 */
+		 
 		 "b .sve_end\n\t"
 		 
 		 // r=0 && c=col-1
@@ -655,12 +655,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[col-1+col]
 		 "fsub s6, s6, s5\n\t"								//temp[c+col] - temp[c]
 		 "ldr s4, %[ca]\n\t"								//cap_1
-		 "fmadd s1, s6, s3, s1\n\t"								//acumulador
+		 "fmadd s1, s6, s3, s1\n\t"							//acumulador
 		 "sub x2, x1, #4\n\t"								//col-1-1
 		 "ldr s6, [%[temp], x2]\n\t"						//temp[col-1-1]
 		 "ldr s3, [%[pow], x1]\n\t"							//power[col-1]
 		 "fsub s6, s6, s5\n\t"								//temp[col-1-1]- temp[col-1]
-		 "fmadd s1, s6, s2, s1\n\t"								//acumulador
+		 "fmadd s1, s6, s2, s1\n\t"							//acumulador
 		 "fadd s1, s3, s1\n\t"								//acumulador+power[col-1]
 		 "fmul s0, s1, s4\n\t"								//delta
 		 "fadd s1, s0, s5\n\t"								//result[col-1]
