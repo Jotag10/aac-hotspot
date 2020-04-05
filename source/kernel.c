@@ -794,7 +794,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 						(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 						(temp[col+c] - temp[c]) * Ry_1 + 
 						(amb_temp - temp[c]) * Rz_1);
-			printf("normal:%f, new:%f\n", teste_delta+temp[r*col+c], teste[c-c_start]);
+			printf("%f, %f\n", teste_delta+temp[r*col+c], teste[c-c_start]);
 		}
 	}
 	free(teste);
