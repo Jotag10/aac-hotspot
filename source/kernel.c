@@ -498,7 +498,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
-		 "b.eq .sve_r_0\n\t"
+		 "b.eq .sve_end\n\t"
 		 /*
 		 //if (r==row-1)
 		 "sub x1, %[row], #1\n\t"
