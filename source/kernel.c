@@ -623,9 +623,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[c+1]+temp[c-1]
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7,(temp[c+1]+temp[c-1] - 2.0*temp[c])
 		 "fmla z6.s, p0/m, z7.s, z0.s\n\t"					//z6 acumulador
+		 "st1w z8.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "ld1w { z8.s }, p0/z, [%[pow], x1, lsl #2]\n\t"	//z8, power[c]
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[c]
-		 "st1w z8.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z6 acumulador
@@ -734,10 +734,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 					(temp[col+c] - temp[c]) * Ry_1 + 
 					(amb_temp - temp[c]) * Rz_1);
-			float teste1 =  (power[c] + 
-					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
+			float teste1 =  (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 					(temp[col+c] - temp[c]) * Ry_1 + 
-					(amb_temp - temp[c]) * Rz_1);
+					(amb_temp - temp[c]) * Rz_1;
 			teste_result= temp[r*col+c]+teste_delta;
 			
 			printf("r: %d, c: %d\n", r, c);
