@@ -609,12 +609,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
-		 "st1w z5.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[c])
 		 "add x2, x1, %[col]\n\t"							//col+c
 		 "ld1w { z7.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z7, temp[col+c]
 		 "fmul z6.s, p0/m, z6.s, z2.s\n\t"					//z6, (amb_temp - temp[c])*Rz_1
+		 "st1w z6.s, p0, [%[teste], x4, lsl #2]\n\t"	//APAGAR
 		 "fsub z7.s, p0/m, z7.s, z5.s\n\t"					//z7, temp[col+c]-temp[c]
 		 "fmla z6.s, p0/m, z7.s, z1.s\n\t"					//z6, acumulador 
 		 "add x2, x1, #1\n\t"								//c+1
