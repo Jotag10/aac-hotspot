@@ -62,7 +62,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int chunks_in_row = col/BLOCK_SIZE_C;
     int chunks_in_col = row/BLOCK_SIZE_R;
 	float *delta = (float *) calloc (1, sizeof(float));
-
+	float *teste_delta = (float *) calloc (1, sizeof(float));
 
 	for ( chunk = 0; chunk < num_chunk; ++chunk )
 	{
@@ -121,7 +121,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
-				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
+				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta, teste_delta);
 			}
             
             long long end_time_ifs = get_time();
