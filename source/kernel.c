@@ -493,7 +493,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	
 #if defined(SVE)
 	
-	float *teste = (float *) calloc (300, sizeof(float));
+	float *teste = (float *) calloc (50, sizeof(float));
 	
 	asm volatile (
 	
