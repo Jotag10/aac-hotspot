@@ -761,14 +761,13 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 				(temp[c-1] - temp[c]) * Rx_1 +
 				(temp[c+col] - temp[c]) * Ry_1 +
 				(amb_temp - temp[c]) * Rz_1);
-				printf("corner\n");
         }
 		else if (r == 0) {
 			teste_delta = (Cap_1) * (power[c] + 
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
-				//printf("Edge1\n");
+				printf("Edge1 %f\n", teste_delta);
 		}
 		else if (c == col-1) {
 			teste_delta = (Cap_1) * (power[r*col+c] + 
