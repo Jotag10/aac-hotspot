@@ -749,7 +749,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 	}
 	*/
-	
+	/*
 	float teste_delta;
 	float teste_result;
 	for (int c = c_start; c < c_start + size; ++c ) 
@@ -800,6 +800,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 	printf("\n");
+	*/
 	free(teste);
 
 #else
