@@ -549,7 +549,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 //x1 iterador c=c_start || c=1
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
-		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta	
+		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta
+		 "lastb s0, p0, z2.s\n\t"							//s0 delta, save last delta
 		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 //loop
 		 ".loop_sve_normal:\n\t"
