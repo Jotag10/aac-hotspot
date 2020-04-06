@@ -607,7 +607,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 		 "fmov z9.s ,p0/m, #2\n\t"
-		 "mov x4, #16\n\t"				//APAGAR
+		 "mov x4, #12\n\t"				//APAGAR
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
