@@ -744,14 +744,10 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 			
 			printf("r: %d, c: %d\n", r, c);
 			printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
-			printf("normal: %f, new: %f\n\n", teste_delta, teste[c-c_start]);
-			if (result[r*col+c] != teste_result)
-			{
-				
-				printf("ERROR\n");
-			}
+			printf("normal: %f, new: %f\n", teste_delta, teste[c-c_start]);
 		}
 		
+		printf("\n");
 	}
 	
 	/*
