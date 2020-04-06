@@ -723,7 +723,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);
 	
 	
-	/*
+	
 	if (r==0)
 	{
 		float teste_delta;
@@ -744,7 +744,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 			
 			printf("r: %d, c: %d\n", r, c);
 			printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
-			printf("normal: %f, new: %f\n\n", teste1, teste[c-c_start]);
+			printf("normal: %f, new: %f\n\n", teste_delta, teste[c-c_start]);
 			if (result[r*col+c] != teste_result)
 			{
 				
@@ -753,7 +753,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		}
 		
 	}
-	*/
+	
+	/*
 	float teste_delt= teste_delta[0];
 	float teste_result;
 	for (int c = c_start; c < c_start + size; ++c ) 
@@ -798,7 +799,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 	printf("\n");
-	
+	*/
 	free(teste);
 	
 
