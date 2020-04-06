@@ -488,12 +488,10 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 }
 
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
-					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta, float *teste_delta)
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
 	
 #if defined(SVE)
-	
-	float *teste = (float *) calloc (300, sizeof(float));
 	
 	asm volatile (
 	
@@ -545,13 +543,11 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		
 		 ".sve_normal:\n\t"
-		 "mov x4, #0\n\t"				//APAGAR
 		 //x1 iterador c=c_start || c=1
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta
 		 "lastb s0, p0, z2.s\n\t"							//s0 delta, save last delta
-		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 //loop
 		 ".loop_sve_normal:\n\t"
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
@@ -713,87 +709,11 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 ".sve_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
 		 
-		 : [teste] "+r" (teste), [res] "+r" (result), [delta] "+r" (delta)
+		 : [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "m" (Rx_1), [Ry] "m" (Ry_1), [Rz] "m" (Rz_1), [amb] "m" (amb_temp), [ca] "m" (Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "x4", "memory", "p0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "z10", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
-	
-	
-	/*
-	if (r==0)
-	{
-		float teste_delta;
-		float teste_result;
-		int c;
-		for (c=c_start; c < c_start+size; c++)
-		{
-			
-			teste_delta = (Cap_1) * (power[c] + 
-					(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-					(temp[col+c] - temp[c]) * Ry_1 + 
-					(amb_temp - temp[c]) * Rz_1);
-					
-			float teste1 = Rx_1;
-				//printf("Edge1\n");
-
-			teste_result= temp[r*col+c]+teste_delta;
-			
-			printf("r: %d, c: %d\n", r, c);
-			printf("normal: %f, new: %f\n", teste_result, result[r*col+c]);
-			printf("normal: %f, new: %f\n", teste_delta, teste[c-c_start]);
-		}
-		
-		printf("\n");
-	}
-	*/
-	
-	float teste_delt= teste_delta[0];
-	float teste_result;
-	for (int c = c_start; c < c_start + size; ++c ) 
-	{
-		if ((r == 0) && (c == col-1)) {
-			teste_delt = (Cap_1) * (power[c] +
-				(temp[c-1] - temp[c]) * Rx_1 +
-				(temp[c+col] - temp[c]) * Ry_1 +
-				(amb_temp - temp[c]) * Rz_1);
-        }
-		else if (r == 0) {
-			teste_delt = (Cap_1) * (power[c] + 
-				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-				(temp[col+c] - temp[c]) * Ry_1 + 
-				(amb_temp - temp[c]) * Rz_1);
-		}
-		else if (c == col-1) {
-			teste_delt = (Cap_1) * (power[r*col+c] + 
-				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
-				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
-				(amb_temp - temp[r*col+c]) * Rz_1);
-		}	
-		else if (r == row-1) {
-			teste_delt= (Cap_1) * (power[r*col+c] + 
-				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
-				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
-				(amb_temp - temp[r*col+c]) * Rz_1);
-		}	
-		else if (c == 0) {
-			teste_delt = (Cap_1) * (power[r*col] + 
-				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
-				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
-				(amb_temp - temp[r*col]) * Rz_1);
-		}
-		teste_result =temp[r*col+c]+ teste_delt;
-		
-		if (result[r*col+c]!= teste_result)
-		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delt, teste[0]); 
-		}
-		teste_delta[0]=teste_delt;
-	}
-	
-	printf("\n");
-	
-	free(teste);
 	
 
 #else
