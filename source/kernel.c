@@ -488,11 +488,11 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 }
 
 void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
-					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
+					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta, float *teste_delta)
 {
 	
-//#if defined(SVE)
-	/*
+#if defined(SVE)
+	
 	float *teste = (float *) calloc (300, sizeof(float));
 	
 	asm volatile (
@@ -750,62 +750,61 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 	}
 	*/
-	/*
-	float teste_delta;
+	
 	float teste_result;
 	for (int c = c_start; c < c_start + size; ++c ) 
 	{
 		
 		
 		if ((r == 0) && (c == col-1)) {
-			teste_delta = (Cap_1) * (power[c] +
+			teste_delta[0] = (Cap_1) * (power[c] +
 				(temp[c-1] - temp[c]) * Rx_1 +
 				(temp[c+col] - temp[c]) * Ry_1 +
 				(amb_temp - temp[c]) * Rz_1);
 				//printf("corner %f\n", teste_delta);
         }
 		else if (r == 0) {
-			teste_delta = (Cap_1) * (power[c] + 
+			teste_delta[0] = (Cap_1) * (power[c] + 
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
 				//printf("Edge1 %f\n", teste_delta);
 		}
 		else if (c == col-1) {
-			teste_delta = (Cap_1) * (power[r*col+c] + 
+			teste_delta[0] = (Cap_1) * (power[r*col+c] + 
 				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
 				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 				//printf("Edge2 %f\n", teste_delta);
 		}	
 		else if (r == row-1) {
-			teste_delta = (Cap_1) * (power[r*col+c] + 
+			teste_delta[0]= (Cap_1) * (power[r*col+c] + 
 				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
 				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 				printf("Edge3 %f\n", teste_delta); 
 		}	
 		else if (c == 0) {
-			teste_delta = (Cap_1) * (power[r*col] + 
+			teste_delta[0] = (Cap_1) * (power[r*col] + 
 				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 				(amb_temp - temp[r*col]) * Rz_1);
 				//printf("Edge4 %f\n", teste_delta);
 		}
-		teste_result =temp[r*col+c]+ teste_delta;
+		teste_result =temp[r*col+c]+ teste_delta[0];
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta, teste[c-c_start]); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta[0], teste[c-c_start]); 
 		}
 	}
 	
 	printf("\n");
 	
 	free(teste);
-	*/
+	
 
-//#else
+#else
 	
 	int c;
 	for ( c = c_start; c < c_start + size; ++c ) 
@@ -848,7 +847,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 	
-//#endif
+#endif
 
 	
 }					  
