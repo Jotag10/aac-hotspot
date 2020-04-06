@@ -732,28 +732,24 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
-				//printf("Edge1\n");
 		}
 		else if (c == col-1) {
 			delta[0] = (Cap_1) * (power[r*col+c] + 
 				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
 				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
-				//printf("Edge2\n");
 		}	
 		else if (r == row-1) {
 			delta[0] = (Cap_1) * (power[r*col+c] + 
 				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
 				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
-				//printf("Edge3\n");
 		}	
 		else if (c == 0) {
 			delta[0] = (Cap_1) * (power[r*col] + 
 				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 				(amb_temp - temp[r*col]) * Rz_1);
-				//printf("Edge4\n");
 		}
 		result[r*col+c] =temp[r*col+c]+ delta[0];
 	}
