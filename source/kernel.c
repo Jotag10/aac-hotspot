@@ -594,7 +594,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fadd s1, s0, s5\n\t"								//result[r*col+c]
 		 "str s1, [%[res], x2]\n\t"
 		 "b .sve_end\n\t"									//COMFIRMAR NOME
-		 */
+		 
 		 
 		 //r=0
 		 ".sve_r_0:\n\t"
