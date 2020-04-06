@@ -501,7 +501,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "cmp %[r], #0\n\t"
 		 "b.eq .sve_r_0\n\t"
 		 
-		 /*
+		 
 		 //if (r==row-1)
 		 "sub x1, %[row], #1\n\t"
 		 "cmp %[r], x1\n\t"
@@ -550,13 +550,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta	
+		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 //loop
 		 ".loop_sve_normal:\n\t"
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
 		 "st1w z1.s, p0, [%[res], x2, lsl #2]\n\t"
-		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
-		 "incw x4\n\t"					//APAGAR
 		 "incw x2\n\t"
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -607,7 +606,6 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 		 "fmov z9.s ,p0/m, #2\n\t"
-		 "mov x4, #12\n\t"				//APAGAR
 		 //loop
 		 ".loop_sve_r_0:\n\t"
 		 "ld1w { z5.s }, p0/z, [%[temp], x1, lsl #2]\n\t"	//z5, temp[c]
@@ -631,19 +629,17 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
 		 "str s0, [%[teste], x4]\n\t"
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z5 acumulador
-		 "st1w z5.s, p0, [%[res], x1, lsl #2]\n\t"		//APAGAR
-		 "add x4, x4, #16\n\t"					//APAGAR
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_0\n\t"
 		 
 		 
 		//vê se é o CORNER
-		/*
+		
 		 "sub x2, %[col], #1\n\t"							//x2=col-1
 		 "cmp x1, x2\n\t"
 		 "b.eq .sve_conerRU\n\t"
-		 */
+		 
 		 "b .sve_end\n\t"
 		 
 		 // r=0 && c=col-1
@@ -723,7 +719,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	);
 	
 	
-	
+	/*
 	if (r==0)
 	{
 		float teste_delta;
@@ -749,8 +745,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		printf("\n");
 	}
+	*/
 	
-	/*
 	float teste_delt= teste_delta[0];
 	float teste_result;
 	for (int c = c_start; c < c_start + size; ++c ) 
@@ -789,13 +785,13 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delt, teste[c-c_start]); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delt, teste[0]); 
 		}
 		teste_delta[0]=teste_delt;
 	}
 	
 	printf("\n");
-	*/
+	
 	free(teste);
 	
 
