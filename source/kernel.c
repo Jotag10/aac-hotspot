@@ -549,12 +549,12 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "madd x2, %[r], %[col], x1\n\t"					//(r*col+c)
 		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta	
+		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 //loop
 		 ".loop_sve_normal:\n\t"
 		 "ld1w { z1.s }, p0/z, [%[temp], x2, lsl #2]\n\t"	//z1, temp[r*col+c]
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
 		 "st1w z1.s, p0, [%[res], x2, lsl #2]\n\t"
-		 "st1w z2.s, p0, [%[teste], x4, lsl #2]\n\t"
 		 "incw x4\n\t"					//APAGAR
 		 "incw x2\n\t"
 		 "incw x1\n\t"
