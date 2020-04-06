@@ -491,7 +491,8 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
 	
-#if defined(SVE)
+//#if defined(SVE)
+	/*
 	float *teste = (float *) calloc (300, sizeof(float));
 	
 	asm volatile (
@@ -800,10 +801,11 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 	printf("\n");
-	*/
+	
 	free(teste);
+	*/
 
-#else
+//#else
 	
 	int c;
 	for ( c = c_start; c < c_start + size; ++c ) 
@@ -846,7 +848,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 	
-#endif
+//#endif
 
 	
 }					  
