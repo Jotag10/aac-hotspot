@@ -627,7 +627,6 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[c]
 		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
-		 "str s0, [%[teste], x4]\n\t"
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z5 acumulador
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
