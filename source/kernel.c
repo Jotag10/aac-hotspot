@@ -750,52 +750,51 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		
 	}
 	*/
-	/*
+	float teste_delt= teste_delta[0];
 	float teste_result;
 	for (int c = c_start; c < c_start + size; ++c ) 
 	{
-		
-		
 		if ((r == 0) && (c == col-1)) {
-			teste_delta[0] = (Cap_1) * (power[c] +
+			teste_delt = (Cap_1) * (power[c] +
 				(temp[c-1] - temp[c]) * Rx_1 +
 				(temp[c+col] - temp[c]) * Ry_1 +
 				(amb_temp - temp[c]) * Rz_1);
         }
 		else if (r == 0) {
-			teste_delta[0] = (Cap_1) * (power[c] + 
+			teste_delt = (Cap_1) * (power[c] + 
 				(temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
 				(temp[col+c] - temp[c]) * Ry_1 + 
 				(amb_temp - temp[c]) * Rz_1);
 		}
 		else if (c == col-1) {
-			teste_delta[0] = (Cap_1) * (power[r*col+c] + 
+			teste_delt = (Cap_1) * (power[r*col+c] + 
 				(temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
 				(temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 		}	
 		else if (r == row-1) {
-			teste_delta[0]= (Cap_1) * (power[r*col+c] + 
+			teste_delt= (Cap_1) * (power[r*col+c] + 
 				(temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
 				(temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
 				(amb_temp - temp[r*col+c]) * Rz_1);
 		}	
 		else if (c == 0) {
-			teste_delta[0] = (Cap_1) * (power[r*col] + 
+			teste_delt = (Cap_1) * (power[r*col] + 
 				(temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
 				(temp[r*col+1] - temp[r*col]) * Rx_1 + 
 				(amb_temp - temp[r*col]) * Rz_1);
 		}
-		teste_result =temp[r*col+c]+ teste_delta[0];
+		teste_result =temp[r*col+c]+ teste_delt;
 		
 		if (result[r*col+c]!= teste_result)
 		{
-			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delta[0], teste[c-c_start]); 
+			printf("ERROR r: %d, c: %d, new: %f, old: %f, delta: %f, newdelta: %f\n", r, c, result[r*col+c], teste_result, teste_delt, teste[c-c_start]); 
 		}
+		teste_delta[0]=teste_delt;
 	}
 	
 	printf("\n");
-	*/
+	
 	free(teste);
 	
 
