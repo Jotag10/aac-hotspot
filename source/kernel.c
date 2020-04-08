@@ -346,7 +346,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fmul v7.4s, v6.4s, v2.4s\n\t"			//v7 acumulador
 			 "ldr q10, [x7, x1]\n\t"				//v10 auxiliar, temp[r*col+c+1]
 			 "fadd v6.4s, v10.4s, v8.4s\n\t"		//v6 auxiliar, temp[r*col+c+1]+temp[r*col+c-1]
-			 "ldr q10, [x5, x1]\n\t"					//v6 auxiliar, power[r*col+c]
+			 "ldr q10, [x5, x1]\n\t"				//v10 auxiliar, power[r*col+c]
 			 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 			 "fmla v7.4s, v6.4s, v0.4s\n\t"			//v7 acumulador 
 			 "ldr q6, [x9, x1]\n\t"					//v6 auxiliar, temp[(r+1)*col+c]
@@ -354,7 +354,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "fadd v6.4s, v6.4s, v8.4s\n\t"			//v6 auxiliar, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 			 "fmls v6.4s, v5.4s, v9.4s\n\t"			//v6 auxiliar, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
 			 "fmla v7.4s, v6.4s, v1.4s\n\t"			//v7 acumulador
-			 "fadd v8.4s, v10.4s, v7.4s\n\t"			//v8 auxiliar, acumulador(v7)+power[r+*col+c]
+			 "fadd v8.4s, v10.4s, v7.4s\n\t"		//v8 auxiliar, acumulador(v7)+power[r+*col+c]
 			 "fmla v5.4s, v8.4s, v4.4s\n\t"			//result[r*col+c]
 			 "str q5, [x11, x1]\n\t"
 			 "add x1, x1, #16\n\t"					//iterador+4
