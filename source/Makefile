@@ -1,5 +1,5 @@
 HOST_CC = g++
-HOST_CC_FLAGS = -g -O0
+HOST_CC_FLAGS = -g -O2
 
 GEM5_CC = aarch64-linux-g++
 GEM5_CC_FLAGS = -g -O2 -static
