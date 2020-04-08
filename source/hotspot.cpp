@@ -156,7 +156,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 				(amb_temp - temp[0]) * Rz_1);  
 
 	result[(row-1)*col+col-1] = temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] +
-								(temp[(row-1)*col+c-1] - temp[(row-1)*col+col-1]) * Rx_1 +
+								(temp[(row-1)*col+col-2] - temp[(row-1)*col+col-1]) * Rx_1 +
 								(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 +
 								(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);
 	   
