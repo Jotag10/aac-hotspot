@@ -320,7 +320,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "lsl x2, %[r], #2 \n\t"
 
 			 "ld1r { v4.4s } , [%[ca]]\n\t"
-			 "mul x2, x2, %[col]\n\t"				//r*col
+			 "madd x2, x2, %[col],x1\n\t"			//r*col
 			 "fmov v9.4s , #2\n\t"
 			 "sub x3, x2, #4\n\t"					//r*col-1
 			 "add x4, %[temp], x2\n\t"				//x4, *temp[r*col]
@@ -335,6 +335,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			 "sub x3, x2, %[col], LSL #2\n\t"		//(r-1)*col
 			 "ld1r { v2.4s } , [%[Rz]]\n\t"
 			 "ld1r { v3.4s } , [%[amb]]\n\t"
+			 "mov x1, #0 \n\t"
 			 "add x10, %[temp], x3\n\t"				//x10,*temp[(r-1)*col]
 			 "add x11, %[res], x2\n\t"				//x11,*result[r*col]
 			 
@@ -363,7 +364,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 			
 			 : [res] "+r" (result)
 			 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
-			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter*4)
+			 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (iter1*4)
 			 : "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x9", "x10", "x11", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9"
 		);
 		
@@ -382,7 +383,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	
 	/*CHECK VALUES */
-	
+	/*
 	for ( int c = c_start; c < size+c_start; ++c ) 
 	{
 		
@@ -400,7 +401,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-	
+	*/
 	//free(teste);
 
 #elif defined(SVE)
