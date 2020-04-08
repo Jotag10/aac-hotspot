@@ -372,7 +372,6 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	
     rem = (size+c_start) % (NEON_STRIDE*unroll);
     
-	//ONLY WORKS FOR NEON
     for ( int c = iter; c < rem + iter; ++c ) 
     {
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
