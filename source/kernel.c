@@ -50,7 +50,7 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
     }
 	//float *teste = (float *) calloc (300, sizeof(float));
     iter = (size+c_start) / (NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
-	//size_t iter1 = size /(NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
+	size_t iter1 = size /(NEON_STRIDE*unroll) * (NEON_STRIDE*unroll);
 	#if defined (NEON_UNROl)
 	//NEON V2
 		asm volatile (
