@@ -47,6 +47,10 @@ int num_omp_threads;
 double total_time_ifs =0;
 double total_time_loop=0;
 
+double total_time_loop=0;
+double total_time_tran_temp=0;
+double total_time_single_iteration=0;
+
 /***************************************************************************/
 
 /* Single iteration of the transient solver in the grid model.
@@ -56,6 +60,7 @@ double total_time_loop=0;
 void single_iteration(float *result, float *temp, float *power, int row, int col,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float step)
 {
+	double start_time_single_iteration=get_time();
     int r, c;
     int chunk;
     int num_chunk = row*col / (BLOCK_SIZE_R * BLOCK_SIZE_C);
@@ -124,7 +129,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			}
             
             long long end_time_ifs = get_time();
-			total_time_ifs += ((float) (end_time_ifs - start_time_ifs)) / (1000*1000);
+			total_time_ifs += (end_time_ifs - start_time_ifs);
 			continue;
 			
 		}
@@ -146,7 +151,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 		kernel(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 	}
 	long long end_time_loop = get_time();
-    total_time_loop +=((float) (end_time_loop - start_time_loop)) / (1000*1000);
+    total_time_loop +=(end_time_loop - start_time_loop);
 	
 	
 	
@@ -165,6 +170,9 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 						(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 +
 						(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 +
 						(amb_temp - temp[(row-1)*col]) * Rz_1);
+						
+	double end_time_single_iteration= get_time();
+	total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
 	  
 }
 
@@ -174,6 +182,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
  */
 void compute_tran_temp(float *result, int num_iterations, float *temp, float *power, int row, int col) 
 {
+	double start_time_tran_temp=get_time();
 	#ifdef VERBOSE
 	int i = 0;
 	#endif
@@ -216,6 +225,8 @@ void compute_tran_temp(float *result, int num_iterations, float *temp, float *po
 	#ifdef VERBOSE
 	fprintf(stdout, "iteration %d\n", i++);
 	#endif
+	double end_time_tran_temp=get_time();
+	total_time_tran_temp+= (end_time_tran_temp - start_time_tran_temp);
 }
 
 void fatal(const char *s)
@@ -284,6 +295,7 @@ void usage(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+	double start_time = get_time();
 	int grid_rows, grid_cols, sim_time, i;
 	float *temp, *power, *result;
 	char *tfile, *pfile, *ofile;
@@ -316,19 +328,10 @@ int main(int argc, char **argv)
 
 	printf("Start computing the transient temperature\n");
 	
-    double start_time = get_time();
+    
 
     compute_tran_temp(result,sim_time, temp, power, grid_rows, grid_cols);
 
-    double end_time = get_time();
-
-    printf("Ending simulation\n");
-    printf("Total time: %lf\n", ((float) (end_time - start_time)) / (1000*1000));
-    
-    printf("Total time in ifs loop: %lf\n", total_time_ifs);
-    printf("Total time in loop: %lf\n", total_time_loop);
-    
-    
     writeoutput((1&sim_time) ? result : temp, grid_rows, grid_cols, ofile);
 
 	/* output results	*/
@@ -343,6 +346,18 @@ int main(int argc, char **argv)
 	/* cleanup	*/
 	free(temp);
 	free(power);
+	
+	double end_time = get_time();
+
+    printf("Ending simulation\n");
+    printf("Total time: %lf\n", (end_time - start_time));
+	
+    printf("Total time in compute_tran_temp: %lf\n", total_time_tran_temp);
+	
+	printf("Total time in single_iteration: %lf\n", total_time_single_iteration);
+	
+    printf("Total time in ifs loop: %lf\n", total_time_ifs);
+    printf("Total time in loop: %lf\n", total_time_loop);
 
 	return 0;
 }
