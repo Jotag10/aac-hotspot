@@ -1,14 +1,14 @@
 HOST_CC = g++
-HOST_CC_FLAGS = -g -O3
+HOST_CC_FLAGS = -g -O0
 
 GEM5_CC = aarch64-linux-g++
-GEM5_CC_FLAGS = -g -O2 -static
+GEM5_CC_FLAGS = -g -O3 -static
 
 GEM5_CC_FLAGS_0 = -g -O -static
 GEM5_CC_FLAGS_1 = -g -O1 -static
 GEM5_CC_FLAGS_2 = -g -O2 -static
 
-DATA_DIR = $(HOME)/apps/hotspot/data
+DATA_DIR = ../data
 GEM5_DIR = $(HOME)/gem5
 
 RM=rm -f
@@ -42,7 +42,7 @@ run_host: hotspot_host
 	@echo "WARNING: Running with 1000 iterations... "
 	@echo "you may change the number of iterations and the problem size"
 	@echo "======================================================================"
-	./hotspot_host 64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_host.out
+	./hotspot_host 1024 1024 100 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
 	
 run_gem5: hotspot_gem5
 	@echo "======================================================================"
@@ -97,7 +97,7 @@ hotspot_host: $(OBJ_host) $(KERNEL).c
 	$(link_objs_host)
 
 hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
-	$(GEM5_CC) $(GEM5_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
 	$(link_objs_gem5)
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
