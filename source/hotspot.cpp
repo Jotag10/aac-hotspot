@@ -47,7 +47,6 @@ int num_omp_threads;
 double total_time_ifs =0;
 double total_time_loop=0;
 
-double total_time_loop=0;
 double total_time_tran_temp=0;
 double total_time_single_iteration=0;
 
