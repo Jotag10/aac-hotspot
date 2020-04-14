@@ -121,13 +121,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			continue;	
 			*/
 			
-			long long start_time_ifs = get_time();
+			double start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
 			}
             
-            long long end_time_ifs = get_time();
+            double end_time_ifs = get_time();
 			total_time_ifs += (end_time_ifs - start_time_ifs);
 			continue;
 			
@@ -144,12 +144,12 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 		*/
     }
 	
-	long long start_time_loop = get_time();
+	double start_time_loop = get_time();
 	for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
 		//kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 		kernel(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 	}
-	long long end_time_loop = get_time();
+	double end_time_loop = get_time();
     total_time_loop +=(end_time_loop - start_time_loop);
 	
 	
