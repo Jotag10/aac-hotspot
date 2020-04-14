@@ -7,7 +7,7 @@
 
 // Returns the current system time 
 double get_time(){
-    return ((double)clock())*10000000/CLOCKS_PER_SEC;
+    return ((double)clock())/CLOCKS_PER_SEC;
 }
 
 using namespace std;
