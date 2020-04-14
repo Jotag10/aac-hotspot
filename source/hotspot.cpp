@@ -308,7 +308,9 @@ int main(int argc, char **argv)
 		(num_omp_threads = atoi(argv[4])) <= 0
 		)
 		usage(argc, argv);
-
+	
+	double start_time_init = get_time();
+	
 	/* allocate memory for the temperature and power arrays	*/
 	temp = (float *) calloc (grid_rows * grid_cols, sizeof(float));
 	power = (float *) calloc (grid_rows * grid_cols, sizeof(float));
@@ -324,7 +326,9 @@ int main(int argc, char **argv)
 
 	read_input(temp, grid_rows, grid_cols, tfile);
 	read_input(power, grid_rows, grid_cols, pfile);
-
+	
+	double end_time_init = get_time();
+	
 	printf("Start computing the transient temperature\n");
 	
     
@@ -350,6 +354,8 @@ int main(int argc, char **argv)
 
     printf("Ending simulation\n");
     printf("Total time: %lf\n", (end_time - start_time));
+	
+	printf("Total time in initialization: %lf\n", (end_time_init - start_time_init));
 	
     printf("Total time in compute_tran_temp: %lf\n", total_time_tran_temp);
 	
