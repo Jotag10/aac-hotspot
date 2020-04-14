@@ -121,14 +121,14 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 			continue;	
 			*/
 			
-			double start_time_ifs = get_time();
+			long long start_time_ifs = get_time();
 			for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 			{
 				kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
 			}
             
-            double end_time_ifs = get_time();
-			total_time_ifs += (end_time_ifs - start_time_ifs);
+            long long end_time_ifs = get_time();
+			total_time_ifs += double(end_time_ifs - start_time_ifs);
 			continue;
 			
 		}
@@ -144,13 +144,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 		*/
     }
 	
-	double start_time_loop = get_time();
+	long long start_time_loop = get_time();
 	for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
 		//kernel(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 		kernel(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 	}
-	double end_time_loop = get_time();
-    total_time_loop +=(end_time_loop - start_time_loop);
+	long long end_time_loop = get_time();
+    total_time_loop += double(end_time_loop - start_time_loop);
 	
 	
 	
@@ -171,7 +171,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 						(amb_temp - temp[(row-1)*col]) * Rz_1);
 						
 	double end_time_single_iteration= get_time();
-	total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
+	total_time_single_iteration+= double(end_time_single_iteration - start_time_single_iteration);
 	  
 }
 
@@ -181,7 +181,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
  */
 void compute_tran_temp(float *result, int num_iterations, float *temp, float *power, int row, int col) 
 {
-	double start_time_tran_temp=get_time();
+	long long start_time_tran_temp=get_time();
 	#ifdef VERBOSE
 	int i = 0;
 	#endif
@@ -224,8 +224,8 @@ void compute_tran_temp(float *result, int num_iterations, float *temp, float *po
 	#ifdef VERBOSE
 	fprintf(stdout, "iteration %d\n", i++);
 	#endif
-	double end_time_tran_temp=get_time();
-	total_time_tran_temp+= (end_time_tran_temp - start_time_tran_temp);
+	long long  end_time_tran_temp=get_time();
+	total_time_tran_temp+= double(end_time_tran_temp - start_time_tran_temp);
 }
 
 void fatal(const char *s)
@@ -294,7 +294,7 @@ void usage(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	double start_time = get_time();
+	long long start_time = get_time();
 	int grid_rows, grid_cols, sim_time, i;
 	float *temp, *power, *result;
 	char *tfile, *pfile, *ofile;
@@ -346,10 +346,10 @@ int main(int argc, char **argv)
 	free(temp);
 	free(power);
 	
-	double end_time = get_time();
+	long long end_time = get_time();
 
     printf("Ending simulation\n");
-    printf("Total time: %lf\n", (end_time - start_time));
+    printf("Total time: %lf\n", double(end_time - start_time));
 	
     printf("Total time in compute_tran_temp: %lf\n", total_time_tran_temp);
 	
