@@ -1,3 +1,5 @@
+#if defined(NEON) || defined (SVE)
+
 #include "kernel.h"
 #include <cstdio>
 #include <stdlib.h>
@@ -989,4 +991,5 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 
 	
 }					  
-						  
+
+#endif
