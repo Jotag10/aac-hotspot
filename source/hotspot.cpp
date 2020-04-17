@@ -98,6 +98,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    double end_time_loop = get_time();
         total_time_loop +=(end_time_loop - start_time_loop);
 	    
+	    double start_time_ifs = get_time();
 	    result[0] = temp[0]+ (Cap_1) * (power[0] +
 	    			(temp[1] - temp[0]) * Rx_1 +
 	    			(temp[col] - temp[0]) * Ry_1 +
@@ -113,6 +114,8 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    					(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 +
 	    					(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 +
 	    					(amb_temp - temp[(row-1)*col]) * Rz_1);
+        double end_time_ifs = get_time();
+        total_time_ifs += (end_time_ifs - start_time_ifs);
 	    					
 	    double end_time_single_iteration= get_time();
 	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
@@ -127,6 +130,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
            
             if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
             {
+	    		double start_time_ifs = get_time();
                 for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
                     for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                         /* Corner 1 */
@@ -181,9 +185,12 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                         result[r*col+c] =temp[r*col+c]+ delta[0];
                     }
                 }
+                double end_time_ifs = get_time();
+	    		total_time_ifs += (end_time_ifs - start_time_ifs);
                 continue;
             }
 
+	        double start_time_loop = get_time();
             for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
                 for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
                 /* Update Temperatures */
@@ -194,6 +201,8 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
                         (amb_temp - temp[r*col+c]) * Rz_1));
                 }
             }
+            double end_time_loop = get_time();
+            total_time_loop +=(end_time_loop - start_time_loop);
         }        
     #endif
 
