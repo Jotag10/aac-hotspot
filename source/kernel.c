@@ -843,7 +843,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 "fmls v7.4s, v9.4s, v5.4s\n\t"					    //v7,(temp[c+1]+temp[c-1] - 2.0*temp[c])
 		 "fmul v11.4s,  v7.4s, v10.4s\n\t"					//FIXME
 		 "fadd v6.4s, v6.4s, v11.4s\n\t"					//FIXME
-         "str q6, [%[teste]]\n\t"
+         //"str q6, [%[teste]]\n\t"
 		 //"fmla v6.4s, v7.4s, v10.4s\n\t"					//v6 acumulador
 		 "ldr q8 , [%[pow], x1]\n\t"	                    //q8, pow[c]
 		 "fadd v8.4s, v8.4s, v6.4s\n\t"					    //v8, acumulador(v6)+power[c]
@@ -944,6 +944,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
+#endif
 
 /*
 #else
@@ -985,7 +986,6 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 	}
 	
 */	
-#endif
 
 	
 }					  
