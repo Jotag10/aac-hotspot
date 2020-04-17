@@ -67,7 +67,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
     int chunks_in_col = row/BLOCK_SIZE_R;
 	float *delta = (float *) calloc (1, sizeof(float));
     
-    #if defined (NEON) || (SVE)
+    #if defined (NEON||SVE)
 	    for ( chunk = 0; chunk < num_chunk; ++chunk )
 	    {
             int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
