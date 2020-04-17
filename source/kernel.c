@@ -4,11 +4,6 @@
 void volatile kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
-	//DUVIDAS
-	// "memory"- diz que é usado quando se faz leituras ou escritas para itens nao listados como inputs ou outputs, no exemplo nao ha esses casos.
-	// %[]
-	// ifs, como resolver loads nao paralelos
-	
 #if defined(NEON)
 
 	#define NEON_STRIDE 4
@@ -406,8 +401,8 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 	*/
 	//free(teste);
 
-#elif defined(SVE)
-	
+#else
+	// SVE
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -473,18 +468,17 @@ void volatile kernel(float *result, float *temp, float *power, size_t c_start, s
 		}
 		
 	}
-	*/
 	
 #else
 
     for ( int c = c_start; c < c_start + size; ++c ) 
     {
-        /* Update Temperatures */
         result[r*col+c] =temp[r*col+c]+ ( Cap_1 * (power[r*col+c] + 
             (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
             (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
             (amb_temp - temp[r*col+c]) * Rz_1));
     }
+	*/
 #endif
 }
 
@@ -716,10 +710,9 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 : "x1", "x2", "x3", "memory", "p0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9", "z10", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
-#elif defined(NEON)
-	float delta_teste;
-	float result_teste;
-	float *teste = (float *) calloc (300, sizeof(float));
+#else
+    //NEON
+
 	asm volatile (
 		 //if (r==0)
 		 "cmp %[r], #0\n\t"
@@ -945,14 +938,14 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		 ".neon_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
 		 
-		 : [res] "+r" (result), [delta] "+r" (delta), [teste] "+r" (teste)
+		 : [res] "+r" (result), [delta] "+r" (delta)
 		 : [c] "r" (c_start), [Rx] "r" (&Rx_1), [Ry] "r" (&Ry_1), [Rz] "r" (&Rz_1), [amb] "r" (&amb_temp), [ca] "r" (&Cap_1), [temp] "r" (temp),
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [row] "r" (row), [sz] "r" ((c_start+size)*4)
 		 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
 
-
+/*
 #else
 	
 	int c;
@@ -991,7 +984,7 @@ void volatile kernel_ifs(float *result, float *temp, float *power, size_t c_star
 		result[r*col+c] =temp[r*col+c]+ delta[0];
 	}
 	
-	
+*/	
 #endif
 
 	
