@@ -699,7 +699,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 
 		 "fmov z9.s ,p0/m, #2\n\t"
 		 //loop
-		 ".loop_sve_r_end:\n\t"
+		 /*".loop_sve_r_end:\n\t"
 		 "ld1w { z5.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z5, temp[r*col+c]
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[r*col+c])
@@ -725,7 +725,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve_r_end\n\t"
-		
+		*/
 		
 		 ".sve_end:\n\t"
 		 "str s0, [%[delta]]\n\t"
