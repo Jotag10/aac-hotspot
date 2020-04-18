@@ -997,7 +997,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 }	
 
 #elif defined (ORIGINAL)
-void kernel_original(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
+void kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
     for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
@@ -1011,7 +1011,7 @@ void kernel_original(float *result, float *temp, float *power, size_t c_start, s
 }
 
 
-void kernel_ifs_original(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
+void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {   
     for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
@@ -1072,7 +1072,7 @@ void kernel_ifs_original(float *result, float *temp, float *power, size_t c_star
 
 // optimized code
 
-void kernel_ifs_optimized(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
+void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {
     int c;
@@ -1113,7 +1113,7 @@ void kernel_ifs_optimized(float *result, float *temp, float *power, size_t c_sta
 }
 
 
-void kernel_optimized(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
+void kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
     int c;

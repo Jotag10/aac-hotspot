@@ -119,6 +119,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    					
 	    double end_time_single_iteration= get_time();
 	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
+
     #elif defined(ORIGINAL)
         //original code
         for ( chunk = 0; chunk < num_chunk; ++chunk )
@@ -135,7 +136,7 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    		
                 for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
 	    		{
-	    			kernel_ifs_original(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
+	    			kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
 	    		}
                 
                 double end_time_ifs = get_time();
@@ -146,10 +147,13 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    
 	    double start_time_loop = get_time();
 	    for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
-	    	kernel_original(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+	    	kernel(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
 	    }
 	    double end_time_loop = get_time();
         total_time_loop +=(end_time_loop - start_time_loop);
+	    
+        double end_time_single_iteration= get_time();
+	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
  
     #else 
         for ( chunk = 0; chunk < num_chunk; ++chunk )
@@ -203,8 +207,6 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    					
 	    double end_time_single_iteration= get_time();
 	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
-
-
     #endif
 
 }
