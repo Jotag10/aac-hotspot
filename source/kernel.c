@@ -418,13 +418,14 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 		 "fmov z9.s ,p0/m, #2\n\t"
 		 
          "mul x2, %[r], %[col]\n\t"					//x2, r*col
+         "lsl x2, x2, #2\n\t"                       //x2, r*col*4
 		 "add x7, x2, %[pow]\n\t"					//x7, pow+r*col
 		 "add x9, x2, %[res]\n\t"					//x9, res+r*col
 		 "add x2, x2, %[temp]\n\t"					//x2, temp+(r*col)
-		 "sub x3, x2, #1\n\t"					    //x3, temp+(r*col)-1
-		 "add x4, x2, #1\n\t"					    //x4, temp+(r*col)+1
-		 "add x5, x2, %[col]\n\t"					//x5, temp+(r+1)*col
-		 "sub x6, x2, %[col]\n\t"					//x6, temp+(r-1)*col
+		 "sub x3, x2, #4\n\t"					    //x3, temp+(r*col)-1
+		 "add x4, x2, #4\n\t"					    //x4, temp+(r*col)+1
+		 "add x5, x2, %[col], lsl #2\n\t"					//x5, temp+(r+1)*col
+		 "sub x6, x2, %[col], lsl #2\n\t"					//x6, temp+(r-1)*col
 
 				 
 		 ".loop_sve:\n\t"
@@ -553,6 +554,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "lastb s0, p0, z2.s\n\t"							//s0 delta, save last delta
         
          "mul x2, %[r], %[col]\n\t"					//x2, r*col
+         "lsl x2, x2, #2\n\t"                       //x2, r*col*4
 		 "add x3, x2, %[res]\n\t"					//x3, res+(r*col)
 		 "add x2, x2, %[temp]\n\t"					//x2, temp+(r*col)
 
@@ -611,9 +613,9 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "ld1rw {z3.s}, p0/z, %[amb]\n\t"
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 
-         "sub x2, %[temp], #1\n\t"					//x2, temp-1
-         "add x3, %[temp], #1\n\t"					//x3, temp+1
-         "add x4, %[temp], %[col]\n\t"				//x4, temp+col
+         "sub x2, %[temp], #4\n\t"					//x2, temp-1
+         "add x3, %[temp], #4\n\t"					//x3, temp+1
+         "add x4, %[temp], %[col], lsl #2\n\t"		//x4, temp+col
 		 
          "fmov z9.s ,p0/m, #2\n\t"
 		 //loop
@@ -692,12 +694,13 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 
         
          "add x2, %[r], %[col]\n\t"					//x2, r*col
+         "lsl x2, x2, #2\n\t"                       //x2, r*col*4
 		 "add x7, x2, %[pow]\n\t"					//x7, pow+r*col
 		 "add x9, x2, %[res]\n\t"					//x9, res+r*col
 		 "add x2, x2, %[temp]\n\t"					//x2, temp+(r*col)
-		 "sub x3, x2, #1\n\t"					    //x3, temp+(r*col)-1
-		 "add x4, x2, #1\n\t"					    //x4, temp+(r*col)+1
-		 "sub x6, x2, %[col]\n\t"					//x6, temp+(r-1)*col
+		 "sub x3, x2, #4\n\t"					    //x3, temp+(r*col)-1
+		 "add x4, x2, #4\n\t"					    //x4, temp+(r*col)+1
+		 "sub x6, x2, %[col], lsl #2\n\t"					//x6, temp+(r-1)*col
 
 		 "fmov z9.s ,p0/m, #2\n\t"
 		 //loop
