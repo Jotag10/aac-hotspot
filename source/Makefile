@@ -111,8 +111,8 @@ run_sve: hotspot_sve
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_sve.out'
 
-hotspot_host: $(OBJ_host) $(KERNEL).c -DORIGINAL
-	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+hotspot_host: $(OBJ_host) $(KERNEL).c 
+	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DORIGINAL
 	$(link_objs_host)
 
 hotspot_original_gem5: $(OBJ_gem5) $(KERNEL).c
