@@ -556,9 +556,9 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 
 		 //loop
 		 ".loop_sve_normal:\n\t"
-		 "ld1w { z1.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z1, temp[r*col+c]
+		 //"ld1w { z1.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z1, temp[r*col+c]
 		 "fadd z1.s, p0/m, z1.s, z2.s\n\t"					//temp[r*col+c]+delta
-		 "st1w z1.s, p0, [x3, x1, lsl #2]\n\t"
+		 //"st1w z1.s, p0, [x3, x1, lsl #2]\n\t"
 		 //"incw x2\n\t"
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
