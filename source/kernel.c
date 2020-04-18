@@ -550,7 +550,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "ld1rw {z2.s}, p0/z, [%[delta]]\n\t"				//z2, delta
 		 "lastb s0, p0, z2.s\n\t"							//s0 delta, save last delta
         
-         "add x2, %[r], %[col]\n\t"					//x2, r*col
+         "mul x2, %[r], %[col]\n\t"					//x2, r*col
 		 "add x3, x2, %[res]\n\t"					//x3, res+(r*col)
 		 "add x2, x2, %[temp]\n\t"					//x2, temp+(r*col)
 
