@@ -56,7 +56,7 @@ run_gem5: hotspot_gem5
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
-run_gem5: hotspot_original_gem5
+run_original_gem5: hotspot_original_gem5
 	@echo "======================================================================"
 	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
@@ -64,7 +64,7 @@ run_gem5: hotspot_original_gem5
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
-run_gem5: hotspot_optimized_gem5
+run_optimized_gem5: hotspot_optimized_gem5
 	@echo "======================================================================"
 	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
