@@ -693,7 +693,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "ld1rw {z4.s}, p0/z, %[ca]\n\t"
 
         
-         "add x2, %[r], %[col]\n\t"					//x2, r*col
+         "mul x2, %[r], %[col]\n\t"					//x2, r*col
          "lsl x2, x2, #2\n\t"                       //x2, r*col*4
 		 "add x7, x2, %[pow]\n\t"					//x7, pow+r*col
 		 "add x9, x2, %[res]\n\t"					//x9, res+r*col
