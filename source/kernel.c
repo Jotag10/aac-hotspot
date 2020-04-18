@@ -405,7 +405,7 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 
 #else
 	// SVE
-    /*
+    
 	asm volatile (
 		 "mov x1, %[c] \n\t"								//iterador c=c_start
 		 "whilelt p0.s, x1, %[sz]\n\t"
@@ -417,7 +417,7 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 		 
 		 "fmov z9.s ,p0/m, #2\n\t"
 		 
-         "add x2, %[r], %[col]\n\t"					//x2, r*col
+         "mul x2, %[r], %[col]\n\t"					//x2, r*col
 		 "add x7, x2, %[pow]\n\t"					//x7, pow+r*col
 		 "add x9, x2, %[res]\n\t"					//x9, res+r*col
 		 "add x2, x2, %[temp]\n\t"					//x2, temp+(r*col)
@@ -455,7 +455,7 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 		 [pow] "r" (power), [r] "r" (r), [col] "r" (col), [sz] "r" (c_start+size)
 		 : "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x9", "memory", "p0", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8", "z9"
 	);	
-	*/
+	
 
 	/*CHECK VALUES */
 	/*
