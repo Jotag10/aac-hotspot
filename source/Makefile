@@ -50,63 +50,63 @@ run_host: hotspot_host
 	
 run_gem5: hotspot_gem5
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
 run_gem5: hotspot_original_gem5
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
 run_gem5: hotspot_optimized_gem5
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_gem5 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_gem5.out'
 
 run_neon: hotspot_neon
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon.out'
 	
 run_neon_u1: hotspot_neon_u1
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u1 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u1.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u1 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u1.out'
 
 run_neon_u2: hotspot_neon_u2
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u2 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u2.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u2 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u2.out'
 
 run_neon_u3: hotspot_neon_u3
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u3 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u3.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u3 -o '64 64 1 1 $(DATA_DIR)/temp_64 $(DATA_DIR)/power_64 output_neon_u3.out'
 
 run_sve: hotspot_sve
 	@echo "======================================================================"
-	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "WARNING: Running the smallest problem size (64) with 2 iterations... "
 	@echo "you should change the number of iterations and the problem size"
 	@echo "for the final results"
 	@echo "======================================================================"
