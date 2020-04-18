@@ -1000,7 +1000,8 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 void kernel(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
-    for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
+    int c;
+    for ( c = c_start; c < size; ++c ) {
     /* Update Temperatures */
         result[r*col+c] =temp[r*col+c]+ 
              ( Cap_1 * (power[r*col+c] + 
@@ -1014,7 +1015,7 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {   
-    for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
+    for ( c = c_start; c < c_start + size; ++c ) {
         /* Corner 1 */
         if ( (r == 0) && (c == 0) ) {
             delta[0] = (Cap_1) * (power[0] +
