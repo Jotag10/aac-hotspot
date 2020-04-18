@@ -1015,6 +1015,7 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r, size_t row,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp, float *delta)
 {   
+    int c;
     for ( c = c_start; c < c_start + size; ++c ) {
         /* Corner 1 */
         if ( (r == 0) && (c == 0) ) {
