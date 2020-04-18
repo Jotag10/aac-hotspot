@@ -700,7 +700,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "fmov z9.s ,p0/m, #2\n\t"
 		 //loop
 		 ".loop_sve_r_end:\n\t"
-		 "ld1w { z5.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z5, temp[r*col+c]
+		 //"ld1w { z5.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z5, temp[r*col+c]
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[r*col+c])
 		 //"sub x3, x2, %[col]\n\t"							//(r-1)*col+c
@@ -709,18 +709,18 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "fsub z7.s, p0/m, z7.s, z5.s\n\t"					//z7, temp[(r-1)*col+c]-temp[r*col+c]
 		 "fmla z6.s, p0/m, z7.s, z1.s\n\t"					//z6, acumulador 
 		 //"add x3, x2, #1\n\t"								//r*col+c+1
-		 "ld1w { z7.s }, p0/z, [x4, x1, lsl #2]\n\t"	//z7,  temp[r*col+c+1]
+		 //"ld1w { z7.s }, p0/z, [x4, x1, lsl #2]\n\t"	//z7,  temp[r*col+c+1]
 		 //"sub x3, x2, #1\n\t"								//r*col+c-1
-		 "ld1w { z8.s }, p0/z, [x3, x1, lsl #2]\n\t"	//z8, temp[r*col+c-1]
+		 //"ld1w { z8.s }, p0/z, [x3, x1, lsl #2]\n\t"	//z8, temp[r*col+c-1]
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7, temp[r*col+c+1]+temp[r*col+c-1] - 2.0*temp[r*col+c]
 		 "fmla z6.s, p0/m, z7.s, z10.s\n\t"					//z6 acumulador
-		 "ld1w { z8.s }, p0/z, [x7, x1, lsl #2]\n\t"	//z8, power[r*col+c]
+		 //"ld1w { z8.s }, p0/z, [x7, x1, lsl #2]\n\t"	//z8, power[r*col+c]
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[r*col+c]
 		 "fmul z8.s, p0/m, z8.s, z4.s\n\t"					//delta
 		 "lastb s0, p0, z8.s\n\t"							//s0 delta, save last delta
 		 "fadd z5.s, p0/m, z5.s, z8.s\n\t"					//z6 acumulador
-		 "st1w z5.s, p0, [x8, x1, lsl #2]\n\t"
+		 //"st1w z5.s, p0, [x8, x1, lsl #2]\n\t"
 		 //"incw x2\n\t"
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
