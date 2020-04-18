@@ -371,7 +371,12 @@ int main(int argc, char **argv)
 
     compute_tran_temp(result,sim_time, temp, power, grid_rows, grid_cols);
 
+    
+	double start_output_time_init = get_time();
     writeoutput((1&sim_time) ? result : temp, grid_rows, grid_cols, ofile);
+	double end_output_time_init = get_time();
+
+
 
 	/* output results	*/
 #ifdef VERBOSE
@@ -391,7 +396,7 @@ int main(int argc, char **argv)
     printf("Ending simulation\n");
     printf("Total time: %lf\n", (end_time - start_time));
 	
-	printf("Total time in initialization: %lf\n", (end_time_init - start_time_init));
+	printf("Total time in initialization: %lf\n", (end_time_init - start_time_init)+(end_output_time_init-start_output_time_init));
 	
     printf("Total time in compute_tran_temp: %lf\n", total_time_tran_temp);
 	
