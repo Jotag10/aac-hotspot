@@ -851,7 +851,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 "ld1r { v3.4s }, [%[amb]]\n\t"
 		 "ld1r { v4.4s }, [%[ca]]\n\t"
 		 "fmov v9.4s , #2\n\t"
-         "add x4, %[temp], %[col]\n\t"                      //x4, *temp[col]
+         "add x4, %[temp], %[col], lsl #2\n\t"              //x4, *temp[col]
          "sub x5, %[temp], #4\n\t"                          //x5, *temp[-1]
          "add x6, %[temp], #4\n\t"                          //x6, *temp[1]
         	
