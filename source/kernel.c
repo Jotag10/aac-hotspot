@@ -1116,6 +1116,7 @@ void kernel_ifs_optimized(float *result, float *temp, float *power, size_t c_sta
 void kernel_optimized(float *result, float *temp, float *power, size_t c_start, size_t size, size_t col, size_t r,
 					  float Cap_1, float Rx_1, float Ry_1, float Rz_1, float amb_temp)
 {
+    int c;
     for ( c = c_start; c < size; ++c ) {
     /* Update Temperatures */
         result[r*col+c] =temp[r*col+c]+ 
