@@ -119,91 +119,92 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    					
 	    double end_time_single_iteration= get_time();
 	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
-    #else
+    #elif defined(ORIGINAL)
         //original code
         for ( chunk = 0; chunk < num_chunk; ++chunk )
-        {
+	    {
             int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
             int c_start = BLOCK_SIZE_C*(chunk%chunks_in_row); 
             int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
             int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
            
+	       
             if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
-            {
+            {	
 	    		double start_time_ifs = get_time();
-                for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-                    for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-                        /* Corner 1 */
-                        if ( (r == 0) && (c == 0) ) {
-                            delta[0] = (Cap_1) * (power[0] +
-                                (temp[1] - temp[0]) * Rx_1 +
-                                (temp[col] - temp[0]) * Ry_1 +
-                                (amb_temp - temp[0]) * Rz_1);
-                        }	/* Corner 2 */
-                        else if ((r == 0) && (c == col-1)) {
-                            delta[0] = (Cap_1) * (power[c] +
-                                (temp[c-1] - temp[c]) * Rx_1 +
-                                (temp[c+col] - temp[c]) * Ry_1 +
-                            (   amb_temp - temp[c]) * Rz_1);
-                        }	/* Corner 3 */
-                        else if ((r == row-1) && (c == col-1)) {
-                            delta[0] = (Cap_1) * (power[r*col+c] + 
-                                (temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
-                                (temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
-                            (   amb_temp - temp[r*col+c]) * Rz_1);					
-                        }	/* Corner 4	*/
-                        else if ((r == row-1) && (c == 0)) {
-                            delta[0] = (Cap_1) * (power[r*col] + 
-                                (temp[r*col+1] - temp[r*col]) * Rx_1 + 
-                                (temp[(r-1)*col] - temp[r*col]) * Ry_1 + 
-                                (amb_temp - temp[r*col]) * Rz_1);
-                        }	/* Edge 1 */
-                        else if (r == 0) {
-                            delta[0] = (Cap_1) * (power[c] + 
-                                (temp[c+1] + temp[c-1] - 2.0*temp[c]) * Rx_1 + 
-                                (temp[col+c] - temp[c]) * Ry_1 + 
-                                (amb_temp - temp[c]) * Rz_1);
-                        }	/* Edge 2 */
-                        else if (c == col-1) {
-                            delta[0] = (Cap_1) * (power[r*col+c] + 
-                                (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.0*temp[r*col+c]) * Ry_1 + 
-                                (temp[r*col+c-1] - temp[r*col+c]) * Rx_1 + 
-                                (amb_temp - temp[r*col+c]) * Rz_1);
-                        }	/* Edge 3 */
-                        else if (r == row-1) {
-                            delta[0] = (Cap_1) * (power[r*col+c] + 
-                                (temp[r*col+c+1] + temp[r*col+c-1] - 2.0*temp[r*col+c]) * Rx_1 + 
-                                (temp[(r-1)*col+c] - temp[r*col+c]) * Ry_1 + 
-                                (amb_temp - temp[r*col+c]) * Rz_1);
-                        }	/* Edge 4 */
-                        else if (c == 0) {
-                            delta[0] = (Cap_1) * (power[r*col] + 
-                                (temp[(r+1)*col] + temp[(r-1)*col] - 2.0*temp[r*col]) * Ry_1 + 
-                                (temp[r*col+1] - temp[r*col]) * Rx_1 + 
-                                (amb_temp - temp[r*col]) * Rz_1);
-                        }
-                        result[r*col+c] =temp[r*col+c]+ delta[0];
-                    }
-                }
+	    		
+                for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
+	    		{
+	    			kernel_ifs_original(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
+	    		}
+                
                 double end_time_ifs = get_time();
 	    		total_time_ifs += (end_time_ifs - start_time_ifs);
-                continue;
-            }
+	    		continue;
+	    	}
+        }
+	    
+	    double start_time_loop = get_time();
+	    for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
+	    	kernel_original(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+	    }
+	    double end_time_loop = get_time();
+        total_time_loop +=(end_time_loop - start_time_loop);
+ 
+    #else 
+        for ( chunk = 0; chunk < num_chunk; ++chunk )
+	    {
+            int r_start = BLOCK_SIZE_R*(chunk/chunks_in_col);
+            int c_start = BLOCK_SIZE_C*(chunk%chunks_in_row); 
+            int r_end = r_start + BLOCK_SIZE_R > row ? row : r_start + BLOCK_SIZE_R;
+            int c_end = c_start + BLOCK_SIZE_C > col ? col : c_start + BLOCK_SIZE_C;
+           
+	       
+            if ( r_start == 0 || c_start == 0 || r_end == row || c_end == col )
+            {	
+	    		double start_time_ifs = get_time();
+	    		
+                for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) 
+	    		{
+	    			kernel_ifs(result, temp, power, (size_t)c_start, (size_t)BLOCK_SIZE_C, (size_t)col, (size_t)r,(size_t) row, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp, delta);
+	    		}
+                
+                double end_time_ifs = get_time();
+	    		total_time_ifs += (end_time_ifs - start_time_ifs);
+	    		continue;
+	    	}
+        }
+	    
+	    double start_time_loop = get_time();
+	    for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
+	    	kernel(result, temp, power, (size_t)BLOCK_SIZE_C, (size_t)(col-BLOCK_SIZE_C), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+	    }
+	    double end_time_loop = get_time();
+        total_time_loop +=(end_time_loop - start_time_loop);
+	    
+	    double start_time_ifs = get_time();
+	    result[0] = temp[0]+ (Cap_1) * (power[0] +
+	    			(temp[1] - temp[0]) * Rx_1 +
+	    			(temp[col] - temp[0]) * Ry_1 +
+	    			(amb_temp - temp[0]) * Rz_1);  
 
-	        double start_time_loop = get_time();
-            for ( r = r_start; r < r_start + BLOCK_SIZE_R; ++r ) {
-                for ( c = c_start; c < c_start + BLOCK_SIZE_C; ++c ) {
-                /* Update Temperatures */
-                    result[r*col+c] =temp[r*col+c]+ 
-                         ( Cap_1 * (power[r*col+c] + 
-                        (temp[(r+1)*col+c] + temp[(r-1)*col+c] - 2.f*temp[r*col+c]) * Ry_1 + 
-                        (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c]) * Rx_1 + 
-                        (amb_temp - temp[r*col+c]) * Rz_1));
-                }
-            }
-            double end_time_loop = get_time();
-            total_time_loop +=(end_time_loop - start_time_loop);
-        }        
+	    result[(row-1)*col+col-1] = temp[(row-1)*col+col-1] + (Cap_1) * (power[(row-1)*col+col-1] +
+	    							(temp[(row-1)*col+col-2] - temp[(row-1)*col+col-1]) * Rx_1 +
+	    							(temp[(row-2)*col+col-1] - temp[(row-1)*col+col-1]) * Ry_1 +
+	    							(amb_temp - temp[(row-1)*col+col-1]) * Rz_1);
+	       
+
+	    result[(row-1)*col] =temp[(row-1)*col] + (Cap_1) * (power[(row-1)*col] +
+	    					(temp[(row-1)*col+1] - temp[(row-1)*col]) * Rx_1 +
+	    					(temp[(row-2)*col] - temp[(row-1)*col]) * Ry_1 +
+	    					(amb_temp - temp[(row-1)*col]) * Rz_1);
+        double end_time_ifs = get_time();
+        total_time_ifs += (end_time_ifs - start_time_ifs);
+	    					
+	    double end_time_single_iteration= get_time();
+	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
+
+
     #endif
 
 }

@@ -23,11 +23,15 @@ OBJ_host := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_host))
 OBJ_gem5 := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_gem5))
 
 
-compile_all: hotspot_host hotspot_gem5 hotspot_neon hotspot_neon_u1 hotspot_neon_u2 hotspot_neon_u3 hotspot_sve
+compile_all: hotspot_host hotspot_gem5 hotspot_original_gem5 hotspot_optimized_gem5 hotspot_neon hotspot_neon_u1 hotspot_neon_u2 hotspot_neon_u3 hotspot_sve
 
 compile_host: hotspot_host
 
 compile_gem5: hotspot_gem5
+
+compile_original_gem5: hotspot_original_gem5
+
+compile_optimized_gem5: hotspot_optimized_gem5
 
 compile_neon: hotspot_neon
 
@@ -51,6 +55,22 @@ run_gem5: hotspot_gem5
 	@echo "for the final results"
 	@echo "======================================================================"
 	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
+
+run_gem5: hotspot_original_gem5
+	@echo "======================================================================"
+	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "you should change the number of iterations and the problem size"
+	@echo "for the final results"
+	@echo "======================================================================"
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
+
+run_gem5: hotspot_optimized_gem5
+	@echo "======================================================================"
+	@echo "WARNING: Running the smallest problem size (512) with 2 iterations... "
+	@echo "you should change the number of iterations and the problem size"
+	@echo "for the final results"
+	@echo "======================================================================"
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_gem5.out'
 
 run_neon: hotspot_neon
 	@echo "======================================================================"
@@ -98,6 +118,14 @@ hotspot_host: $(OBJ_host) $(KERNEL).c
 
 hotspot_gem5: $(OBJ_gem5) $(KERNEL).c
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c
+	$(link_objs_gem5)
+
+hotspot_original_gem5: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DORIGINAL
+	$(link_objs_gem5)
+
+hotspot_optimized_gem5: $(OBJ_gem5) $(KERNEL).c
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -march=armv8-a+simd -fno-tree-vectorize -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c 
 	$(link_objs_gem5)
 
 hotspot_neon: $(OBJ_gem5) $(KERNEL).c
