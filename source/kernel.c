@@ -950,7 +950,7 @@ void kernel_ifs(float *result, float *temp, float *power, size_t c_start, size_t
 		 : "x1", "x2", "x3", "x4", "x5", "x6", "memory", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 	);
 	
-//#endif
+#endif
 
 /*
 #else
