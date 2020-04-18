@@ -428,24 +428,24 @@ void kernel(float *result, float *temp, float *power, size_t c_start, size_t siz
 
 				 
 		 ".loop_sve:\n\t"
-		 "ld1w { z5.s }, p0/z, [x1, x2, lsl #2]\n\t"	//z5, temp[r*col+c]
+		 "ld1w { z5.s }, p0/z, [x2, x1, lsl #2]\n\t"	//z5, temp[r*col+c]
 		 "mov z6.s, p0/m, z3.s\n\t"							//auxiliar z6
 		 "fsub z6.s, p0/m, z6.s, z5.s\n\t"					//z6, (amb_temp - temp[r*col+c])
 		 "fmul z6.s, p0/m, z6.s, z2.s\n\t"					//z6, (amb_temp - temp[r*col+c])*Rz_1
-		 "ld1w { z7.s }, p0/z, [x1, x3, lsl #2]\n\t"	//z7, temp[r*col+c-1]
-		 "ld1w { z8.s }, p0/z, [x1, x4, lsl #2]\n\t"	//z8, temp[r*col+c+1]
+		 "ld1w { z7.s }, p0/z, [x3, x1, lsl #2]\n\t"	//z7, temp[r*col+c-1]
+		 "ld1w { z8.s }, p0/z, [x4, x1, lsl #2]\n\t"	//z8, temp[r*col+c+1]
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[r*col+c+1]+temp[r*col+c-1]
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7, (temp[r*col+c+1] + temp[r*col+c-1] - 2.f*temp[r*col+c])
 		 "fmla z6.s, p0/m, z7.s, z0.s\n\t"					//z6 acumulador 
-		 "ld1w { z7.s }, p0/z, [x1, x5, lsl #2]\n\t"	//z7,  temp[(r+1)*col+c]
-		 "ld1w { z8.s }, p0/z, [x1, x6, lsl #2]\n\t"	//z8,  temp[(r-1)*col+c]
+		 "ld1w { z7.s }, p0/z, [x5, x1, lsl #2]\n\t"	//z7,  temp[(r+1)*col+c]
+		 "ld1w { z8.s }, p0/z, [x6, x1, lsl #2]\n\t"	//z8,  temp[(r-1)*col+c]
 		 "fadd z7.s, p0/m, z7.s, z8.s\n\t"					//z7, temp[(r+1)*col+c]+temp[(r-1)*col+c]
 		 "fmls z7.s, p0/m, z9.s, z5.s\n\t"					//z7, (temp[(r+1)*col+c]+temp[(r-1)*col+c] - 2.f*temp[r*col+c])
 		 "fmla z6.s, p0/m, z7.s, z1.s\n\t"					//z6 acumulador
-		 "ld1w { z8.s }, p0/z, [x1, x7, lsl #2]\n\t"	//z8, power[r*col+c]
+		 "ld1w { z8.s }, p0/z, [x7, x1, lsl #2]\n\t"	//z8, power[r*col+c]
 		 "fadd z8.s, p0/m, z8.s, z6.s\n\t"					//z8, acumulador(z6)+power[r+*col+c]
 		 "fmla z5.s, p0/m, z8.s, z4.s\n\t"					//z6 acumulador
-		 "st1w z5.s, p0, [x1, x9, lsl #2]\n\t"              // res[r*col+c]
+		 "st1w z5.s, p0, [x9, x1, lsl #2]\n\t"              // res[r*col+c]
 		 "incw x1\n\t"
 		 "whilelt p0.s, x1, %[sz]\n\t"
 		 "b.first .loop_sve\n\t"
