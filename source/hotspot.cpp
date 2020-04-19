@@ -143,14 +143,14 @@ void single_iteration(float *result, float *temp, float *power, int row, int col
 	    		total_time_ifs += (end_time_ifs - start_time_ifs);
 	    		continue;
 	    	}
+
+            double start_time_loop = get_time();
+            for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
+                kernel(result, temp, power, (size_t)c_start, (size_t)(c_end), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
+            }
+            double end_time_loop = get_time();
+            total_time_loop +=(end_time_loop - start_time_loop);
         }
-	    
-	    double start_time_loop = get_time();
-	    for ( r = BLOCK_SIZE_R; r < row - BLOCK_SIZE_R ; ++r ) {
-	    	kernel(result, temp, power, (size_t)c_start, (size_t)(c_end), (size_t)col, (size_t)r, Cap_1, Rx_1, Ry_1, Rz_1, amb_temp);
-	    }
-	    double end_time_loop = get_time();
-        total_time_loop +=(end_time_loop - start_time_loop);
 	    
         double end_time_single_iteration= get_time();
 	    total_time_single_iteration+= (end_time_single_iteration - start_time_single_iteration);
