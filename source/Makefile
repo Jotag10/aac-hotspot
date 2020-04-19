@@ -44,72 +44,72 @@ link_objs_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNE
 run_host: hotspot_host
 	@echo "======================================================================"
 	@echo "original code"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	./hotspot_host 1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_host.out
+	./hotspot_host 512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_host.out
 	
 run_original_gem5: hotspot_original_gem5
 	@echo "======================================================================"
 	@echo "Original code"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_original_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_original_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_original_gem5.out'
 
 run_optimized_vectorized_gem5: hotspot_optimized_vectorized_gem5
 	@echo "======================================================================"
 	@echo "Restructured code vetorized by the compiler"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_vectorized_gem5 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_optimized_vectorized_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_vectorized_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_optimized_vectorized_gem5.out'
 
 run_optimized_gem5: hotspot_optimized_gem5
 	@echo "======================================================================"
 	@echo "Restructured code"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_gem5 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_optimized_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_optimized_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_optimized_gem5.out'
 
 run_neon: hotspot_neon
 	@echo "======================================================================"
 	@echo "NEON done by us"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_neon.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon.out'
 	
 run_neon_u1: hotspot_neon_u1
 	@echo "======================================================================"
 	@echo "NEON unrolled 1x4 done by us"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u1 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_neon_u1.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u1 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u1.out'
 
 run_neon_u2: hotspot_neon_u2
 	@echo "======================================================================"
 	@echo "NEON unrolled 2x4 done by us"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u2 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_neon_u2.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u2 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u2.out'
 
 run_neon_u4: hotspot_neon_u4
 	@echo "======================================================================"
 	@echo "NEON unrolled 4x4 done by us"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u4 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_neon_u4.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_neon_u4 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_neon_u4.out'
 
 run_sve_gem5: hotspot_sve_gem5
 	@echo "======================================================================"
 	@echo "SVE done by the compiler"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve_gem5 -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_sve_gem5.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve_gem5 -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_sve_gem5.out'
 
 run_sve: hotspot_sve
 	@echo "======================================================================"
 	@echo "SVE done by us"
-	@echo "problem size (1024) with 1 iterations... "
+	@echo "problem size (512) with 1 iterations... "
 	@echo "======================================================================"
-	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve -o '1024 1024 1 1 $(DATA_DIR)/temp_1024 $(DATA_DIR)/power_1024 output_sve.out'
+	$(GEM5_DIR)/build/ARM/gem5.opt $(GEM5_DIR)/configs/example/se.py --cpu-type=ex5_LITTLE --caches --svevl=1 -c hotspot_sve -o '512 512 1 1 $(DATA_DIR)/temp_512 $(DATA_DIR)/power_512 output_sve.out'
 
 hotspot_host: $(OBJ_host) $(KERNEL).c 
 	$(HOST_CC) $(HOST_CC_FLAGS) -o $(OBJDIR)/$(KERNEL)_$@.o -c $(KERNEL).c -DORIGINAL
