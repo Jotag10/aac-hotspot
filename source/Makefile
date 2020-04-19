@@ -33,7 +33,11 @@ compile_original_gem5: hotspot_original_gem5
 
 compile_optimized_gem5: hotspot_optimized_gem5
 
+compile_optimized_vectorized_gem5: hotspot_optimized_vectorized_gem5
+
 compile_neon: hotspot_neon
+
+compile_neon_4: hotspot_neon_u4
 
 compile_sve: hotspot_sve
 
