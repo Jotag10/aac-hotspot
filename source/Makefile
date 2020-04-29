@@ -44,7 +44,7 @@ compile_sve: hotspot_sve
 
 link_objs_host = $(HOST_CC) $(HOST_CC_FLAGS) -o $@ $(OBJ_host) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
 link_objs_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
-link_objs_original_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS)
+link_objs_original_gem5 = $(GEM5_CC) $(GEM5_CC_FLAGS) -o $@ $(OBJ_gem5) $(OBJDIR)/$(KERNEL)_$@.o $(LIBS) -DORIGNAL
 
 run_host: hotspot_host
 	@echo "======================================================================"
@@ -163,7 +163,7 @@ $(OBJDIR)/$(SOBJ_gem5) : hotspot.cpp
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -fno-tree-vectorize -c $< -o $@
 
 $(OBJDIR)/$(SOBJ_original_gem5) : hotspot.cpp
-	$(GEM5_CC) $(GEM5_CC_FLAGS) -c $< -o $@ -DORIGINAL
+	$(GEM5_CC) $(GEM5_CC_FLAGS) -c $< -o $@
 
 clean :
 
