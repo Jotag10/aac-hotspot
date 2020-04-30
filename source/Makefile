@@ -159,7 +159,7 @@ hotspot_sve: $(OBJ_gem5) $(KERNEL).c
 	$(link_objs_gem5)
 
 $(OBJDIR)/$(SOBJ_host) : hotspot.cpp
-	$(HOST_CC) $(HOST_CC_FLAGS) -c $< -o $@
+	$(HOST_CC) $(HOST_CC_FLAGS) -c $< -o $@ -DORIGINAL
 	
 $(OBJDIR)/$(SOBJ_gem5) : hotspot.cpp
 	$(GEM5_CC) $(GEM5_CC_FLAGS) -fno-tree-vectorize -c $< -o $@
