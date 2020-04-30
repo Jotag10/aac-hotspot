@@ -18,7 +18,7 @@ KERNEL = kernel
 OBJDIR = build
 SOBJ_host = hotspot_host.o
 SOBJ_gem5 = hotspot_gem5.o
-SOBJ_original_gem5 = hotspot_gem5.o
+SOBJ_original_gem5 = hotspot_original_gem5.o
 
 OBJ_host := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_host))
 OBJ_gem5 := $(patsubst %.o,$(OBJDIR)/%.o,$(SOBJ_gem5))
